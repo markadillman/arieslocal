@@ -1,0 +1,831 @@
+
+<svg id="svgCanvas" width="600" height="350" viewBox="0 0 600 350"
+	onload="init(evt)"
+	xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<script type="text/ecmascript"> <![CDATA[
+		var debugging = false;			// toggle the debug messages
+		var masking = false;			// toggle the platform masking tools
+		var canvas;						// the SVG drawing region
+		var drawingGroup;				// the group of SVG art objects
+		var platformsGroup;				// the group of SVG platform objects
+		var canvasWidth = 600;
+		var canvasHeight = 350;
+		var svgns;						// the namespace for SVG
+		var xOffset = 0;				// offsets of the canvas in the page
+		var yOffset = 0;
+		var xStart = 0;					// start coords of current shape
+		var yStart = 0;
+		var colorChoice = "#000000";	// currently selected color
+		var wallColor = "black";		// colors for platforms
+		var ladderColor = "red";
+		var toolList = ["Rectangle", "Ellipse", "Polygon", "Brush", "Eraser",
+						"Eye Dropper", "Paint Can", "Wall", "Ladder"];
+		var toolChoice = 0;				// currently selected tool
+		var previousDrawTool = 0;		// saved tool choice for mode switching
+		var previousPlatformTool = 7;	// saved tool choice for mode switching
+		var strokeWidthChoice = 1;		// currently selected stroke width
+		var shapeFillChoice = false;	// currently selected fill option
+		var shapeFillNone = "none";
+		var shapeFillChoiceString = shapeFillNone;
+		var currentObject = 0;			// ID of current shape
+		var currentPlatform = 0;		// ID of current platform shape
+		var inProgress = false;			// shape currently in progress?
+		var polygonCloseGap = 3;		// how close is final click of polygon?
+		var polygonStartMarker = "polygonPointMarker";	// id string for polygon start marker
+		var polygonPointMarker = "polygonStartMarker";	// id string for polygon point marker
+		var polygonMarkerRadius = 3;		// size of the polygon point markers
+	
+		// initial setup
+		function init(evt) {
+			// select the empty svg object, get its namespace and offsets
+			canvas = document.getElementById("svgCanvas");
+			svgns = canvas.namespaceURI;
+			var coords = canvas.getBoundingClientRect();
+			xOffset = coords.left;
+			yOffset = coords.top;
+			
+			// create the drawing canvas group
+			drawingGroup = document.createElementNS(svgns, "g");
+			drawingGroup.setAttribute("id", "drawingGroup");
+			drawingGroup.setAttribute("style", "opacity: 1");
+			canvas.appendChild(drawingGroup);
+			
+			// create the platforms canvas group
+			platformsGroup = document.createElementNS(svgns, "g");
+			platformsGroup.setAttribute("id", "platformsGroup");
+			platformsGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(platformsGroup);
+		
+			// set up event listeners for the canvas
+			canvas.addEventListener("mousedown", mouseDown);
+			canvas.addEventListener("mousemove", mouseMove);
+			canvas.addEventListener("mouseup", mouseUp);
+			canvas.addEventListener("click", mouseClick);
+			
+			// link HTML functions to SVG functions
+			top.sendSVGData = svgSendSVGData;
+			top.setDebugging = svgSetDebugging;
+			top.setMasking = svgSetMasking;
+			top.setColor = svgSetColor;
+			top.setShapeFill = svgSetShapeFill;
+			top.setStrokeWidth = svgSetStrokeWidth;
+			top.setTool = svgSetTool;
+		}
+		
+		// return the current svg data as a string
+		function svgSendSVGData () {
+			var dataString;
+			//dataString = "test: sending SVG data as string";
+			//dataString = (new XMLSerializer()).serializeToString(canvas);
+			// use Mark's code to do this?
+			return dataString;
+		}
+		
+		// close out an in-progress shape first if an option selection changes
+		function handleShapeInProgress() {
+			// the only shape this could be is a polygon
+			// so clean up a partly-completed polygon by leaving it a polyline
+			// ??? this is copy-pasted and really should be refactored
+			if (inProgress) {
+				// get the current shape and its info, including the marker
+				var newPolyline = document.getElementById(currentObject.toString());
+				var pointString = newPolyline.getAttribute("points");
+				var startMarker = document.getElementById(polygonStartMarker);
+				var pointMarker = document.getElementById(polygonPointMarker);
+				
+				// remove the polygon point markers from the DOM
+				drawingGroup.removeChild(startMarker);
+				drawingGroup.removeChild(pointMarker);
+
+				// mark that the shape is complete
+				if (debugging) {
+					console.log(currentObject.toString() +
+					": Made a polyline at points: " + pointString + ".");
+				}
+				currentObject += 1;
+				inProgress = false;
+			}
+		}
+		
+		// get updated option selections from the HTML form
+		function svgSetDebugging(newState) {
+			handleShapeInProgress();
+			debugging = newState;
+		}
+		function svgSetMasking(newState) {
+			handleShapeInProgress();
+			masking = newState;
+			if (masking) { // turn on platforms
+				// turn the art opacity down
+				drawingGroup.setAttribute("style", "opacity: 0.33");
+				// make the platforms visible
+				platformsGroup.setAttribute("style", "visibility: visible");
+				// save current tool choice and set platform tool
+				previousDrawTool = toolChoice;
+				svgSetTool(previousPlatformTool);
+			} else { // turn off platforms
+				// turn the art opacity up
+				 drawingGroup.setAttribute("style", "opacity: 1");
+				// make the platforms invisible
+				platformsGroup.setAttribute("style", "visibility: hidden");
+				// save current tool choice and set draw tool
+				previousPlatformTool = toolChoice;
+				svgSetTool(previousDrawTool);
+			}
+		}
+		function svgSetColor(newColor) {
+			handleShapeInProgress();
+			colorChoice = newColor;
+			if (debugging) {
+				console.log("Color changed to " + colorChoice + ".");
+			}
+		}
+		function svgSetShapeFill(newState) {
+			handleShapeInProgress();
+			shapeFillChoice = newState;
+			if (debugging) {
+				console.log("Shape fill set to " + shapeFillChoice + ".");
+			}
+		}
+		function svgSetStrokeWidth(newWidth) {
+			handleShapeInProgress();
+			if (newWidth < 1) {
+				newWidth = 1;
+			}
+			else if (newWidth > 50) {
+				newWidth = 50;
+			}
+			strokeWidthChoice = newWidth;
+			if (debugging) {
+				console.log("Stroke width set to " + strokeWidthChoice.toString() + ".");
+			}
+		}
+		function svgSetTool(newTool) {
+			handleShapeInProgress();
+			toolChoice = newTool;
+			if (debugging) {
+				console.log("Tool changed to " + toolList[toolChoice] + ".");
+			}
+		}
+		
+		// ??? refactor these event handlers to reduce copy-pasta code?
+		
+		// mouse down event handler
+		function mouseDown(evt) {
+			switch(toolChoice) {
+				case 0: // rectangle
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create the new rectangle shape and set its attributes
+					var newRect;
+					newRect = document.createElementNS(svgns, "rect");
+					newRect.setAttribute("id", currentObject.toString());
+					newRect.setAttribute("x", xStart.toString());
+					newRect.setAttribute("y", yStart.toString());
+					newRect.setAttribute("width", "0");
+					newRect.setAttribute("height", "0");
+					if (shapeFillChoice) {
+						shapeFillChoiceString = colorChoice;
+					} else {
+						shapeFillChoiceString = shapeFillNone;
+					}
+					newRect.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: " + 
+						colorChoice + "; stroke-width: " +
+						strokeWidthChoice.toString());
+					
+					// append rectangle to canvas and turn on inProgress flag
+					drawingGroup.appendChild(newRect);
+					inProgress = true;
+					break;
+					
+				case 1: // ellipse
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create the new ellipse shape and set its attributes
+					var newEllipse;
+					newEllipse = document.createElementNS(svgns, "ellipse");
+					newEllipse.setAttribute("id", currentObject.toString());
+					newEllipse.setAttribute("cx", xStart.toString());
+					newEllipse.setAttribute("cy", yStart.toString());
+					newEllipse.setAttribute("rx", "0");
+					newEllipse.setAttribute("ry", "0");
+					if (shapeFillChoice) {
+						shapeFillChoiceString = colorChoice;
+					} else {
+						shapeFillChoiceString = shapeFillNone;
+					}
+					newEllipse.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: " + 
+						colorChoice + "; stroke-width: " +
+						strokeWidthChoice.toString());
+					
+					// append ellipse to canvas and turn on inProgress flag
+					drawingGroup.appendChild(newEllipse);
+					inProgress = true;
+					break;
+
+				case 2: // polygon
+					break;
+
+				case 3: // brush
+					
+					// get mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+
+					// create the new polyline shape and set its attributes
+					var newPolyline = document.createElementNS(svgns, "polyline");
+					newPolyline.setAttribute("id", currentObject.toString());
+					newPolyline.setAttribute("points", xStart.toString() + " " +
+								yStart.toString());
+					shapeFillChoiceString = shapeFillNone; // no fill for brush
+					newPolyline.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: " + 
+						colorChoice + "; stroke-width: " +
+						strokeWidthChoice.toString() + 
+						"; stroke-linecap: round; stroke-linejoin: round");
+						
+					// append polyline to canvas and turn on inProgress flag
+					drawingGroup.appendChild(newPolyline);
+					inProgress = true;
+					break;
+
+				case 4: // eraser
+				
+					// get mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+
+					// create the new polyline shape and set its attributes
+					var newPolyline = document.createElementNS(svgns, "polyline");
+					newPolyline.setAttribute("id", currentObject.toString());
+					newPolyline.setAttribute("points", xStart.toString() + " " +
+								yStart.toString());
+					shapeFillChoiceString = shapeFillNone; // no fill for brush
+					newPolyline.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: #ffffff; stroke-width: " +
+						strokeWidthChoice.toString() +
+						"; stroke-linecap: round; stroke-linejoin: round");
+						
+					// append polyline to canvas and turn on inProgress flag
+					drawingGroup.appendChild(newPolyline);
+					inProgress = true;
+					break;
+
+				case 5: // eye dropper
+					break;
+
+				case 6: // paint can
+					break;
+
+				case 7: // wall
+					
+					// get mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+
+					// create the new polyline shape and set its attributes
+					var newPolyline = document.createElementNS(svgns, "polyline");
+					newPolyline.setAttribute("id", currentPlatform.toString());
+					newPolyline.setAttribute("points", xStart.toString() + " " +
+								yStart.toString());
+					shapeFillChoiceString = shapeFillNone; // no fill for brush
+					newPolyline.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: " + 
+						wallColor + "; stroke-width: " +
+						strokeWidthChoice.toString() + 
+						"; stroke-linecap: round; stroke-linejoin: round");
+						
+					// append polyline to platforms and turn on inProgress flag
+					platformsGroup.appendChild(newPolyline);
+					inProgress = true;
+					break;
+					
+				case 8: // ladder
+					
+					// get mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+
+					// create the new polyline shape and set its attributes
+					var newPolyline = document.createElementNS(svgns, "polyline");
+					newPolyline.setAttribute("id", currentPlatform.toString());
+					newPolyline.setAttribute("points", xStart.toString() + " " +
+								yStart.toString());
+					shapeFillChoiceString = shapeFillNone; // no fill for brush
+					newPolyline.setAttribute("style", "fill: " +
+						shapeFillChoiceString + "; stroke: " + 
+						ladderColor + "; stroke-width: " +
+						strokeWidthChoice.toString() + 
+						"; stroke-linecap: round; stroke-linejoin: round");
+						
+					// append polyline to platforms and turn on inProgress flag
+					platformsGroup.appendChild(newPolyline);
+					inProgress = true;
+					break;
+					
+				default: // should never get here
+					console.log("Something went horribly awry with the tool picker.");
+			}
+		}
+		
+		// mouse move event handler
+		function mouseMove(evt) {
+			switch(toolChoice) {
+				case 0: // rectangle
+					
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current rectangle
+						var newRect;
+						newRect = document.getElementById(currentObject.toString());
+						
+						// calculate new rectangle info
+						var xNew = Math.min(xMouse, xStart);
+						var yNew = Math.min(yMouse, yStart);
+						var wNew =  Math.abs(xMouse - xStart);
+						var hNew =  Math.abs(yMouse - yStart);
+						
+						// set new rectangle info
+						newRect.setAttribute("x", xNew.toString());
+						newRect.setAttribute("y", yNew.toString());
+						newRect.setAttribute("width", wNew.toString());
+						newRect.setAttribute("height", hNew.toString());
+					}
+					break;
+					
+				case 1: // ellipse
+					
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current circle
+						var newEllipse;
+						newEllipse = document.getElementById(currentObject.toString());
+						
+						// calculate new rectangle info
+						var xNew = Math.min(xMouse, xStart);
+						var yNew = Math.min(yMouse, yStart);
+						var wNew =  Math.abs(xMouse - xStart);
+						var hNew =  Math.abs(yMouse - yStart);
+						
+						// calculate new circle info
+						var rxNew = wNew/2;
+						var ryNew = hNew/2;
+						var cxNew = xNew + rxNew;
+						var cyNew = yNew + ryNew;
+						
+						// set new circle info
+						newEllipse.setAttribute("cx", cxNew.toString());
+						newEllipse.setAttribute("cy", cyNew.toString());
+						newEllipse.setAttribute("rx", rxNew.toString());
+						newEllipse.setAttribute("ry", ryNew.toString());
+					}
+					break;
+
+				case 2: // polygon
+					break;
+
+				case 3: // brush
+				
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current polyline and its info
+						var newPolyline;
+						newPolyline = document.getElementById(currentObject.toString());
+						var pointString = newPolyline.getAttribute("points");
+						
+						// add current point to the polyline
+						pointString += " " + xMouse.toString() + " " + yMouse.toString();
+						newPolyline.setAttribute("points", pointString);
+					}
+					break;
+
+				case 4: // eraser
+					
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current polyline and its info
+						var newPolyline;
+						newPolyline = document.getElementById(currentObject.toString());
+						var pointString = newPolyline.getAttribute("points");
+						
+						// add current point to the polyline
+						pointString += " " + xMouse.toString() + " " + yMouse.toString();
+						newPolyline.setAttribute("points", pointString);
+					}
+					break;
+
+				case 5: // eye dropper
+					break;
+
+				case 6: // paint can
+					break;
+
+				case 7: // wall
+				
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current polyline and its info
+						var newPolyline;
+						newPolyline = document.getElementById(currentPlatform.toString());
+						var pointString = newPolyline.getAttribute("points");
+						
+						// add current point to the polyline
+						pointString += " " + xMouse.toString() + " " + yMouse.toString();
+						newPolyline.setAttribute("points", pointString);
+					}
+					break;
+					
+				case 8: // ladder
+				
+					// only do this if a shape is currently in progress
+					if(inProgress) {
+						// get the mouse coordinates in the canvas
+						var xMouse = evt.clientX - xOffset;
+						var yMouse = evt.clientY - yOffset;
+						
+						// get the current polyline and its info
+						var newPolyline;
+						newPolyline = document.getElementById(currentPlatform.toString());
+						var pointString = newPolyline.getAttribute("points");
+						
+						// add current point to the polyline
+						pointString += " " + xMouse.toString() + " " + yMouse.toString();
+						newPolyline.setAttribute("points", pointString);
+					}
+					break;
+					
+				default: // should never get here
+					console.log("Something went horribly awry with the tool picker.");
+			}
+		}
+		
+		// mouse up event handler
+		function mouseUp(evt) {
+			switch(toolChoice) {
+				case 0: // rectangle
+
+					// debug output for completed rectangle
+					if (debugging) {
+						var newRect = document.getElementById(currentObject.toString());
+						console.log(currentObject.toString() + ": Made a rectangle at (" +
+								newRect.getAttribute("x") +	", " +
+								newRect.getAttribute("y") + ") with width: " +
+								newRect.getAttribute("width") + " and height: " +
+								newRect.getAttribute("height") + ".");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentObject += 1;
+					inProgress = false;
+					break;
+				
+				case 1: // ellipse
+
+					// debug output for completed ellipse
+					if (debugging) {
+						var newCircle = document.getElementById(currentObject.toString());
+						console.log(currentObject.toString() + ": Made an ellipse at (" +
+								newCircle.getAttribute("cx") +	", " +
+								newCircle.getAttribute("cy") + ") with x-radius: " +
+								newCircle.getAttribute("rx") + " and y-radius: " +
+								newCircle.getAttribute("ry") + ".");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentObject += 1;
+					inProgress = false;
+					break;
+
+				case 2: // polygon
+					break;
+
+				case 3: // brush
+				
+					// debug output for completed brush stroke
+					if (debugging) {
+						console.log(currentObject.toString() + ": Made a brush stroke.");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentObject += 1;
+					inProgress = false;
+					break;
+
+				case 4: // eraser
+					
+					// debug output for completed eraser stroke
+					if (debugging) {
+						console.log(currentObject.toString() + ": Made an eraser stroke.");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentObject += 1;
+					inProgress = false;
+					break;
+
+				case 5: // eye dropper
+					break;
+
+				case 6: // paint can
+					break;
+
+				case 7: // wall
+				
+					// debug output for completed wall
+					if (debugging) {
+						console.log(currentPlatform.toString() + ": Made a wall.");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentPlatform += 1;
+					inProgress = false;
+					break;
+					
+				case 8: // ladder
+				
+					// debug output for completed ladder
+					if (debugging) {
+						console.log(currentPlatform.toString() + ": Made a ladder.");
+					}
+					
+					// increment shape counter and turn off inProgress flag
+					currentPlatform += 1;
+					inProgress = false;
+					break;
+					
+				default: // should never get here
+					console.log("Something went horribly awry with the tool picker.");
+			}
+		}
+		
+		// mouse click event handler
+		function mouseClick(evt) {
+			switch(toolChoice) {
+				case 0: // rectangle
+					break;
+				
+				case 1: // ellipse
+					break;
+
+				case 2: // polygon
+				
+					// get mouse coordinates in the canvas
+					var xMouse = evt.clientX - xOffset;
+					var yMouse = evt.clientY - yOffset;
+
+					if (!inProgress) { // start a new polyline
+						// create a polyline starting at the current mouse point
+						xStart = xMouse;
+						yStart = yMouse;
+						var newPolyline = document.createElementNS(svgns, "polyline");
+						newPolyline.setAttribute("id", currentObject.toString());
+						newPolyline.setAttribute("points", xStart.toString() + " " +
+									yStart.toString());
+						shapeFillChoiceString = shapeFillNone; // no fill until done
+						newPolyline.setAttribute("style", "fill: " +
+							shapeFillChoiceString + "; stroke: " + 
+							colorChoice + "; stroke-width: " +
+							strokeWidthChoice.toString());
+						drawingGroup.appendChild(newPolyline);
+						
+						// create the polygon start point marker
+						var startMarker = document.createElementNS(svgns, "ellipse");
+						startMarker.setAttribute("id", polygonStartMarker);
+						startMarker.setAttribute("cx", xStart);
+						startMarker.setAttribute("cy", yStart);
+						startMarker.setAttribute("rx", polygonMarkerRadius);
+						startMarker.setAttribute("ry", polygonMarkerRadius);
+						startMarker.setAttribute("style", "font-family: sans-serif; " +
+							"font-size: 14pt; stroke: " + colorChoice + "; fill: " +
+							colorChoice);
+						drawingGroup.appendChild(startMarker);
+
+						// create the polygon current point marker
+						var pointMarker = document.createElementNS(svgns, "ellipse");
+						pointMarker.setAttribute("id", polygonPointMarker);
+						pointMarker.setAttribute("cx", xStart);
+						pointMarker.setAttribute("cy", yStart);
+						pointMarker.setAttribute("rx", polygonMarkerRadius);
+						pointMarker.setAttribute("ry", polygonMarkerRadius);
+						pointMarker.setAttribute("style", "font-family: sans-serif; " +
+							"font-size: 14pt; stroke: " + colorChoice + "; fill: " +
+							colorChoice);
+						drawingGroup.appendChild(pointMarker);
+
+						// mark that a shape is in progress
+						inProgress = true;
+
+					} else { // continue the polyline in progress
+						// get the current shape and its info, including the marker
+						var newPolyline = document.getElementById(currentObject.toString());
+						var pointString = newPolyline.getAttribute("points");
+						var startMarker = document.getElementById(polygonStartMarker);
+						var pointMarker = document.getElementById(polygonPointMarker);
+						
+						// check for the polygon being done/closed
+						if ((Math.abs(xStart - xMouse) <= polygonCloseGap) && (
+							Math.abs(yStart - yMouse) <= polygonCloseGap)) {
+							// remove the polyline from the DOM
+							drawingGroup.removeChild(newPolyline);
+
+							// remove the polygon point markers from the DOM
+							drawingGroup.removeChild(startMarker);
+							drawingGroup.removeChild(pointMarker);
+
+							// create a closed polygon to replace the polyline
+							var newPolygon = document.createElementNS(svgns, "polygon");
+							newPolygon.setAttribute("id", currentObject.toString());
+							newPolygon.setAttribute("points", pointString);
+							if (shapeFillChoice) {
+								shapeFillChoiceString = colorChoice;
+							} else {
+								shapeFillChoiceString = shapeFillNone;
+							}
+							newPolygon.setAttribute("style", "fill: " +
+								shapeFillChoiceString +
+								"; fill-rule: evenodd; stroke: " + 
+								colorChoice + "; stroke-width: " +
+								strokeWidthChoice.toString());
+							drawingGroup.appendChild(newPolygon);
+
+							// mark that the shape is complete
+							if (debugging) {
+								console.log(currentObject.toString() +
+								": Made a polygon at points: "+
+								newPolygon.getAttribute("points") + ".");
+							}
+							currentObject += 1;
+							inProgress = false;
+						} else { // just add the current mouse point to the current polyline
+							pointString += " " + xMouse.toString() +
+								" " + yMouse.toString();
+							newPolyline.setAttribute("points", pointString);
+
+							// update the polygon current point marker
+							pointMarker.setAttribute("cx", xMouse);
+							pointMarker.setAttribute("cy", yMouse);
+						}
+					}
+					break;
+
+				case 3: // brush
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create a dot/ellipse and set its attributes
+					var newDot;
+					newDot = document.createElementNS(svgns, "ellipse");
+					newDot.setAttribute("id", currentObject.toString());
+					newDot.setAttribute("cx", xStart.toString());
+					newDot.setAttribute("cy", yStart.toString());
+					newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("style", "fill: " +
+						colorChoice + "; stroke: " + colorChoice);
+					
+					// debug output for completed brush stroke
+					if (debugging) {
+						console.log(currentObject.toString() + ": Made a brush stroke.");
+					}
+					
+					// append dot to canvas and increment object counter
+					drawingGroup.appendChild(newDot);
+					currentObject += 1;
+					break;
+
+				case 4: // eraser
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create a dot/ellipse and set its attributes
+					var newDot;
+					newDot = document.createElementNS(svgns, "ellipse");
+					newDot.setAttribute("id", currentObject.toString());
+					newDot.setAttribute("cx", xStart.toString());
+					newDot.setAttribute("cy", yStart.toString());
+					newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("style", "fill: #ffffff; stroke: #ffffff");
+					
+					// debug output for completed eraser stroke
+					if (debugging) {
+						console.log(currentObject.toString() + ": Made an eraser stroke.");
+					}
+					
+					// append dot to canvas and increment object counter
+					drawingGroup.appendChild(newDot);
+					currentObject += 1;
+					break;
+
+				case 5: // eye dropper
+				
+					// get mouse coordinates in the canvas
+					var xMouse = evt.clientX - xOffset;
+					var yMouse = evt.clientY - yOffset;
+
+					// get the color at these coordinates
+					top.updateCanvas();
+					var currentColor = top.getColorInDrawingAt(xMouse, yMouse);
+					
+					// set this color here and in the HTML form's color picker
+					colorChoice = currentColor;
+					top.setColorChoiceInHTML(currentColor);
+					break;
+
+				case 6: // paint can
+					break;
+
+				case 7: // wall
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create a dot/ellipse and set its attributes
+					var newDot;
+					newDot = document.createElementNS(svgns, "ellipse");
+					newDot.setAttribute("id", currentPlatform.toString());
+					newDot.setAttribute("cx", xStart.toString());
+					newDot.setAttribute("cy", yStart.toString());
+					newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("style", "fill: " +
+						wallColor + "; stroke: " + wallColor);
+					
+					// debug output for completed wall
+					if (debugging) {
+						console.log(currentPlatform.toString() + ": Made a wall.");
+					}
+					
+					// append dot to canvas and increment object counter
+					platformsGroup.appendChild(newDot);
+					currentPlatform += 1;
+					break;
+					
+				case 8: // ladder
+				
+					// get the mouse coordinates in the canvas
+					xStart = evt.clientX - xOffset;
+					yStart = evt.clientY - yOffset;
+					
+					// create a dot/ellipse and set its attributes
+					var newDot;
+					newDot = document.createElementNS(svgns, "ellipse");
+					newDot.setAttribute("id", currentPlatform.toString());
+					newDot.setAttribute("cx", xStart.toString());
+					newDot.setAttribute("cy", yStart.toString());
+					newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+					newDot.setAttribute("style", "fill: " +
+						ladderColor + "; stroke: " + ladderColor);
+					
+					// debug output for completed ladder
+					if (debugging) {
+						console.log(currentPlatform.toString() + ": Made a ladder.");
+					}
+					
+					// append dot to canvas and increment object counter
+					platformsGroup.appendChild(newDot);
+					currentPlatform += 1;
+					break;
+
+				default: // should never get here
+					console.log("Something went horribly awry with the tool picker.");
+			}
+		}
+	]]> </script>
+</svg>
