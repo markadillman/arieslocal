@@ -379,7 +379,9 @@
 				var serializer = new XMLSerializer();
 				var groupstring = serializer.serializeToString(tarGroup);
 				//return the string
-				console.log(groupstring);
+				if (debugging){
+					console.log(groupstring);
+				}
 				return groupstring;
 			}
 
