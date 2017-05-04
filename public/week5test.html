@@ -331,6 +331,9 @@ https://github.com/oreillymedia/svg-essentials-examples
 				if (!isNaN(newTool)) {
 					window.setTool(newTool);
 				}
+				if (newTool == 5 || newTool==6){
+					updateCanvas();
+				}
 			}
 			
 			// link form buttons to code in the SVG file
@@ -378,14 +381,13 @@ https://github.com/oreillymedia/svg-essentials-examples
 			function updateCanvas() {
 				//package art group XML as string
 				var dataString = artToString();
-				if (verboseDebugging) {
-					console.log(dataString);
-				}
 				//Prepend svg open tag constants
 				dataString = svgPrepend + dataString;
 				//Append svg close tag constants
 				dataString = dataString + svgAppend;
-				console.log(dataString);
+				if (verboseDebugging) {
+					console.log(dataString);
+				}
 				//adapted from http://stackoverflow.com/questions/27230293/
 				//how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
 				var blobSvg = new Blob([dataString],{type:"image/svg+xml;charset=utf-8"}),
@@ -393,7 +395,7 @@ https://github.com/oreillymedia/svg-essentials-examples
 					url = domURL.createObjectURL(blobSvg),
 					img = new Image;
 					img.onload = function(){
-						// get context
+						
 						/*var tempDiv = document.createElement('canvas');
 						tempDiv.id = 'testCanvas';
 						tempDiv.width = canvasWidth;
@@ -402,9 +404,8 @@ https://github.com/oreillymedia/svg-essentials-examples
 						targDiv.appendChild(tempDiv);
 						var textContext = tempDiv.getContext("2d");
 						textContext.drawImage(img,0,0);*/
+						// get context
 						var context = hiddenCanvas.getContext("2d");
-						console.log(hiddenCanvas);
-						console.log(document.getElementById("hiddenCanvas"));
 						//clear canvas
 						context.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
 						//draw new image
@@ -1698,9 +1699,6 @@ https://github.com/oreillymedia/svg-essentials-examples
 					break;
 
 				case 5: // eye dropper
-				
-
-
 					// get the color at these coordinates
 					top.updateCanvas();
 					// get mouse coordinates in the canvas
@@ -1755,9 +1753,6 @@ https://github.com/oreillymedia/svg-essentials-examples
 </svg>
 			</div>
 		</div>
-		<!--THIS IS A TEST DIV FOR RENDERING IMAGES IN THE CANVAS-->
-		<br>
-		<div id="testCanvasDiv"></div>
 	</body>
 </html>
 
