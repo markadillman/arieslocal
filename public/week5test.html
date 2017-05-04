@@ -386,11 +386,29 @@ https://github.com/oreillymedia/svg-essentials-examples
 				//Append svg close tag constants
 				dataString = dataString + svgAppend;
 				console.log(dataString);
-				var image = new Image();
+				//adapted from http://stackoverflow.com/questions/27230293/
+				//how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
+				var blobSvg = new Blob([dataString],{type:"image/svg+xml;charset=utf-8"}),
+					domURL = self.URL || self.webkitURL || self,
+					url = domURL.createObjectURL(svg),
+					img = new Image;
+					img.onload = function(){
+						console.log("image loaded");
+						// get context
+						var context = hiddenCanvas.getContext("2d");
+						console.log(hiddenCanvas);
+						console.log(getElementById("hiddenCanvas"));
+						//clear canvas
+						context.clearRect(0, 0, hiddenCanvas.width, canvas.height);
+						//draw new image
+						context.drawImage(img,0,0);
+					}
+					img.src = url;
+				/*var image = new Image();
 				image.src = 'data:image/svg+xml, ' + dataString;
 				console.log("image source:");
 				console.log(image.src);
-				/*image.onload = function (){
+				image.onload = function (){
 					console.log("image has loaded.");
 					// get context
 					var context = hiddenCanvas.getContext("2d");
