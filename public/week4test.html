@@ -375,6 +375,7 @@
 				//select svg grouping
 				var initsvg = document.getElementById("svgCanvas");
 				//using jQuery nodes, art group is index 5, platform 6
+				console.log(groupnum);
 				var tarGroup = initsvg.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
 				var serializer = new XMLSerializer();
