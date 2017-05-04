@@ -390,7 +390,7 @@ https://github.com/oreillymedia/svg-essentials-examples
 				//how-to-convert-svg-to-png-using-html5-canvas-javascript-jquery-and-save-on-serve
 				var blobSvg = new Blob([dataString],{type:"image/svg+xml;charset=utf-8"}),
 					domURL = self.URL || self.webkitURL || self,
-					url = domURL.createObjectURL(svg),
+					url = domURL.createObjectURL(blobSvg),
 					img = new Image;
 					img.onload = function(){
 						console.log("image loaded");
