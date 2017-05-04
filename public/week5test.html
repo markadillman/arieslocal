@@ -403,13 +403,13 @@ https://github.com/oreillymedia/svg-essentials-examples
 						targDiv.appendChild(tempDiv);
 						var textContext = tempDiv.getContext("2d");
 						textContext.drawImage(img,0,0);
-						/*var context = hiddenCanvas.getContext("2d");
+						var context = hiddenCanvas.getContext("2d");
 						console.log(hiddenCanvas);
 						console.log(document.getElementById("hiddenCanvas"));
 						//clear canvas
-						context.clearRect(0, 0, hiddenCanvas.width, canvas.height);*/
+						context.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);*/
 						//draw new image
-						//context.drawImage(img,0,0);
+						context.drawImage(img,0,0);
 					}
 					img.src = url;
 				/*var image = new Image();
