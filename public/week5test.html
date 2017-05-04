@@ -393,16 +393,15 @@ https://github.com/oreillymedia/svg-essentials-examples
 					url = domURL.createObjectURL(blobSvg),
 					img = new Image;
 					img.onload = function(){
-						console.log("image loaded");
 						// get context
-						var tempDiv = document.createElement('canvas');
+						/*var tempDiv = document.createElement('canvas');
 						tempDiv.id = 'testCanvas';
 						tempDiv.width = canvasWidth;
 						tempDiv.height = canvasHeight;
 						var targDiv = document.getElementById("testCanvasDiv");
 						targDiv.appendChild(tempDiv);
 						var textContext = tempDiv.getContext("2d");
-						textContext.drawImage(img,0,0);
+						textContext.drawImage(img,0,0);*/
 						var context = hiddenCanvas.getContext("2d");
 						console.log(hiddenCanvas);
 						console.log(document.getElementById("hiddenCanvas"));
@@ -412,20 +411,6 @@ https://github.com/oreillymedia/svg-essentials-examples
 						context.drawImage(img,0,0);
 					}
 					img.src = url;
-				/*var image = new Image();
-				image.src = 'data:image/svg+xml, ' + dataString;
-				console.log("image source:");
-				console.log(image.src);
-				image.onload = function (){
-					console.log("image has loaded.");
-					// get context
-					var context = hiddenCanvas.getContext("2d");
-					//clear canvas
-					context.clearRect(0, 0, hiddenCanvas.width, canvas.height);
-					//draw new image
-					context.drawImage(image,0,0);
-					system.log(hiddenCanvas);
-				}*/
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -1714,12 +1699,13 @@ https://github.com/oreillymedia/svg-essentials-examples
 
 				case 5: // eye dropper
 				
-					// get mouse coordinates in the canvas
-					var xMouse = evt.clientX - xOffset;
-					var yMouse = evt.clientY - yOffset;
+
 
 					// get the color at these coordinates
 					top.updateCanvas();
+					// get mouse coordinates in the canvas
+					var xMouse = evt.clientX - xOffset;
+					var yMouse = evt.clientY - yOffset;
 					var currentColor = top.getColorInDrawingAt(xMouse, yMouse);
 					
 					// set this color here and in the HTML form's color picker
