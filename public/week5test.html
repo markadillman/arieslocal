@@ -387,7 +387,7 @@ https://github.com/oreillymedia/svg-essentials-examples
 				dataString = dataString + svgAppend;
 				console.log(dataString);
 				var image = new Image();
-				image.src = 'data:image/svg+xml, ' + escape(dataString);
+				image.src = 'data:image/svg+xml, ' + dataString;
 				console.log("image source:");
 				console.log(image.src);
 				/*image.onload = function (){
