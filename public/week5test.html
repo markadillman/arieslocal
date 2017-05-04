@@ -397,6 +397,8 @@ https://github.com/oreillymedia/svg-essentials-examples
 						// get context
 						var tempDiv = document.createElement('canvas');
 						tempDiv.id = 'testCanvas';
+						tempDiv.width = canvasWidth;
+						tempDiv.height = canvasHeight;
 						var targDiv = document.getElementById("testCanvasDiv");
 						targDiv.appendChild(tempDiv);
 						var textContext = tempDiv.getContext("2d");
