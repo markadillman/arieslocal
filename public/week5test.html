@@ -462,6 +462,8 @@ https://github.com/oreillymedia/svg-essentials-examples
 				//select svg grouping
 				var initsvg = document.getElementById("svgCanvas");
 				console.log(initsvg);
+				var loadedSVG = SVG('svgCanvas');
+				console.log(loadedSVG);
 				//using jQuery nodes, art group is index 5, platform 6
 				var tarGroup = initsvg.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
