@@ -36,7 +36,7 @@ https://github.com/oreillymedia/svg-essentials-examples
 		
 			var debugging = true;	// toggle debug messages
 			var verboseDebugging = false; // toggle verbose debugging messages
-			var useRedBox = false;	// canvas is just a red box (for debugging)
+			var useRedBox = true;	// canvas is just a red box (for debugging)
 			var useFakeSurroundings = true; // surroundings are colored boxes (for debugging)
 			var masking = false;	// toggle the platform masking tools
 			var hiddenCanvas;		// hidden canvas for getting color info
@@ -395,13 +395,19 @@ https://github.com/oreillymedia/svg-essentials-examples
 					img.onload = function(){
 						console.log("image loaded");
 						// get context
-						var context = hiddenCanvas.getContext("2d");
+						var tempDiv = document.createElement('canvas');
+						tempDiv.id = 'testCanvas';
+						var targDiv = document.getElementById("testCanvasDiv");
+						targDiv.appendChild(tempDiv);
+						var textContext = tempDiv.getContext("2d");
+						textContext.drawImage(img,0,0);
+						/*var context = hiddenCanvas.getContext("2d");
 						console.log(hiddenCanvas);
 						console.log(document.getElementById("hiddenCanvas"));
 						//clear canvas
-						context.clearRect(0, 0, hiddenCanvas.width, canvas.height);
+						context.clearRect(0, 0, hiddenCanvas.width, canvas.height);*/
 						//draw new image
-						context.drawImage(img,0,0);
+						//context.drawImage(img,0,0);
 					}
 					img.src = url;
 				/*var image = new Image();
