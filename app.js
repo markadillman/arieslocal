@@ -28,7 +28,7 @@ app.use('/', index);
 app.use('/users', users);
 
 //make process trackable
-process.title = myApp;
+process.title = "ariesApp";
 
 
 // catch 404 and forward to error handler
