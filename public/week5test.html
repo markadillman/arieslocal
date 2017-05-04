@@ -388,7 +388,9 @@ https://github.com/oreillymedia/svg-essentials-examples
 				console.log(dataString);
 				var image = new Image();
 				image.src = 'data:image/svg+xml, ' + escape(dataString);
-				image.onload = function (){
+				console.log("image source:");
+				console.log(image.src);
+				/*image.onload = function (){
 					console.log("image has loaded.");
 					// get context
 					var context = hiddenCanvas.getContext("2d");
@@ -397,7 +399,7 @@ https://github.com/oreillymedia/svg-essentials-examples
 					//draw new image
 					context.drawImage(image,0,0);
 					system.log(hiddenCanvas);
-				}
+				}*/
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -614,6 +616,9 @@ https://github.com/oreillymedia/svg-essentials-examples
 			<div id="belowDiv"></div>
 			<div id="belowRightDiv"></div>
 			<div id="centerDiv">
+		<!--THIS IS A TEST DIV FOR RENDERING IMAGES IN THE CANVAS-->
+		<br>
+		<div id="testCanvasDiv"></div>
 
 
 <svg xmlns="http://www.w3.org/2000/svg"
