@@ -385,8 +385,11 @@ https://github.com/oreillymedia/svg-essentials-examples
 				var image = new Image();
 				image.src = 'data:image/svg+xml, ' + escape(dataString);
 				image.onload = function (){
-					// put new image into the canvas
+					// get context
 					var context = hiddenCanvas.getContext("2d");
+					//clear canvas
+					context.clearRect(0, 0, hiddenCanvas.width, canvas.height);
+					//draw new image
 					context.drawImage(image,0,0);
 				}
 			}
