@@ -56,7 +56,11 @@ https://github.com/oreillymedia/svg-essentials-examples
 								  6: "belowLeftDiv",
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
-			
+			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\"
+	 							xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+	 							id=\"svgCanvas\" width=\"600\" height=\"350\" 
+	 							viewBox=\"0 0 600 350\">"
+			var svgAppend = "</svg>"
 			// keyboard event handler
 			// references: http://stackoverflow.com/a/2353562
 			function parseKeyHTML(evt) {
@@ -371,12 +375,23 @@ https://github.com/oreillymedia/svg-essentials-examples
 			
 			// load the current SVG into the canvas, overwriting the old data
 			function updateCanvas() {
-				var dataString = getSVGData();
+				//package art group XML as string
+				var dataString = artToString();
 				if (verboseDebugging) {
 					console.log(dataString);
 				}
-				// put this data into the canvas
-				// ???
+				//Prepend svg open tag constants
+				dataString = svgPrepend + dataString;
+				//Append svg close tag constants
+				dataString = dataString + svgAppend;
+				console.log(dataString);
+				var image = new Image();
+				image.src = 'data:image/svg+xml, ' + escape(datastring);
+				image.onload = function (){
+					// put new image into the canvas
+					var context = hiddenCanvas.getContext("2d");
+					context.drawImage(image,0,0);
+				}
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -433,6 +448,31 @@ https://github.com/oreillymedia/svg-essentials-examples
 				} // else do nothing
 			}
 			
+			function artToString(){
+				//using jQuery nodes, art group is index 5, platform 6
+				return groupToString(5);
+			}
+
+			function platformToString(){
+				//using jQuery nodes, art group is index 5, platform 6
+				return groupToString(6);
+			}
+
+			function groupToString(groupnum){
+				//select svg grouping
+				var initsvg = document.getElementById("svgCanvas");
+				//using jQuery nodes, art group is index 5, platform 6
+				var tarGroup = initsvg.childNodes[groupnum];
+				//use xml serializer to convert inaccessible InnerHTML to String
+				var serializer = new XMLSerializer();
+				var groupstring = serializer.serializeToString(tarGroup);
+				//return the string
+				if (debugging){
+					console.log(groupstring);
+				}
+				return groupstring;
+			}
+
 		</script>
 
 	</head>
