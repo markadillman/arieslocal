@@ -389,12 +389,14 @@ https://github.com/oreillymedia/svg-essentials-examples
 				var image = new Image();
 				image.src = 'data:image/svg+xml, ' + escape(dataString);
 				image.onload = function (){
+					console.log("image has loaded.");
 					// get context
 					var context = hiddenCanvas.getContext("2d");
 					//clear canvas
 					context.clearRect(0, 0, hiddenCanvas.width, canvas.height);
 					//draw new image
 					context.drawImage(image,0,0);
+					system.log(hiddenCanvas);
 				}
 			}
 			
@@ -463,13 +465,8 @@ https://github.com/oreillymedia/svg-essentials-examples
 			}
 
 			function groupToString(groupnum){
-				console.log("groupnum");
-				console.log(groupnum);
 				//select svg grouping
 				var initsvg = document.getElementById("svgCanvas");
-				console.log(initsvg);
-				var loadedSVG = SVG('svgCanvas');
-				console.log(loadedSVG);
 				//using jQuery nodes, art group is index 5, platform 6
 				var tarGroup = initsvg.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
