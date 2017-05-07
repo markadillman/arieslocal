@@ -16,4 +16,4 @@ module.exports = function(req,res){
 	var rawSVG = req.body.svg;
 	console.log(rawSVG);
 	//package into a mongoDB query
-});
+};
