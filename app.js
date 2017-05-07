@@ -87,7 +87,8 @@ app.post('/edit',function(req,res){
 	insertDoc["ycoord"] = ycoord;
 	insertDoc["pw"] = pw;
 	insertDoc["svg"] = svg;
-	console.log(insertDoc);
+	//console.log(insertDoc);
+	res.status(200).send("OK");
 	/*MongoClient.connect(dbUrl,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
