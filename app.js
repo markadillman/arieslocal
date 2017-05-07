@@ -77,7 +77,7 @@ app.post('/edit',function(req,res){
 	//clip out everything prior to first closing xml bracket
 	rawSVG = rawSVG.substring(rawSVG.indexOf('>')+1)
 	//clip off the closing </svg> by removing last 6 characters from string
-	vrawSVG = rawSVG.slice(0,(rawSVG.length-6);
+	vrawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
 	return;
 });
