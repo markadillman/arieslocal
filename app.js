@@ -91,11 +91,11 @@ app.post('/edit',function(req,res){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
-		insertDocument(db,insertDoc,insertCallback(db,res));
+		insertDocument(db,insertDoc,res,insertCallback(db,res));
 	});
 });
 
-var insertDocument = function(db,insertDoc,callback){
+var insertDocument = function(db,insertDoc,res,callback){
 	var collection = db.collection('tiles');
 	//insert the document
 	console.log("About to insert:");
@@ -108,6 +108,7 @@ var insertDocument = function(db,insertDoc,callback){
 		else {
 			console.log(err);
 		}
+		insertCallback(db,res);
 	});
 }
 
