@@ -83,11 +83,12 @@ app.post('/edit',function(req,res){
 	console.log(rawSVG);
 	//construct query to send to db
 	var insertDoc = new Array();
-	insertDoc["xcoord"] = xcoord;
-	insertDoc["ycoord"] = ycoord;
-	insertDoc["pw"] = pw;
-	insertDoc["svg"] = rawSVG;
+	insertDoc['xcoord'] = xcoord;
+	insertDoc['ycoord'] = ycoord;
+	insertDoc['pw'] = pw;
+	insertDoc['svg'] = rawSVG;
 	console.log(insertDoc);
+	console.log(JSON.stringify(insertDoc));
 	MongoClient.connect(dbUrl,insertDoc,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
@@ -102,7 +103,7 @@ app.post('/edit',function(req,res){
 var insertDocument = function(db,insertDoc,callback){
 	var collection = db.collection('tiles');
 	//insert the document
-	collection.insertDoc(doc,function(err,result){
+	collection.insertOne(insertDoc,function(err,result){
 		if (err === null){
 			console.log("DB insert error.");
 		}
