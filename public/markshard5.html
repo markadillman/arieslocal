@@ -722,6 +722,18 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				<label> Y COORD (INT)
 					<input type="number" name="ycoord" id="ycoord" value="0">
 				</label>
+				<label>
+					SET PASSWORD
+				</label>
+				<label>
+					PASSWORD:
+					<input type="password" name="password" id="firstPassword">
+				</label>
+					REPEAT PASSWORD:
+					<input type="password" name="password" id="secondPassword">
+				<label>
+
+				</label>
 				<br>
 				<br>
 			</fieldset>
@@ -896,7 +908,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				}
 			};
 			request.onerror = function(args){
-				console.error(xhr.statusText);
+				console.error(request.statusText);
 			};
 			request.send(JSON.stringify(payload));
 		}
