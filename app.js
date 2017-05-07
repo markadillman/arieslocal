@@ -52,7 +52,7 @@ function isValidSvg(svgString){
 	//if invalid group headers return false
 	console.log("number of g elements");
 	console.log(xmlObject.g.length);
-	if (xmlObject.g.length != 2){
+	if (xmlObject.svg.g.length != 2){
 		return false;
 	}
 	//else return true
