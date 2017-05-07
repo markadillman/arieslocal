@@ -10,7 +10,7 @@ var xmlParse = require('xml2js').parseString;
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
-var dbUrl = 'mongodb://172.31.34.164:27017/ariesdb'
+var dbUrl = 'mongodb://172.31.34.164:27017/tiles'
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -83,9 +83,28 @@ app.post('/edit',function(req,res){
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
 	//construct query to send to db
+	var query = {};
+	query['xcoord'] = xcoord;
+	query['ycoord'] = ycoord;
+	query['pw'] = pw;
+	query['svg'] = svg;
+	console.log(query);
 	MongoClient.connect(dbUrl,function(err,db){
+		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
+		var insertDocuments = function(db,callback){
+			var collection = db.collection('tiles');
+			//insert the document
+			collection.insertOne(query,function(err,result){
+				if (err === null){
+					console.log("DB insert error.");
+				}
+				else {
+					console.log("Inserted tile into database");
+				}
+			});
+		}
 		db.close();
 	});
 	return;
