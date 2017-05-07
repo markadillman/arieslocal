@@ -58,23 +58,32 @@ app.use('/users', users);
 
 //HELPER FUNCTION FOR SVG VALIDITY
 function isValidSvg(svgString){
+	console.log("in svg call");
 	//parse and see if there are any errors
 	var xmlObject = xmlParse(svgString,function(err,result){
+			console.log("pre fancy log");
 			console.log(util.inspect(result,false,null));
 			console.dir(err);
 			if (err) {
 				console.log("returning false");
 				return false;
 			}
-			else return true;
+			else {
+				console.log("legit svg");
+				return true;
+			}
 	});
 	//if invalid xml return false
 	if (!xmlObject){
+		console.log("false return");
 		return false;
 	}
 	//if invalid group headers return false
 	//else return true
-	else return true;
+	else {
+		console.log("true return");
+		return true;
+	}
 }
 
 
