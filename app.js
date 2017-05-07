@@ -46,7 +46,9 @@ function isValidSvg(svgString){
 				console.log(result.svg);
 				console.log("g level");
 				console.log(result.svg.g);
-				return result;
+				console.log("g level length");
+				console.log(result.svg.g.length);
+				return result.svg.g;
 			}
 	});
 	//if invalid xml return false
