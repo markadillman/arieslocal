@@ -444,18 +444,19 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			
 			// start Mark's code
 			// helper functions
+
 			function artToString(){
-				//using jQuery nodes, art group is index 5, platform 6
+				//using jQuery nodes, art group is index 3, platform 4
 				return groupToString(3);
 			}
 			function platformToString(){
-				//using jQuery nodes, art group is index 5, platform 6
+				//using jQuery nodes, art group is index 3, platform 4
 				return groupToString(4);
 			}
 			function groupToString(groupnum){
 				//select svg grouping
 				var initsvg = document.getElementById("svgCanvas");
-				//using jQuery nodes, art group is index 5, platform 6
+				//using jQuery nodes, art group is index 3, platform 4
 				var tarGroup = initsvg.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
 				var serializer = new XMLSerializer();
@@ -849,7 +850,40 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 		// submit drawing and platform data to server
 		function svgSubmitToServer () {
-			alert("Sorry, submitting to the server doesn't work yet.");
+			//TO DO: PASSWORD FIELDS AND TILE COORDINATES
+			//concat art and platform groups to string
+			var svgPayload = artToString() + platformToString();
+			if (debugging){
+				console.log("Payload to server:");
+				console.log(payloadString);
+			}
+			//populate body in array
+			var payload = {};
+			/*
+			payload["password"] = password;
+			payload["coord"] = coord;
+			*/
+			payload["svg"] = svgPayload;
+			//create request
+			var request = new XMLHttpRequest();
+			//configure to post asynchronously to server
+			request.open("POST","ec2-52-42-5-103.us-west-2.compute.amazonaws.com/edit",true);
+			//set header
+			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+			//set callback functions
+			request.onload = function(args){
+				if (request.readyState === 4){
+					if (request.status === 200) {
+						console.log(request.responseText);
+					} else {
+						console.error(request.statusTest);
+					}
+				}
+			};
+			request.onerror = function(args){
+				console.error(xhr.statusText);
+			};
+			xhr.send(JSON.stringify(payload));
 		}
 		
 		// close out an in-progress shape first if an option selection changes
