@@ -25,7 +25,7 @@ module.exports = function(req,res){
 	var xcoord = req.body.xcoord;
 	var ycoord = req.body.ycoord;
 	var rawSVG = req.body.svg;
-	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord)){
+	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send('Tile coordinates invalid or out of bounds');
 	}
 	if (!isValidSvg(rawSVG)){
