@@ -879,7 +879,14 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 		// submit drawing and platform data to server
 		function svgSubmitToServer () {
-			//TO DO: PASSWORD FIELDS AND TILE COORDINATES
+			//check that passwords match
+			var pw1 = $("#firstPassword").val();
+			var pw2 = $("#secondPassword").val();
+			console.log(pw1);
+			console.log(pw2);
+			if (!(pw1 === pw2)){
+				window.alert("Entered passwords do not match. You must correct before submitting edits.");
+			}
 			//concat art and platform groups to string
 			var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
 			//populate body in array
