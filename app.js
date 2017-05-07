@@ -35,15 +35,18 @@ app.post('/edit',function(req,res){
 	var rawSVG = req.body.svg;
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		return;
 	}
 	if (!isValidSvg(rawSVG)){
 		res.status(511).send("Invalid SVG string.");
+		return;
 	}
 	console.log(req.body);
 	//package is well-formed
 	res.sendStatus(200);
 	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
 	//package into a mongoDB query
+	return;
 });
 
 app.use('/', index);
