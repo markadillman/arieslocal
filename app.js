@@ -113,7 +113,7 @@ var insertDocument = function(db,insertDoc,res,callback){
 }
 
 var insertCallback = function(db,res){
-	consoel.log("in callback");
+	console.log("in callback");
 	//db.close();
 	res.sendStatus(200);
 }
