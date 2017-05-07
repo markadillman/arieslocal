@@ -83,10 +83,10 @@ app.post('/edit',function(req,res){
 	console.log(rawSVG);
 	//construct query to send to db
 	var insertDoc = new Array();
-	insertDoc['xcoord'] = xcoord;
-	insertDoc['ycoord'] = ycoord;
-	insertDoc['pw'] = pw;
-	insertDoc['svg'] = rawSVG;
+	insertDoc.xcoord = xcoord;
+	insertDoc.ycoord = ycoord;
+	insertDoc.pw = pw;
+	insertDoc.svg = rawSVG;
 	console.log(insertDoc);
 	console.log(JSON.stringify(insertDoc));
 	MongoClient.connect(dbUrl,insertDoc,function(err,db){
