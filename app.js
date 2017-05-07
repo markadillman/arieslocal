@@ -8,6 +8,9 @@ var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
 const util = require('util');
+var MongoClient = require('mongodb').MongoClient, assert = require('assert');
+//database url
+var dbUrl = 'mongodb://172.31.34.164:27017/ariesdb'
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -79,6 +82,12 @@ app.post('/edit',function(req,res){
 	//clip off the closing </svg> by removing last 6 characters from string
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
+	//construct query to send to db
+	MongoClient.connect(dbUrl,function(err,db){
+		assert.equal(null,err);
+		console.log("connected succesfully to server");
+		db.close();
+	});
 	return;
 });
 
