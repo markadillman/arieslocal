@@ -86,8 +86,8 @@ app.post('/edit',function(req,res){
 	insertDoc["xcoord"] = xcoord;
 	insertDoc["ycoord"] = ycoord;
 	insertDoc["pw"] = pw;
-	insertDoc["svg"] = svg;
-	//console.log(JSON.stringify(insertDoc));
+	insertDoc["svg"] = rawSVG;
+	console.log(JSON.stringify(insertDoc));
 	MongoClient.connect(dbUrl,insertDoc,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
