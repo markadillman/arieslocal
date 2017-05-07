@@ -9,6 +9,7 @@ var SVG = require('svg.js');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var edit = require('./routes/edit');
 
 var app = express();
 
@@ -34,7 +35,8 @@ process.title = "ariesApp";
 app.post('/edit',function(req,res){
 	var rawSVG = req.body.svg;
 	console.log(rawSVG);
-})
+	//package into a mongoDB query
+});
 
 
 // catch 404 and forward to error handler
