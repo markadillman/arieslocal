@@ -42,7 +42,7 @@ function isValidSvg(svgString){
 				return false;
 			}
 			else {
-				return result['config']['data'];
+				return result;
 			}
 	});
 	//if invalid xml return false
@@ -52,8 +52,8 @@ function isValidSvg(svgString){
 	//if invalid group headers return false
 	console.log(xmlObject);
 	console.log("number of g elements");
-	console.log(xmlObject.g.length);
-	if (xmlObject.svg.g.length != 2){
+	console.log(xmlObject[g].length);
+	if (xmlObject['g']] != 2){
 		return false;
 	}
 	//else return true
