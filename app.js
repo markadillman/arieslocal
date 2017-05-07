@@ -13,6 +13,9 @@ var edit = require('./routes/edit');
 
 var app = express();
 
+//make process trackable
+process.title = "ariesApp";
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
@@ -28,15 +31,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
-//make process trackable
-process.title = "ariesApp";
-
 //handle submitted tile edit requests
-app.post('/edit',function(req,res){
-	var rawSVG = req.body.svg;
-	console.log(rawSVG);
-	//package into a mongoDB query
-});
+app.post('/edit',edit);
 
 
 // catch 404 and forward to error handler
