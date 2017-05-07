@@ -598,26 +598,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 					<br>
 
-					<!--This will ultimately be handled automatically by the init function of the editor-->
-					<label>
-						SET COORDINATES (DEBUGGING):
-					</label>
-					<label> X COORD (INT)
-						<input type="number" name="xcoord">
-					</label>
-					<label> Y COORD (INT)
-						<input type="number" name="ycoord">
-					</label>
-					<br>
-					<br>
-
 					<label>
 						ZOOM AND PAN:
 					</label>
 					
 					<br>
 					
-					<div>
+					<!--REMOVED ABSOLUTE POSITION STYLE FROM EACH-->
 					<input type="button" name="zoomOut" value="-"
 						style="width:30px; position:absolute; top:165px; left:45px"
 						onclick="zoomOutButton()"></input>
@@ -640,7 +627,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					<input type="button" name="panDown" value="v"
 						style="width:30px; position:absolute; top:201px; left:163px"
 						onclick="panDownButton()"></input>
-					</div>
 						
 					<br>
 					<br>
@@ -719,6 +705,19 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						onclick="removeSelectedPlatform(false)"></input>
 				
 				</div>
+
+									<!--This will ultimately be handled automatically by the init function of the editor-->
+					<label>
+						SET COORDINATES (DEBUGGING):
+					</label>
+					<label> X COORD (INT)
+						<input type="number" name="xcoord">
+					</label>
+					<label> Y COORD (INT)
+						<input type="number" name="ycoord">
+					</label>
+					<br>
+					<br>
 				
 			</fieldset>
 
