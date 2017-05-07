@@ -9,7 +9,6 @@ var SVG = require('svg.js');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var edit = require('./routes/edit');
 
 var app = express();
 
@@ -31,9 +30,45 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
-//handle submitted tile edit requests
-app.post('/edit',edit);
+//HELPER FUNCTION FOR SVG VALIDITY
+function isValidSvg(svgString){
+	//parse and see if there are any errors
+	var xmlObject = xmlParse(svgString,function(err,result){
+			console.log(util.inspect(result,false,null));
+			console.dir(err);
+			if (err) {
+				console.log("returning false");
+				return false;
+			}
+			else return xmlObject;
+	});
+	//if invalid xml return false
+	if (!xmlObject){
+		return false;
+	}
+	//if invalid group headers return false
+	//else return true
+	else return xmlObject;
+}
 
+//handle submitted tile edit requests
+app.post('/edit',unction(req,res){
+	
+	var xcoord = req.body.xcoord;
+	var ycoord = req.body.ycoord;
+	var rawSVG = req.body.svg;
+	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
+		res.status(511).send("Tile coordinates invalid or out of bounds.");
+	}
+	if (!isValidSvg(rawSVG)){
+		res.status(511).send("Invalid SVG string.");
+	}
+	console.log(req.body);
+	//package is well-formed
+	res.sendStatus(200);
+	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
+	//package into a mongoDB query
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
