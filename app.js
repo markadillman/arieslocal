@@ -27,6 +27,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//handle submitted tile edit requests
+app.post('/edit',function(req,res){
+	
+	var xcoord = req.body.xcoord;
+	var ycoord = req.body.ycoord;
+	var rawSVG = req.body.svg;
+	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
+		res.status(511).send("Tile coordinates invalid or out of bounds.");
+	}
+	if (!isValidSvg(rawSVG)){
+		res.status(511).send("Invalid SVG string.");
+	}
+	console.log(req.body);
+	//package is well-formed
+	res.sendStatus(200);
+	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
+	//package into a mongoDB query
+});
+
 app.use('/', index);
 app.use('/users', users);
 
@@ -51,24 +70,7 @@ function isValidSvg(svgString){
 	else return xmlObject;
 }
 
-//handle submitted tile edit requests
-app.post('/edit',function(req,res){
-	
-	var xcoord = req.body.xcoord;
-	var ycoord = req.body.ycoord;
-	var rawSVG = req.body.svg;
-	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
-		//res.status(511).send("Tile coordinates invalid or out of bounds.");
-	}
-	if (!isValidSvg(rawSVG)){
-		//res.status(511).send("Invalid SVG string.");
-	}
-	console.log(req.body);
-	//package is well-formed
-	res.sendStatus(200);
-	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
-	//package into a mongoDB query
-});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
