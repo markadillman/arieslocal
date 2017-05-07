@@ -894,6 +894,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//add coordinates to payload
 			payload["xcoord"] = $("#xcoord").val();
 			payload["ycoord"] = $("#ycoord").val();
+			//add password to payload
+			payload["pw"] = pw1;
 			payload["svg"] = svgPayload;
 			if (debugging){
 				console.log("Payload to server:");

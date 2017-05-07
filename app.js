@@ -43,12 +43,6 @@ function isValidSvg(svgString){
 				return false;
 			}
 			else {
-				console.log("svg level");
-				console.log(result.svg);
-				console.log("g level");
-				console.log(result.svg.g);
-				console.log("g level length");
-				console.log(result.svg.g.length);
 				//if there are an improper number of groups
 				if (result.svg.g.length != 2) {
 					return false;
@@ -58,27 +52,29 @@ function isValidSvg(svgString){
 					return false;
 				}
 			}
+			//if here, SVG XML is valid
+			return true;
 	});
 	return xmlObject;
 }
 
 //handle submitted tile edit requests
 app.post('/edit',function(req,res){
-	
+	console.log(req.body);
 	var xcoord = parseInt(req.body.xcoord);
 	var ycoord = parseInt(req.body.ycoord);
-	console.log(xcoord);
-	console.log(ycoord);
+	var pw = req.body.pw;
 	var rawSVG = req.body.svg;
+	//if tile coordinates are not a number or out of bounds, reject
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
 		return;
 	}
+	//if SVG XML is invalid or contains non-functional groups (from perspective of game engine), reject
 	if (!isValidSvg(rawSVG)){
 		res.status(511).send("Invalid SVG string.");
 		return;
 	}
-	console.log(req.body);
 	//package is well-formed
 	res.sendStatus(200);
 	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
