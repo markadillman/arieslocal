@@ -108,7 +108,7 @@ var insertDocument = function(db,insertDoc,res,callback){
 		else {
 			console.log(err);
 		}
-		insertCallback(db,res);
+		callback(db,res);
 	});
 }
 
