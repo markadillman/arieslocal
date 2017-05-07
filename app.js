@@ -94,7 +94,7 @@ app.post('/edit',function(req,res){
 		insertDocument(db,insertDoc,function(){
 			db.close();
 		});
-		return;
+	});
 });
 
 var insertDocument = function(db,insertDoc,callback){
