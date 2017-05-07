@@ -38,6 +38,7 @@ function isValidSvg(svgString){
 	var xmlObject = xmlParse(svgString,function(err,result){
 			console.log(util.inspect(result,false,null));
 			console.dir(err);
+			//this saves from ANY malformed XML, and therefore SVG
 			if (err) {
 				return false;
 			}
@@ -48,24 +49,17 @@ function isValidSvg(svgString){
 				console.log(result.svg.g);
 				console.log("g level length");
 				console.log(result.svg.g.length);
-				return result.svg.g;
+				//if there are an improper number of groups
+				if (result.svg.g.length != 2) {
+					return false;
+				}
+				//if those groups have id's other than the valid ones (inserting non-functional groups)
+				if (!(result.svg.g[0].$.id === "drawingGroup" && result.svg.g[1].$.id === "platformsGroup"){
+					return false;
+				}
 			}
 	});
-	//if invalid xml return false
-	if (!xmlObject){
-		return false;
-	}
-	//if invalid group headers return false
-	console.log(xmlObject);
-	console.log("number of g elements");
-	console.log(xmlObject.svg.g);
-	if (xmlObject.svg.g != 2){
-		return false;
-	}
-	//else return true
-	else {
-		return xmlObject;
-	}
+	return xmlObject;
 }
 
 //handle submitted tile edit requests
