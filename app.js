@@ -41,7 +41,7 @@ function isValidSvg(svgString){
 				return false;
 			}
 			else {
-				//if there are an improper number of groups
+				//if there are an improper number of groups or nested tags incorrect
 				if (result.svg.g.length != 2) {
 					return false;
 				}
@@ -74,13 +74,11 @@ app.post('/edit',function(req,res){
 		return;
 	}
 	//parse out the groups. precondition verifies this is already well-formed
-	var svgGroups = xmlParse(rawSVG,function(err,result){
-		//make new xml builder
-		var builder = new xml2js.Builder();
-		var groupString = builder.buildObject(result.svg);
-		console.log(groupString);
-		return;
-	});
+	//clip out everything prior to first closing xml bracket
+	var rawSVG = rawSVG.substring(rawSVG.indexOf('>')+1)
+	//clip off the closing </svg> by removing last 6 characters from string
+	var rawSVG = rawSVG.slice(0,6);
+	consoel.log(rawSVG);
 	return;
 });
 
