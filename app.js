@@ -91,7 +91,7 @@ app.post('/edit',function(req,res){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
-		insertDocument(db,insertDoc,res,insertCallback(db,res));
+		insertDocument(db,insertDoc,res,insertCallback);
 	});
 });
 
@@ -113,7 +113,8 @@ var insertDocument = function(db,insertDoc,res,callback){
 }
 
 var insertCallback = function(db,res){
-	db.close();
+	consoel.log("in callback");
+	//db.close();
 	res.sendStatus(200);
 }
 
