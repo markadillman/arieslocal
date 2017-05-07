@@ -98,7 +98,7 @@ app.post('/edit',function(req,res){
 var insertDocument = function(db,insertDoc,callback){
 	var collection = db.collection('tiles');
 	//insert the document
-	collection.insertOne(util.inspect(insertDoc,false,null),function(err,result){
+	collection.insertOne(insertDoc,function(err,result){
 		if (err === null){
 			console.log("Inserted tile into database");
 			
