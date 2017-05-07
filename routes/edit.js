@@ -15,6 +15,7 @@ function isValidSvg(svgString){
 		var xmlObject = xmlParse(svgString,function(err,result){
 			console.dir(result);
 			console.dir(err);
+			return true;
 	});
 }
 
@@ -26,10 +27,12 @@ module.exports = function(req,res){
 	var ycoord = req.body.ycoord;
 	var rawSVG = req.body.svg;
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
-		res.status(511).send('Tile coordinates invalid or out of bounds');
+		res.status(511);
+		res.send('Tile coordinates invalid or out of bounds');
 	}
 	if (!isValidSvg(rawSVG)){
-		res.status(511).send('Invalid SVG XML');
+		res.status(511);
+		res.send('Invalid SVG XML');
 	}
 	console.log(req.body);
 	//package is well-formed
