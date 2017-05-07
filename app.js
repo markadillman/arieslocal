@@ -63,7 +63,7 @@ function isValidSvg(svgString){
 	//parse and see if there are any errors
 	var xmlObject = xmlParse(svgString,function(err,result){
 			console.log("pre fancy log");
-			console.log(util.inspect(result,false,null));
+			console.dir(result);
 			console.dir(err);
 			if (err) {
 				console.log("returning false");
