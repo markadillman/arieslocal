@@ -75,7 +75,10 @@ app.post('/edit',function(req,res){
 	}
 	//parse out the groups. precondition verifies this is already well-formed
 	var svgGroups = xmlParse(rawSVG,function(err,result){
-		console.log(result.svg.g);
+		//make new xml builder
+		var builder = new xml2js.Builder();
+		var groupString = builder.buildObject(result.svg);
+		console.log(groupString);
 		return;
 	});
 	return;
