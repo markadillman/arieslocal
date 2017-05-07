@@ -103,7 +103,7 @@ var insertDocument = function(db,insertDoc,res,callback){
 	collection.insertOne(insertDoc,function(err,result){
 		if (err === null){
 			console.log("Inserted tile into database");
-			
+			console.log(result);
 		}
 		else {
 			console.log(err);
