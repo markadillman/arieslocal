@@ -91,7 +91,6 @@ app.post('/edit',function(req,res){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
-		res.sendStatus(200);
 		insertDocument(db,insertDoc,insertCallback(db,res));
 	});
 });
