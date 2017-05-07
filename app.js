@@ -42,6 +42,10 @@ function isValidSvg(svgString){
 				return false;
 			}
 			else {
+				console.log("svg level");
+				console.log(result.svg);
+				console.log("g level");
+				console.log(result.svg.g);
 				return result;
 			}
 	});
