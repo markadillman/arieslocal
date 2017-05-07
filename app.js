@@ -30,8 +30,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 //handle submitted tile edit requests
 app.post('/edit',function(req,res){
 	
-	var xcoord = req.body.xcoord;
-	var ycoord = req.body.ycoord;
+	var xcoord = parseInt(req.body.xcoord);
+	var ycoord = parseInt(req.body.ycoord);
 	var rawSVG = req.body.svg;
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
