@@ -713,10 +713,10 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					SET COORDINATES (DEBUGGING):
 				</label>
 				<label> X COORD (INT)
-					<input type="number" name="xcoord">
+					<input type="number" name="xcoord" id="xcoord">
 				</label>
 				<label> Y COORD (INT)
-					<input type="number" name="ycoord">
+					<input type="number" name="ycoord" id="ycoord">
 				</label>
 				<br>
 				<br>
@@ -865,17 +865,16 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//TO DO: PASSWORD FIELDS AND TILE COORDINATES
 			//concat art and platform groups to string
 			var svgPayload = artToString() + platformToString();
-			if (debugging){
-				console.log("Payload to server:");
-				console.log(svgPayload);
-			}
 			//populate body in array
 			var payload = {};
-			/*
-			payload["password"] = password;
-			payload["coord"] = coord;
-			*/
+			//add coordinates to payload
+			payload["xcoord"] = $("$xcoord").val();
+			payload["ycoord"] = $("$ycoord").val();
 			payload["svg"] = svgPayload;
+			if (debugging){
+				console.log("Payload to server:");
+				console.log(payload);
+			}
 			//create request
 			var request = new XMLHttpRequest();
 			//configure to post asynchronously to server
