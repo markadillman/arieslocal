@@ -104,7 +104,7 @@ var insertDocument = function(db,insertDoc,callback){
 			
 		}
 		else {
-			console.log("Inserted tile into database");
+			console.log(err);
 		}
 	});
 }
