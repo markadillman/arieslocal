@@ -73,8 +73,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
 			// start Mark's code, slightly modified by Toni to add the white rectangle
-			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>"
-			var svgAppend = "</svg>"
+			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>";
+			var svgMinPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">";
+			var svgAppend = "</svg>";
 			// end Mark's code
 			
 			// keyboard event handler
@@ -867,7 +868,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		function svgSubmitToServer () {
 			//TO DO: PASSWORD FIELDS AND TILE COORDINATES
 			//concat art and platform groups to string
-			var svgPayload = artToString() + platformToString();
+			var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
 			//populate body in array
 			var payload = {};
 			//add coordinates to payload
