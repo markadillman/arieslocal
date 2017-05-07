@@ -32,6 +32,8 @@ app.post('/edit',function(req,res){
 	
 	var xcoord = parseInt(req.body.xcoord);
 	var ycoord = parseInt(req.body.ycoord);
+	console.log(xcoord);
+	console.log(ycoord);
 	var rawSVG = req.body.svg;
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
