@@ -31,6 +31,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			input[type=number] {width: 35px;}
 		</style>
 
+		<script src="js/svg.js/dist/svg.min.js"></script>
+		<script src="js/jquery-3.2.1.js"></script>
+
 		<script type="text/javascript">
 		
 			var debugging = true;	// toggle debug messages
@@ -868,8 +871,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//populate body in array
 			var payload = {};
 			//add coordinates to payload
-			payload["xcoord"] = $("$xcoord").val();
-			payload["ycoord"] = $("$ycoord").val();
+			payload["xcoord"] = $("#xcoord").val();
+			payload["ycoord"] = $("#ycoord").val();
 			payload["svg"] = svgPayload;
 			if (debugging){
 				console.log("Payload to server:");
