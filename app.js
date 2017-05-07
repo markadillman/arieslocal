@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
+const util = require('util');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -63,7 +64,7 @@ function isValidSvg(svgString){
 	//parse and see if there are any errors
 	var xmlObject = xmlParse(svgString,function(err,result){
 			console.log("pre fancy log");
-			console.dir(result);
+			console.log(util.inspect(result,false,null));
 			console.dir(err);
 			if (err) {
 				console.log("returning false");
