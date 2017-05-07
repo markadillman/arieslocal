@@ -73,10 +73,11 @@ app.post('/edit',function(req,res){
 		res.status(511).send("Invalid SVG string.");
 		return;
 	}
-	//package is well-formed
-	res.sendStatus(200);
-	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
-	//package into a mongoDB query
+	//parse out the groups. precondition verifies this is already well-formed
+	var svgGroups = xmlParse(rawSVG,function(err,result){
+		console.log(result.svg.g);
+		return;
+	});
 	return;
 });
 
