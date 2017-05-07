@@ -91,22 +91,24 @@ app.post('/edit',function(req,res){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
-		var insertDocuments = function(db,callback){
-			var collection = db.collection('tiles');
-			//insert the document
-			collection.insertOne(query,function(err,result){
-				if (err === null){
-					console.log("DB insert error.");
-				}
-				else {
-					console.log("Inserted tile into database");
-				}
-			});
-		}
-		db.close();
-	});
-	return;
+		insertDocument(db,insertDoc,function(){
+			db.close();
+		});
+		return;
 });
+
+var insertDocument = function(db,insertDoc,callback){
+	var collection = db.collection('tiles');
+	//insert the document
+	collection.insertDoc(doc,function(err,result){
+		if (err === null){
+			console.log("DB insert error.");
+		}
+		else {
+			console.log("Inserted tile into database");
+		}
+	});
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
