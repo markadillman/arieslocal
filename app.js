@@ -61,7 +61,6 @@ function isValidSvg(svgString){
 
 //handle submitted tile edit requests
 app.post('/edit',function(req,res){
-	console.log(req.body);
 	var xcoord = parseInt(req.body.xcoord);
 	var ycoord = parseInt(req.body.ycoord);
 	var pw = req.body.pw;
@@ -83,12 +82,12 @@ app.post('/edit',function(req,res){
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
 	//construct query to send to db
-	var query = {};
-	query['xcoord'] = xcoord;
-	query['ycoord'] = ycoord;
-	query['pw'] = pw;
-	query['svg'] = svg;
-	console.log(query);
+	var insertDoc = {};
+	insertDoc["xcoord"] = xcoord;
+	insertDoc["ycoord"] = ycoord;
+	insertDoc["pw"] = pw;
+	insertDoc["svg"] = svg;
+	console.log(insertDoc);
 	MongoClient.connect(dbUrl,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
