@@ -82,20 +82,20 @@ app.post('/edit',function(req,res){
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
 	//construct query to send to db
-	var insertDoc = {};
+	var insertDoc = new Array();
 	insertDoc["xcoord"] = xcoord;
 	insertDoc["ycoord"] = ycoord;
 	insertDoc["pw"] = pw;
 	insertDoc["svg"] = rawSVG;
-	//console.log(insertDoc);
+	console.log(insertDoc);
 	MongoClient.connect(dbUrl,insertDoc,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
 		res.sendStatus(200);
-		/*insertDocument(db,insertDoc,function(){
+		insertDocument(db,insertDoc,function(){
 			db.close();
-		});*/
+		});
 	});
 });
 
