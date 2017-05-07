@@ -36,8 +36,6 @@ app.use('/users', users);
 function isValidSvg(svgString){
 	//parse and see if there are any errors
 	var xmlObject = xmlParse(svgString,function(err,result){
-			console.log(util.inspect(result,false,null));
-			console.dir(err);
 			//this saves from ANY malformed XML, and therefore SVG
 			if (err) {
 				return false;
