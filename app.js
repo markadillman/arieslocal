@@ -80,7 +80,6 @@ app.post('/edit',function(req,res){
 	rawSVG = rawSVG.substring(rawSVG.indexOf('>')+1)
 	//clip off the closing </svg> by removing last 6 characters from string
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
-	console.log(rawSVG);
 	//construct query to send to db
 	var insertDoc = {};
 	insertDoc['xcoord'] = xcoord;
@@ -93,14 +92,14 @@ app.post('/edit',function(req,res){
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
 		res.sendStatus(200);
-		//insertDocument(db,insertDoc,insertCallback(db,res));
+		insertDocument(db,insertDoc,insertCallback(db,res));
 	});
 });
 
 var insertDocument = function(db,insertDoc,callback){
 	var collection = db.collection('tiles');
 	//insert the document
-	collection.insertOne(insertDoc,function(err,result){
+	collection.insertOne(console.log(util.inspect(insertDoc,false,null),function(err,result){
 		if (err === null){
 			console.log("Inserted tile into database");
 			
