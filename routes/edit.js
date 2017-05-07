@@ -12,14 +12,23 @@ router.post('/edit',function(req,res){
 
 //regex to test validity of svg objects in submit
 function isValidSvg(svgString){
-		var xmlObject = xmlParse(svgString,function(err,result){
-			console.dir(result);
+	//parse and see if there are any errors
+	var xmlObject = xmlParse(svgString,function(err,result){
+			console.log(util.inspect(result,false,null));
 			console.dir(err);
-			if (err){
+			if (err) {
+				console.log("returning false");
 				return false;
 			}
 			else return xmlObject;
 	});
+	//if invalid xml return false
+	if (!xmlObject){
+		return false;
+	}
+	//if invalid group headers return false
+	//else return true
+	else return xmlObject;
 }
 
 //the correct password is presumed to have been entered
