@@ -87,14 +87,15 @@ app.post('/edit',function(req,res){
 	insertDoc["ycoord"] = ycoord;
 	insertDoc["pw"] = pw;
 	insertDoc["svg"] = svg;
-	MongoClient.connect(dbUrl,function(err,db){
+	console.log(insertDoc);
+	/*MongoClient.connect(dbUrl,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
 		insertDocument(db,insertDoc,function(){
 			db.close();
 		});
-	});
+	});*/
 });
 
 var insertDocument = function(db,insertDoc,callback){
