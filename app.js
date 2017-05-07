@@ -75,10 +75,10 @@ app.post('/edit',function(req,res){
 	}
 	//parse out the groups. precondition verifies this is already well-formed
 	//clip out everything prior to first closing xml bracket
-	var rawSVG = rawSVG.substring(rawSVG.indexOf('>')+1)
+	rawSVG = rawSVG.substring(rawSVG.indexOf('>')+1)
 	//clip off the closing </svg> by removing last 6 characters from string
-	var rawSVG = rawSVG.slice(0,6);
-	consoel.log(rawSVG);
+	vrawSVG = rawSVG.slice(0,6);
+	console.log(rawSVG);
 	return;
 });
 
