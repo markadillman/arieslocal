@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
+var xmlParse = require('xml2js').parseString;
 
 var index = require('./routes/index');
 var users = require('./routes/users');
