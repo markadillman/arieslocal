@@ -35,10 +35,12 @@ app.post('/edit',function(req,res){
 	var rawSVG = req.body.svg;
 	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		console.log("Tile coordinates invalid or out of bounds.");
 		return;
 	}
 	if (!isValidSvg(rawSVG)){
 		res.status(511).send("Invalid SVG string.");
+		console.log("Invalid SVG string.");
 		return;
 	}
 	console.log(req.body);
