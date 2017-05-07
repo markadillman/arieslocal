@@ -54,7 +54,7 @@ function isValidSvg(svgString){
 					return false;
 				}
 				//if those groups have id's other than the valid ones (inserting non-functional groups)
-				if (!(result.svg.g[0].$.id === "drawingGroup" && result.svg.g[1].$.id === "platformsGroup"){
+				if (!(result.svg.g[0].$.id === "drawingGroup" && result.svg.g[1].$.id === "platformsGroup")){
 					return false;
 				}
 			}
