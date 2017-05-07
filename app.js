@@ -53,9 +53,9 @@ function isValidSvg(svgString){
 	console.log(xmlObject);
 	console.log("number of g elements");
 	console.log(xmlObject['svg']['g']);
-	/*if (xmlObject['svg']['g'] != 2){
+	if (xmlObject['svg']['g'] != 2){
 		return false;
-	}*/
+	}
 	//else return true
 	else {
 		return xmlObject;
