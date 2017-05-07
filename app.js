@@ -66,7 +66,7 @@ function isValidSvg(svgString){
 				console.log("returning false");
 				return false;
 			}
-			else return xmlObject;
+			else return true;
 	});
 	//if invalid xml return false
 	if (!xmlObject){
@@ -74,7 +74,7 @@ function isValidSvg(svgString){
 	}
 	//if invalid group headers return false
 	//else return true
-	else return xmlObject;
+	else return true;
 }
 
 
