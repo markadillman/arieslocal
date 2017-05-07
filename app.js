@@ -82,7 +82,7 @@ app.post('/edit',function(req,res){
 	rawSVG = rawSVG.slice(0,(rawSVG.length-6));
 	console.log(rawSVG);
 	//construct query to send to db
-	var insertDoc = {};
+	var insertDoc = {xcood,ycoord,pw,svg};
 	insertDoc.xcoord = xcoord;
 	insertDoc.ycoord = ycoord;
 	insertDoc.pw = pw;
