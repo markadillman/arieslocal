@@ -89,14 +89,12 @@ app.post('/edit',function(req,res){
 	insertDoc.svg = rawSVG;
 	console.log(insertDoc);
 	console.log(JSON.stringify(insertDoc));
-	MongoClient.connect(dbUrl,insertDoc,function(err,db){
+	MongoClient.connect(dbUrl,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
 		res.sendStatus(200);
-		insertDocument(db,insertDoc,function(){
-			db.close();
-		});
+		//insertDocument(db,insertDoc,insertCallback(db,res));
 	});
 });
 
@@ -105,7 +103,8 @@ var insertDocument = function(db,insertDoc,callback){
 	//insert the document
 	collection.insertOne(insertDoc,function(err,result){
 		if (err === null){
-			console.log("DB insert error.");
+			console.log("Inserted tile into database");
+			
 		}
 		else {
 			console.log("Inserted tile into database");
@@ -113,8 +112,9 @@ var insertDocument = function(db,insertDoc,callback){
 	});
 }
 
-var insertCallback = function(){
-
+var insertCallback = function(db,res){
+	db.close();
+	res.sendStatus(200);
 }
 
 // catch 404 and forward to error handler
