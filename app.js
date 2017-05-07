@@ -29,32 +29,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-//handle submitted tile edit requests
-app.post('/edit',function(req,res){
-	
-	var xcoord = parseInt(req.body.xcoord);
-	var ycoord = parseInt(req.body.ycoord);
-	console.log(xcoord);
-	console.log(ycoord);
-	var rawSVG = req.body.svg;
-	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
-		res.status(511).send("Tile coordinates invalid or out of bounds.");
-		console.log("Tile coordinates invalid or out of bounds.");
-		return;
-	}
-	if (!isValidSvg(rawSVG)){
-		res.status(511).send("Invalid SVG string.");
-		console.log("Invalid SVG string.");
-		return;
-	}
-	console.log(req.body);
-	//package is well-formed
-	res.sendStatus(200);
-	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
-	//package into a mongoDB query
-	return;
-});
-
 app.use('/', index);
 app.use('/users', users);
 
@@ -76,13 +50,40 @@ function isValidSvg(svgString){
 		return false;
 	}
 	//if invalid group headers return false
+	console.log("number of g elements");
+	console.log(xmlObject.g.length);
+	if (xmlObject.g.length != 2){
+		return false;
+	}
 	//else return true
 	else {
 		return xmlObject;
 	}
 }
 
-
+//handle submitted tile edit requests
+app.post('/edit',function(req,res){
+	
+	var xcoord = parseInt(req.body.xcoord);
+	var ycoord = parseInt(req.body.ycoord);
+	console.log(xcoord);
+	console.log(ycoord);
+	var rawSVG = req.body.svg;
+	if (!(Number.isInteger(xcoord)&&Number.isInteger(ycoord))){
+		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		return;
+	}
+	if (!isValidSvg(rawSVG)){
+		res.status(511).send("Invalid SVG string.");
+		return;
+	}
+	console.log(req.body);
+	//package is well-formed
+	res.sendStatus(200);
+	//TO DO: check previous password or one-time token (avoid edit spoofing and fabrication)
+	//package into a mongoDB query
+	return;
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
