@@ -118,7 +118,7 @@ var insertCallback = function(db,res){
 	res.sendStatus(200);
 }
 
-app.post('/retrieve',function(req,res)){
+app.post('/retrieve',function(req,res){
 	var query = {};
 	query['xcoord'] = parseInt(req.body.xcoord);
 	query['ycoord'] = parseInt(req.body.ycoord);
@@ -134,7 +134,6 @@ app.post('/retrieve',function(req,res)){
 		//perform lookup
 		findDocument(db,query,req,res,findCallback);
 	});
-
 }
 
 var findDocument = function(db,query,req,res,callback){
