@@ -159,7 +159,7 @@ var findCallback = function(db,req,res,docs){
 	if (docs.length === 1){
 		res.setHeader('Content-Type','application/json');
 		console.log(docs[0]);
-		res.setStatus(200);
+		res.status(200);
 		res.send(JSON.stringify(docs[0]));
 	}
 	else if (docs.length === 0) {
