@@ -156,8 +156,18 @@ var findDocument = function(db,query,req,res,callback){
 }
 
 var findCallback = function(db,req,res,docs){
-
-	res.sendStatus(200);
+	if (docs.length === 1){
+		res.setHeader('Content-Type','application/json');
+		console.log(docs[0]);
+		res.setStatus(200);
+		res.send(JSON.stringify(docs[0]));
+	}
+	else if (docs.length === 0) {
+		res.status(555).send("No coordinate / password matches found.");
+	}
+	else {
+		res.status(566).send("Database error: duplicate entries.");
+	}
 	db.close();
 }
 
