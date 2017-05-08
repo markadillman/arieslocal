@@ -149,13 +149,13 @@ var findDocument = function(db,query,req,res,callback){
 		assert.equal(err,null);
 		console.log("Found following records:");
 		console.log(docs);
-		console.log(util.inspect(docs));
+		console.log("Size of docs:");
+		console.log(docs.length);
 		callback(db,req,res,docs);
 	});
 }
 
 var findCallback = function(db,req,res,docs){
-	//check that passwords match
 
 	res.sendStatus(200);
 	db.close();
