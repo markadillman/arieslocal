@@ -122,7 +122,12 @@ app.post('/retrieve',function(req,res){
 	var query = {};
 	query['xcoord'] = parseInt(req.body.xcoord);
 	query['ycoord'] = parseInt(req.body.ycoord);
-	query['pw'] = req.body.pw;
+	if (req.body.pw){
+		query['pw'] = req.body.pw;
+	}
+	else {
+		query['pw']="";
+	}
 	if (!(Number.isInteger(query['xcoord'])&&Number.isInteger(query['ycoord']))){
 		res.status(511).send("Tile coordinates invalid or out of bounds.");
 		return;
