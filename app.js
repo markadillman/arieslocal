@@ -145,7 +145,7 @@ var findDocument = function(db,query,req,res,callback){
 		console.log(docs);
 		console.log(util.inspect(docs));
 		callback(db,req,res,docs);
-	}));
+	});
 }
 
 var findCallback = function(db,req,res,docs){
