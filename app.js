@@ -134,7 +134,7 @@ app.post('/retrieve',function(req,res){
 		//perform lookup
 		findDocument(db,query,req,res,findCallback);
 	});
-}
+});
 
 var findDocument = function(db,query,req,res,callback){
 	var collection = db.collection('tiles');
