@@ -138,6 +138,7 @@ app.post('/retrieve',function(req,res){
 
 var findDocument = function(db,query,req,res,callback){
 	var collection = db.collection('tiles');
+	console.log(util.inspect(query));
 	collection.find(query).toArray(function(err,docs){
 		//if error, pop
 		assert.equal(err,null);
