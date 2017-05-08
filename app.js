@@ -114,8 +114,46 @@ var insertDocument = function(db,insertDoc,res,callback){
 
 var insertCallback = function(db,res){
 	console.log("in callback");
-	//db.close();
+	db.close();
 	res.sendStatus(200);
+}
+
+app.post('/retrieve',function(req,res)){
+	var query = {};
+	query['xcoord'] = parseInt(req.body.xcoord);
+	query['ycoord'] = parseInt(req.body.ycoord);
+	query['pw'] = req.body.pw;
+	if (!(Number.isInteger(query['xcoord'])&&Number.isInteger(query['ycoord']))){
+		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		return;
+	}
+	MongoClient.connect(dbUrl,function(err,db){
+		//test for errors, pop out if there are errors present
+		assert.equal(null,err);
+		console.log("connected succesfully to server");
+		//perform lookup
+		findDocument(db,query,req,res,findCallback);
+	});
+
+}
+
+var findDocument = function(db,query,req,res,callback){
+	var collection = db.collection('tiles');
+	collection.find(query).toArray(function(err,docs){
+		//if error, pop
+		assert.equal(err,null);
+		console.log("Found following records:");
+		console.log(docs);
+		console.log(util.inspect(docs));
+		callback(db,req,res,docs);
+	}));
+}
+
+var findCallback = function(db,req,res,docs){
+	//check that passwords match
+
+	res.sendStatus(200);
+	db.close();
 }
 
 // catch 404 and forward to error handler

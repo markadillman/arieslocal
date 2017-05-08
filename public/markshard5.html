@@ -472,6 +472,11 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				}
 				return groupstring;
 			}
+			//TO DO: delete this. It's just for testing loading cells.
+			function changeToTile(){
+				svgPullFromServer($("#xcoord").val(),$("#ycoord").val(),$("#pw1").val());
+			}
+
 			// end Mark's code
 			
 			// Toni's generic version of the SVG-to-Canvas function
@@ -733,10 +738,12 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					REPEAT PASSWORD:
 					<input type="password" name="password" id="secondPassword">
 				<label>
-
+				<input type="button" value="GET CELL AT COORDS" onclick="changeToTile()" id="pullTile">
 				</label>
 				<br>
 				<br>
+				<!--END MARK'S SHIMMED UI STUFF-->
+
 			</fieldset>
 		</form>
 		<br>
@@ -877,13 +884,40 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			alert("Sorry, loading from local storage doesn't work yet.");
 		}
 
+		//TO DO: eliminate function to save overhead. This is a stand-in for the engine init of editing a cell.
+		function svgPullFromServer(xcoord,ycoord,pw1){
+			//load parameters into payload
+			var payload = {};
+			payload["xcoord"] = xcoord;
+			payload["ycoord"] = ycoord;
+			payload["pw"] = pw;
+			//create request
+			var request = new XMLHttpRequest();
+			request.open("POST","/retrieve",true);
+			//set header
+			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+			//set callback functions
+			request.onload = function(){
+				if (request.readyState === 4){
+					if (request.status === 200) {
+						body = JSON.parse(request.responseText);
+						console.log(body.svg);
+					} else {
+						console.error(request.statusText);
+					}
+				}
+			};
+			request.onerror = function(args){
+				console.error(request.statusText);
+			};
+			request.send(JSON.stringify(payload));
+		}
+
 		// submit drawing and platform data to server
 		function svgSubmitToServer () {
 			//check that passwords match
 			var pw1 = $("#firstPassword").val();
 			var pw2 = $("#secondPassword").val();
-			console.log(pw1);
-			console.log(pw2);
 			if (!(pw1 === pw2)){
 				window.alert("Entered passwords do not match. You must correct before submitting edits.");
 			}
@@ -908,12 +942,12 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//set header
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
 			//set callback functions
-			request.onload = function(args){
+			request.onload = function(){
 				if (request.readyState === 4){
 					if (request.status === 200) {
 						console.log(request.responseText);
 					} else {
-						console.error(request.statusTest);
+						console.error(request.statusText);
 					}
 				}
 			};
