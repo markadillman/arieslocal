@@ -7,29 +7,42 @@ var currentCenterX = 0;
 var currentCenterY = 0;
 var spriteWidth = 10;
 var spriteHeight = 50;
-var panTime = 500; // ms
+var defaultTextColor = '#373854'
 
 Game =
 {
 	start: function()
 	{
-		Crafty.init(800,600, document.getElementById('game'));
+		Crafty.init(screenWidth, screenHeight, document.getElementById('game'));
 
 		Crafty.background('#e0fbfd')
 
 		// Start screen scene
 		Crafty.defineScene('HomeScreen', function()
 		{
+			// Title
 			Crafty.e('2D, DOM, Text')
-				.attr({x: currentCenterX + (tileWidth / 2),
-					   y: currentCenterY + tileHeight,
+				.attr({x: 0, y: screenHeight / 3,
+					   w: screenWidth, h: screenHeight})
+				.text('&lt;TITLE&gt;')
+				.textFont({family: 'Trebuchet MS',
+						   size: '50px',
+						   weight: 'bold'})
+				.textColor(defaultTextColor)
+				.textAlign('center');
+
+			// Instructions
+			Crafty.e('2D, DOM, Text')
+				.attr({x: 0, y: (screenHeight / 3) * 2,
 					   w: screenWidth, h: screenHeight})
 				.text('Press Enter to begin')
 				.textFont({family: 'Trebuchet MS',
 						   size: '30px',
 						   weight: 'bold'})
-				.textColor('#373854')
+				.textColor(defaultTextColor)
 				.textAlign('center');
+
+			// Enter key loads avatar selection screen
 			Crafty.e('Start, 2D, Canvas, Color, Solid')
 				.attr({x: 200, y: 200, w: 100, h: 40})
 				.bind('KeyDown', function(e)
@@ -44,20 +57,24 @@ Game =
 		// Player setup screen scene
 		Crafty.defineScene('SetupScreen', function()
 		{
-			// Enter username
-			Crafty.e('2D, DOM, Text')
-				.attr({x: 20, y: 20, w: 800, h: 100})
-				.text('Username: ')
-				.textFont({family: 'Trebuchet MS',
-						   size: '20px'})
-				.textColor('#373854');
-
 			// Select avatar
-			// TODO
+			// Left arrow
+			Crafty.e('2D, DOM, Color, Mouse')
+				.attr({x: screenWidth / 6, y: screenHeight / 3, w: 40, h: 40})
+				.color('red');
+
+			// Right arrow
+			Crafty.e('2D, DOM, Color, Mouse')
+				.attr({x: (screenWidth / 6) * 5 - 40, y: screenHeight / 3,
+					   w: 40, h: 40})
+				.color('red');
+
+			// Selected avatar
 
 			// Ready/enter world button
-			Crafty.e('2D, DOM, Color, Mouse, Text')
-				.attr({x: screenWidth / 2, y: 500,
+			Crafty.e('2D, DOM, Color, Mouse, Text',)
+				.attr({x: (screenWidth / 2) - 100,
+					   y: screenHeight - (canvasEdge * 2),
 					   w: 200, h: 40})
 				.color('#FFFFFF')
 				.text('Start!')
@@ -76,7 +93,7 @@ Game =
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
-	      		.attr({x: 0, y: 0, w: spriteWidth, h: spriteHeight})
+	      		.attr({x: 0, y: 0, w: 10, h: 50})
 	      		// Color of sprite (to be replaced)
 	      		.color('#F00')
 	      		// Enable 2D movement
@@ -99,76 +116,7 @@ Game =
 	      			if(e.key == Crafty.keys.DOWN_ARROW)
 	      			{
 	      				this.gravity('Platform');
-	      			}})
-	      		// Move camera when player leaves current tile
-	      		.bind('Moved', function()
-	      			{
-	      				if (this.x > currentCenterX + (tileWidth / 2))
-	      				{
-	      					currentCenterX = currentCenterX + tileWidth;
-	      					Crafty.viewport.pan((tileWidth / 2) + canvasEdge, 0,
-	      										panTime);
-	      				}
-	      				else if (this.x < currentCenterX - (tileWidth / 2))
-	      				{
-	      					currentCenterX = currentCenterX - tileWidth;
-      						Crafty.viewport.pan((tileWidth / 2) + canvasEdge, 0,
-      											panTime);
-	      				}
-
-	      				if (this.y > currentCenterY + (tileHeight / 2))
-	      				{
-	      					currentCenterY = currentCenterY + tileHeight;
-	      					Crafty.viewport.pan(0, (tileHeight / 2) + canvasEdge,
-	      										panTime);
-	      				}
-	      				else if (this.y < currentCenterY - (tileHeight / 2))
-	      				{
-	      					currentCenterY = currentCenterY - tileHeight;
-	      					Crafty.viewport.pan(0, (tileHeight / 2) + canvasEdge,
-	      										panTime);
-	      				}
-
-	      				// Debug
-	      				console.log('Center: ' + currentCenterX + ' ' +
-	      							currentCenterY);
-	      				console.log('Player: ' + this.x + ' ' + this.y);
-	      				console.log('Viewport: ' + Crafty.viewport.x + ' ' +
-	      							Crafty.viewport.y);
-	      			})
-				.bind('ViewportScroll', function()
-				{
-	      				if (this.x > currentCenterX + (tileWidth / 2))
-	      				{
-	      					currentCenterX = currentCenterX + tileWidth;
-	      					Crafty.viewport.pan((tileWidth / 2), 0, panTime);
-	      				}
-	      				else if (this.x < currentCenterX - (tileWidth / 2))
-	      				{
-	      					currentCenterX = currentCenterX - tileWidth;
-      						Crafty.viewport.pan((tileWidth / 2), 0, panTime);
-	      				}
-
-	      				if (this.y > currentCenterY + (tileHeight / 2))
-	      				{
-	      					currentCenterY = currentCenterY + tileHeight;
-	      					Crafty.viewport.pan(0, (tileHeight / 2), panTime);
-	      				}
-	      				else if (this.y < currentCenterY - (tileHeight / 2))
-	      				{
-	      					currentCenterY = currentCenterY - tileHeight;
-	      					Crafty.viewport.pan(0, (tileHeight / 2), panTime);
-	      				}
-
-	      				// Debug
-	      				console.log('Center: ' + currentCenterX + ' ' +
-	      							currentCenterY);
-	      				console.log('Player: ' + this.x + ' ' + this.y);
-	      				console.log('Viewport: ' + Crafty.viewport.x + ' ' +
-	      							Crafty.viewport.y);
-
-	      				// TODO: Probably a good place to load entities in tile and neighbors
-				});
+	      			}});
 
 	      	// Platforms
 	      	Crafty.e('Platform, 2D, Canvas, Color')
@@ -191,29 +139,13 @@ Game =
 	      	Crafty.e('Platform, 2D, Canvas, Color')
 	      		.attr({x: -4000, y: 590, w: 8000, h: 10})
 	      		.color('green');
-	      	Crafty.e('Platform, 2D, Canvas, Color')
-	      		.attr({x: -4000, y: 1590, w: 8000, h: 10})
-	      		.color('green');
 
-	      	// Debug
-	      	Crafty.e('Marker, 2D, Canvas, Color')
-	      		.attr({x: 0, y: 0, w: 10, h: 10})
-	      		.color('magenta')
-	      		.bind('ViewportScroll', function()
-	      			{
-	      				this.x = currentCenterX;
-	      				this.y = currentCenterY;
-	      			});
+	       	// Have camera follow player sprite
+	       	Crafty.viewport.follow(player, 0, 50);
+
       	});
 
 		// Start game on home screen
       	Crafty.enterScene('HomeScreen');
-
-      	// Start camera on starting center point
-      	Crafty.viewport.clampToEntities = false;
-		Crafty.viewport.scroll('x',
-							   currentCenterX - (tileWidth / 2) + canvasEdge);
-		Crafty.viewport.scroll('y',
-							   currentCenterY - (tileHeight / 2) + canvasEdge);
 	}
 }
