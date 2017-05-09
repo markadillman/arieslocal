@@ -72,7 +72,7 @@ Game =
 			// Selected avatar
 
 			// Ready/enter world button
-			Crafty.e('2D, DOM, Color, Mouse, Text',)
+			Crafty.e('2D, DOM, Color, Mouse, Text')
 				.attr({x: (screenWidth / 2) - 100,
 					   y: screenHeight - (canvasEdge * 2),
 					   w: 200, h: 40})
