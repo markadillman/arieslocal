@@ -389,6 +389,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgLoadFromLocal();
 			}
 			function submitButton () {
+				var binaryURL = hiddenCanvas.toDataUrl();
+				console.log(binaryUrl);
 				svgSubmitToServer(hiddenCanvas);
 			}
 			function undoButton() {
@@ -928,8 +930,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			updateCanvas();
 			console.log(imgCanvas);
 			var imgContext = imgCanvas.getContext("2d");
-			var gblob = imgContext.toDataUrl();
-			var blob = imgCanvas.toDataUrl();
+			//var gblob = imgContext.toDataUrl();
+			var blob = imgCanvas.toDataURL();
 			console.log("Blob:");
 			console.log(blob);
 			//concat art and platform groups to string
