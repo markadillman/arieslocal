@@ -389,7 +389,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgLoadFromLocal();
 			}
 			function submitButton () {
-				svgSubmitToServer();
+				var imgCanvas = document.getElementById('hiddenCanvas');
+				svgSubmitToServer(imgCanvas);
 			}
 			function undoButton() {
 				svgUndoAction();
@@ -918,7 +919,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		}
 
 		// submit drawing and platform data to server
-		function svgSubmitToServer () {
+		function svgSubmitToServer (renderCanvas) {
 			//check that passwords match
 			var pw1 = $("#firstPassword").val();
 			var pw2 = $("#secondPassword").val();
@@ -929,9 +930,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			var artString = artToString();
 			updateCanvas();
 			var renderCanvas = $("#hiddenCanvas");
-			var docCanvas = document.getElementById('hiddenCanvas');
 			console.log(renderCanvas);
-			console.log(docCanvas);
 			var blob = renderCanvas.toDataUrl();
 			console.log("Blob:");
 			console.log(blob);
