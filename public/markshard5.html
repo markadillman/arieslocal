@@ -389,7 +389,12 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgLoadFromLocal();
 			}
 			function submitButton () {
+				updateCanvas();
 				var imgCanvas = document.getElementById('hiddenCanvas');
+				console.log(imgCanvas);
+				var blob = imgCanvas.toDataUrl();
+				console.log("Blob:");
+				console.log(blob);
 				svgSubmitToServer(imgCanvas);
 			}
 			function undoButton() {
@@ -926,15 +931,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			if (!(pw1 === pw2)){
 				window.alert("Entered passwords do not match. You must correct before submitting edits.");
 			}
-			//update canvas and prepare to export rasterized version
-			var artString = artToString();
-			updateCanvas();
-			console.log(renderCanvas);
-			var blob = renderCanvas.toDataUrl();
-			console.log("Blob:");
-			console.log(blob);
 			//concat art and platform groups to string
-			var svgPayload = svgMinPrepend + artString + platformToString() + svgAppend;
+			var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
 			//populate body in array
 			var payload = {};
 			//add coordinates to payload
