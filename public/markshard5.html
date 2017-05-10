@@ -929,7 +929,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			var artString = artToString();
 			updateCanvas();
 			var renderCanvas = $("#hiddenCanvas");
+			var docCanvas = document.getElementById('hiddenCanvas');
 			console.log(renderCanvas);
+			console.log(docCanvas);
 			var blob = renderCanvas.toDataUrl();
 			console.log("Blob:");
 			console.log(blob);
