@@ -929,13 +929,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			var artString = artToString();
 			updateCanvas();
 			var renderCanvas = $("#hiddenCanvas");
-			renderCanvas.toBlob(function(blob){
-				console.log("Blob:");
-				console.log(blob);
-				console.log("Resource URL");
-				url = URL.createObjectURL(blob);
-				console.log(url);
-			});
+			var blob = renderCanvas.toDataUrl();
+			console.log("Blob:");
+			console.log(blob);
 			//concat art and platform groups to string
 			var svgPayload = svgMinPrepend + artString + platformToString() + svgAppend;
 			//populate body in array
