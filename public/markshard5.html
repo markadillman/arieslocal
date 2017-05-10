@@ -927,6 +927,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			}
 			updateCanvas();
 			console.log(imgCanvas);
+			var imgContext = imgCanvas.getContext();
+			var gblob = imgContext.toDataUrl();
 			var blob = imgCanvas.toDataUrl();
 			console.log("Blob:");
 			console.log(blob);
