@@ -389,13 +389,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgLoadFromLocal();
 			}
 			function submitButton () {
-				updateCanvas();
-				var imgCanvas = document.getElementById('hiddenCanvas');
-				console.log(imgCanvas);
-				var blob = imgCanvas.toDataUrl();
-				console.log("Blob:");
-				console.log(blob);
-				svgSubmitToServer(imgCanvas);
+				svgSubmitToServer(hiddenCanvas);
 			}
 			function undoButton() {
 				svgUndoAction();
@@ -924,13 +918,18 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		}
 
 		// submit drawing and platform data to server
-		function svgSubmitToServer (renderCanvas) {
+		function svgSubmitToServer (imgCanvas) {
 			//check that passwords match
 			var pw1 = $("#firstPassword").val();
 			var pw2 = $("#secondPassword").val();
 			if (!(pw1 === pw2)){
 				window.alert("Entered passwords do not match. You must correct before submitting edits.");
 			}
+			updateCanvas();
+			console.log(imgCanvas);
+			var blob = imgCanvas.toDataUrl();
+			console.log("Blob:");
+			console.log(blob);
 			//concat art and platform groups to string
 			var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
 			//populate body in array
