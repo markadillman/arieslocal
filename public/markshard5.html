@@ -928,7 +928,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//update canvas and prepare to export rasterized version
 			var artString = artToString();
 			updateCanvas();
-			var renderCanvas = document.getElementById('hiddenCanvas');
+			var renderCanvas = $("#hiddenCanvas");
 			renderCanvas.toBlob(function(blob){
 				console.log("Blob:");
 				console.log(blob);
