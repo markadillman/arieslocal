@@ -478,6 +478,8 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgPullFromServer($("#xcoord").val(),$("#ycoord").val(),$("#pw1").val());
 			}
 
+			function canvasToPng(targetCanvas){}
+
 			// end Mark's code
 			
 			// Toni's generic version of the SVG-to-Canvas function
@@ -928,10 +930,10 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			}
 			updateCanvas();
 			console.log(imgCanvas);
-			var imgContext = imgCanvas.getContext("2d");
+			//var imgContext = imgCanvas.getContext("2d");
 			//var gblob = imgContext.toDataUrl();
 			updateCanvas();
-			var blob = imgCanvas.toDataURL();
+			var blob = imgCanvas.toBlob();
 			console.log("Blob:");
 			console.log(blob);
 			//concat art and platform groups to string
