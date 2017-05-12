@@ -920,7 +920,18 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			request.send(JSON.stringify(payload));
 		}
 
-		// submit drawing and platform data to server
+		/* submit drawing and platform data to server
+			JSON payload structure (key value pairs)
+			{
+				"xcoord" : (value of tile x-coordinate as string),
+				"ycoord" : (value of tile y-coordinate as string),
+				"password" : (value of password. Eventually, since already proved editing rights, 
+							  overwrites previous pw),
+				"svg" : (svg values of art and string platforms concatenated with minimum svg tags),
+				"graphic" : (JSON Blob formatted image/png. Pulled from white backgrop invis canvas)
+		*/
+		//STILL NEED TO ADD ASYNCHRONOUS CODE FOR PASSWORD CHECK / CHANGE
+
 		function svgSubmitToServer (imgCanvas) {
 			//check that passwords match
 			var pw1 = $("#firstPassword").val();
@@ -933,44 +944,46 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			//var imgContext = imgCanvas.getContext("2d");
 			//var gblob = imgContext.toDataUrl();
 			updateCanvas();
+			//because of blob size, call has to be asynchronous. generate blob here.
 			imgCanvas.toBlob(function(blob){
 				console.log("Blob:");
 				console.log(blob);
-			});
-			//concat art and platform groups to string
-			var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
-			//populate body in array
-			var payload = {};
-			//add coordinates to payload
-			payload["xcoord"] = $("#xcoord").val();
-			payload["ycoord"] = $("#ycoord").val();
-			//add password to payload
-			payload["pw"] = pw1;
-			payload["svg"] = svgPayload;
-			if (debugging){
-				console.log("Payload to server:");
-				console.log(payload);
-			}
-			//create request
-			var request = new XMLHttpRequest();
-			//configure to post asynchronously to server
-			request.open("POST","/edit",true);
-			//set header
-			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
-			//set callback functions
-			request.onload = function(){
-				if (request.readyState === 4){
-					if (request.status === 200) {
-						console.log(request.responseText);
-					} else {
-						console.error(request.statusText);
-					}
+				//concat art and platform groups to string
+				var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
+				//populate body in array
+				var payload = {};
+				//add coordinates to payload
+				payload["xcoord"] = $("#xcoord").val();
+				payload["ycoord"] = $("#ycoord").val();
+				//add password to payload
+				payload["pw"] = pw1;
+				payload["svg"] = svgPayload;
+				payload["graphic"] = blob;
+				if (debugging){
+					console.log("Payload to server:");
+					console.log(payload);
 				}
-			};
-			request.onerror = function(args){
-				console.error(request.statusText);
-			};
-			request.send(JSON.stringify(payload));
+				//create request
+				var request = new XMLHttpRequest();
+				//configure to post asynchronously to server
+				request.open("POST","/edit",true);
+				//set header
+				request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+				//set callback functions
+				request.onload = function(){
+					if (request.readyState === 4){
+						if (request.status === 200) {
+							console.log(request.responseText);
+						} else {
+							console.error(request.statusText);
+						}
+					}
+				};
+				request.onerror = function(args){
+					console.error(request.statusText);
+				};
+				request.send(JSON.stringify(payload));
+			});
 		}
 		
 		// close out an in-progress shape first if an option selection changes
