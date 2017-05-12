@@ -5,14 +5,16 @@
 Antonina (Toni) York
 OSU CS 467 Spring 2017
 Team Aries: Infinite Blank
-Week 5 Drawing Tool
-week5test.html
+Week 6 Drawing Tool
+week6test.html
 
 This draws heavily from examples found at:
 https://github.com/oreillymedia/svg-essentials-examples
 
 Also includes several chunks of code by fellow Team Aries member Mark Dillman.
 These chunks are tagged with the phrase "Mark's code" in comments.
+
+Mark, search for ### to find 4 places to integrate your code.
 
 -->
 
@@ -22,7 +24,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-		<title>Team Aries: Week 5 Drawing Tool</title>
+		<title>Team Aries: Week 6 Drawing Tool</title>
 
 		<style type="text/css">
 			/* make form entries begin on a new line */
@@ -30,9 +32,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			h1 {font-size: 125%;}
 			input[type=number] {width: 35px;}
 		</style>
-
-		<script src="js/svg.js/dist/svg.min.js"></script>
-		<script src="js/jquery-3.2.1.js"></script>
 
 		<script type="text/javascript">
 		
@@ -55,6 +54,10 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			var panStep = 10;		// the number of pixels to pan by
 			var drawControls;		// the drawing-specific tools
 			var platformControls;	// the platform-specific tools
+			var messageDiv;			// the message box div
+			var messageText;		// the message box text field
+			var msgBtnOK;			// the message OK button
+			var msgBtnCancel;		// the message Cancel button
 			var displayDiv;			// the display divs
 			var borderArtDiv;		// the sub-div with just the border art divs in it
 			var cornerArtDiv;		// the sub-sub div with just the corner border art
@@ -72,10 +75,11 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 								  6: "belowLeftDiv",
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
+			var myFileInput;		// HTML input element for handling files
 			// start Mark's code, slightly modified by Toni to add the white rectangle
-			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>";
+			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>"
 			var svgMinPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">";
-			var svgAppend = "</svg>";
+			var svgAppend = "</svg>"
 			// end Mark's code
 			
 			// keyboard event handler
@@ -85,12 +89,15 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				//console.log(keyID);
 				switch (keyID) {
 					case 8: // backspace key
-						if (debugging) {
-							console.log("HTML document caught a backspace keypress.");
-						}
-						svgRemoveSelectedPlatform(false);
 						// stop the backwards navigation
 						evt.preventDefault();
+						// only do something if in platform mode
+						if (masking == true) {
+							if (debugging) {
+								console.log("HTML document caught a backspace keypress.");
+							}
+							svgRemoveSelectedPlatform(false);
+						} // else do nothing
 						break;
 					case 37: // left arrow key
 						if (debugging) {
@@ -117,10 +124,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						panDownButton();
 						break;
 					case 46: // delete key
-						if (debugging) {
-							console.log("HTML document caught a delete keypress.");
+						// only do something if in platform mode
+						if (masking == true) {
+							if (debugging) {
+								console.log("HTML document caught a delete keypress.");
+							}
+							svgRemoveSelectedPlatform(false);
 						}
-						svgRemoveSelectedPlatform(false);
 						break;
 					case 89: // y key
 						if (evt.ctrlKey) { // only catch ctrl+y
@@ -158,6 +168,17 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				// add the keybard event listener
 				document.addEventListener("keydown", parseKeyHTML);
 				
+				// create the hidden file input element
+				myFileInput = document.createElement("input");
+				myFileInput.style.display = "none";
+				myFileInput.type = "file";
+				myFileInput.accept = ".svg";
+				myFileInput.multiple = false;
+
+				// grab text input element from the message box and hide it
+				msgTextInput = document.getElementById("msgTextInput");
+				msgTextInput.style.display = "none";
+				
 				// create the hidden canvas for getting color info
 				hiddenCanvas = document.createElement("canvas");
 				hiddenCanvas.id = "hiddenCanvas";
@@ -187,6 +208,15 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				drawControls.style.display = "block";
 				platformControls.style.display = "none";
 				
+				// grab the message box elements
+				messageDiv = document.getElementById("messageDiv");
+				messageText = document.getElementById("messageText");
+				msgBtnOK = document.getElementById("msgBtnOK");
+				msgBtnCancel = document.getElementById("msgBtnCancel");
+
+				// set the default visibility of the message box div
+				messageDiv.style.display = "none";
+
 				// grab the display divs
 				borderArtDiv = document.getElementById("borderArtDiv");
 				cornerArtDiv = document.getElementById("cornerArtDiv");
@@ -255,7 +285,21 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						}
 					}
 				} else { // use real image data from the server
-					// ???
+					// xTile and yTile are the current tile
+					// so need to load: (xTile - 1, yTile - 1)	above left
+					//					(xTile, yTile - 1)		above
+					//					(xTile + 1, yTile - 1)	above right
+					//					(xTile - 1, yTile)		left
+					//					(xTile + 1, yTile)		right
+					//					(xTile - 1, yTile + 1)	below left
+					//					(xTile, yTile + 1)		below
+					//					(xTile + 1, yTile + 1)	below right
+					// also need to handle cases where one or more of these
+					// tiles doesn't exist yet (load nothing, display blank)
+					
+					// start Mark's code
+					// ###
+					// end Mark's code
 				}
 				
 				// position the overall display div
@@ -380,17 +424,52 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					svgSetTool(newTool);
 				}
 			}
+
+			// display the message box with the given message
+			// links up the ok and cancel functions
+			// also displays text input element if boolean argument is true
+			// these functions should include: messageDiv.style.display = "none";
+			function displayMessage(msg, okFn, cancelFn, useTextInput) {
+				messageText.innerHTML = msg;
+				msgBtnOK.onclick = okFn;
+				msgBtnCancel.onclick = cancelFn;
+				if (useTextInput) { // show the text input element
+					msgTextInput.style.display = "block";
+				} else { // hide it
+					msgTextInput.style.display = "none";
+				}
+				messageDiv.style.display = "block";
+			}
+
+			// default handlers for message box buttons
+			// these should never run!
+			function doMsgBtnOK() {
+				console.log("Something went very awry with the message box Okay button.");
+			}
+			function doMsgBtnCancel() {
+				console.log("Something went very awry with the message box Cancel button.");
+			}
 			
-			// link form buttons to code in the SVG file
+			// helper handlers for message box functions
+			function doNothing() {
+				// does what it says on the tin
+				// except for clearing off the message div
+				messageDiv.style.display = "none";
+			}
+			function hardReload() {
+				// does what it says on the tin
+				location.reload(true);
+			}
+			
+			// control button handlers
 			function saveButton() {
-				svgSaveToLocal();
+				displayMessage("Enter a name for your saved art file.", svgSaveToLocal, doNothing, true);
 			}
 			function loadButton () {
-				svgLoadFromLocal();
+				displayMessage("Use the dialog to select an art file to load.", svgLoadFromLocal, doNothing, false);
 			}
 			function submitButton () {
-				updateCanvas();
-				svgSubmitToServer(hiddenCanvas);
+				displayMessage("Sorry, submitting to the server doesn't work yet.", svgSubmitToServer, doNothing), false;
 			}
 			function undoButton() {
 				svgUndoAction();
@@ -402,9 +481,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				svgRemoveSelectedPlatform(force);
 			}
 			function exitButton () {
-				if (confirm("Are you sure you want to exit without submitting your work?")) {
-					location.reload(true);
-				} // else do nothing
+				displayMessage("Are you sure you want to exit without submitting your work?", hardReload, doNothing, false);
 			}
 			function zoomOutButton() {
 				// set mouse coordinates to center of current viewBox
@@ -440,7 +517,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				doPan(0, panStep);
 			}
 			
-			// update option selections from the SVG
+			// update color selections from the SVG
 			function setColorChoiceInHTML(color) {
 				var colorPicker = document.getElementById("color");
 				colorPicker.value = color;
@@ -449,7 +526,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			
 			// start Mark's code
 			// helper functions
-
 			function artToString(){
 				//using jQuery nodes, art group is index 3, platform 4
 				return groupToString(3);
@@ -459,10 +535,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				return groupToString(4);
 			}
 			function groupToString(groupnum){
-				//select svg grouping
-				var initsvg = document.getElementById("svgCanvas");
 				//using jQuery nodes, art group is index 3, platform 4
-				var tarGroup = initsvg.childNodes[groupnum];
+				// slight modification by Toni to use extant canvas variable
+				var tarGroup = canvas.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
 				var serializer = new XMLSerializer();
 				var groupstring = serializer.serializeToString(tarGroup);
@@ -473,13 +548,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				}
 				return groupstring;
 			}
-			//TO DO: delete this. It's just for testing loading cells.
-			function changeToTile(){
-				svgPullFromServer($("#xcoord").val(),$("#ycoord").val(),$("#pw1").val());
-			}
-
-			function canvasToPng(targetCanvas){}
-
 			// end Mark's code
 			
 			// Toni's generic version of the SVG-to-Canvas function
@@ -576,89 +644,80 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 	<body onload="initHTML()">
 
-		<h1>Team Aries: Week 5 Drawing Tool</h1>
+		<h1>Team Aries: Week 6 Drawing Tool</h1>
 
 		<form id="controls" onsubmit="return onFormSubmit(this)">
 		
-			<fieldset style="width: 260px">
+			<fieldset style="width: 260px; height: 500px">
 			
 				<legend><b>Drawing Tool Controls</b></legend>
 				
 				<div id="commonControls">
 					
-					<input type="button" name="save" value="SAVE" style="width: 50px"
+					<input type="button" name="save" value="SAVE"
+						style="width: 55px; position: absolute; top: 76px; left: 22px"
 						onclick="saveButton()"></input>
-					
-					<input type="button" name="load" value="LOAD" style="width: 50px"
+					<input type="button" name="load" value="LOAD"
+						style="width: 55px; position: absolute; top: 76px; left: 81px"
 						onclick="loadButton()"></input>
-					
-					<input type="button" name="submit" value="SUBMIT" style="width: 80px"
+					<input type="button" name="submit" value="SUBMIT"
+						style="width: 80px; position: absolute; top: 76px; left: 140px"
 						onclick="submitButton()"></input>
 
-					<br>
-
-					<input type="button" name="undo" value="UNDO" style="width: 50px"
+					<input type="button" name="undo" value="UNDO"
+						style="width: 55px; position: absolute; top: 100px; left: 22px"
 						onclick="undoButton()"></input>
-					
-					<input type="button" name="redo" value="REDO" style="width: 50px"
+					<input type="button" name="redo" value="REDO"
+						style="width: 55px; position: absolute; top: 100px; left: 81px"
 						onclick="redoButton()"></input>
-						
-					<input type="button" name="exit" value="EXIT TILE" style="width: 80px"
+					<input type="button" name="exit" value="EXIT TILE"
+						style="width: 80px; position: absolute; top: 100px; left: 140px"
 						onclick="exitButton()"></input>
 
-					<br>
-
-					<br>
-
-					<label>
+					<label style="position: absolute; top: 135px; left: 22px">
 						ZOOM AND PAN:
 					</label>
 					
-					<br>
-					
-					<!--REMOVED ABSOLUTE POSITION STYLE FROM EACH-->
 					<input type="button" name="zoomOut" value="-"
-						style="width:30px; position:absolute; top:165px; left:45px"
+						style="width: 30px; position: absolute; top: 165px; left: 45px"
 						onclick="zoomOutButton()"></input>
 					<input type="button" name="zoomIn" value="+"
-						style="width:30px; position:absolute; top:165px; left:80px"
+						style="width: 30px; position: absolute; top: 165px; left: 80px"
 						onclick="zoomInButton()"></input>
 					<input type="button" name="zoomReset" value="RESET"
-						style="width:65px; position:absolute; top:190px; left:45px"
+						style="width: 65px; position: absolute; top: 190px; left: 45px"
 						onclick="zoomResetButton()"></input>
-					<br>
+
 					<input type="button" name="panUp" value="^"
-						style="width:30px; position:absolute; top:153px; left:163px"
+						style="width: 30px; position: absolute; top: 153px; left: 163px"
 						onclick="panUpButton()"></input>
 					<input type="button" name="panLeft" value="<"
-						style="width:30px; position:absolute; top:177px; left:145px"
+						style="width: 30px; position: absolute; top: 177px; left: 145px"
 						onclick="panLeftButton()"></input>
 					<input type="button" name="panRight" value=">"
-						style="width:30px; position:absolute; top:177px; left:179px"
+						style="width: 30px; position: absolute; top: 177px; left: 179px"
 						onclick="panRightButton()"></input>
 					<input type="button" name="panDown" value="v"
-						style="width:30px; position:absolute; top:201px; left:163px"
+						style="width: 30px; position: absolute; top: 201px; left: 163px"
 						onclick="panDownButton()"></input>
 						
-					<br>
-					<br>
-					
-					<label>
+					<label style="position: absolute; top: 235px; left: 22px">
 						TOGGLE PLATFORM TOOLS: 
 						<input type="checkbox" name="masking" value="masking"
 							onchange="changeMasking(this.checked)"> </input>
 					</label>
 					
-					<label>
+					<label style="position: absolute; top: 260px; left: 22px">
 						SELECT STROKE WIDTH: 
 						<input type="number" name="strokewidth"
-							value="1" min="1" max="50"
+							value="5" min="1" max="50"
 							onchange="changeStrokeWidth(this.value)"> </input>
 					</label>
 					
 				</div>
 				
-				<div id="drawControls" style="display: block">
+				<div id="drawControls"
+					style="display: block; position: absolute; top: 285px; left: 22px">
 				
 					<label>
 						SELECT COLOR: 
@@ -674,31 +733,36 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					
 					<label>
 						SELECT TOOL TYPE:
-						<br>
-						<input type="radio" name="tool" value="0" checked
-							onclick="changeTool(this.value)"> Rectangle</input>
-						<br>
-						<input type="radio" name="tool" value="1"
-							onclick="changeTool(this.value)"> Ellipse</input>
-						<br>
-						<input type="radio" name="tool" value="2"
-							onclick="changeTool(this.value)"> Polygon</input>
-						<br>
-						<input type="radio" name="tool" value="3"
-							onclick="changeTool(this.value)"> Brush</input>
-						<br>
-						<input type="radio" name="tool" value="4"
-							onclick="changeTool(this.value)"> Eraser</input>
-						<br>
-						<input type="radio" name="tool" value="5" id="eyeDropper"
-							onclick="changeTool(this.value)"> Eye Dropper</input>
-						<br>
-						<input type="radio" name="tool" value="6"
-							onclick="changeTool(this.value)"> Paint Can</input>
+						<table>
+							<tr>
+								<td><input type="radio" name="tool" value="0" checked
+								onclick="changeTool(this.value)"> Rectangle</input></td>
+								<td><input type="radio" name="tool" value="3"
+								onclick="changeTool(this.value)"> Brush</input></td>
+							</tr>
+							<tr>
+								<td><input type="radio" name="tool" value="1"
+								onclick="changeTool(this.value)"> Ellipse</input></td>
+								<td><input type="radio" name="tool" value="4"
+								onclick="changeTool(this.value)"> Eraser</input></td>
+							</tr>
+							<tr>
+								<td><input type="radio" name="tool" value="2"
+								onclick="changeTool(this.value)"> Polygon</input></td>
+								<td><input type="radio" name="tool" value="5" id="eyeDropper"
+								onclick="changeTool(this.value)"> Eye Dropper</input></td>
+							</tr>
+							<!--<tr>
+								<td></td>
+								<td><input type="radio" name="tool" value="6"
+								onclick="changeTool(this.value)"> Paint Can</input></td>
+							</tr>-->
+						</table>
 					</label>
 				</div>
 				
-				<div id="platformControls" style="display: none">
+				<div id="platformControls"
+					style="display: none; position: absolute; top: 285px; left: 22px">
 				
 					<label>
 						SELECT PLATFORM TYPE:
@@ -717,39 +781,47 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						onclick="removeSelectedPlatform(false)"></input>
 				
 				</div>
-				<br>
-				<br>
-
-				<!--This will ultimately be handled automatically by the init function of the editor-->
-				<label>
-					SET COORDINATES (DEBUGGING):
-				</label>
-				<label> X COORD (INT)
-					<input type="number" name="xcoord" id="xcoord" value="0">
-				</label>
-				<label> Y COORD (INT)
-					<input type="number" name="ycoord" id="ycoord" value="0">
-				</label>
-				<label>
-					SET PASSWORD
-				</label>
-				<label>
-					PASSWORD:
-					<br>
-					<input type="password" name="password" id="firstPassword">
-				</label>
-					REPEAT PASSWORD:
-					<input type="password" name="password" id="secondPassword">
-				<label>
-				<input type="button" value="GET CELL AT COORDS" onclick="changeToTile()" id="pullTile">
-				</label>
-				<br>
-				<br>
-				<!--END MARK'S SHIMMED UI STUFF-->
-
+				
+				<div id="moveControls"
+					style="display: block; position: absolute; top: 445px; left: 22px">
+				
+					<label>TILE NAVIGATION:</label>
+					
+					<table>
+						<tr>
+							<td><input type="radio" name="map" id="tile0btn" value="0"
+								onclick="changeSelectedTile(this.value)">(-1, -1)</input></td>
+							<td><input type="radio" name="map" id="tile1btn" value="1"
+								onclick="changeSelectedTile(this.value)">(0, -1)</input></td>
+							<td><input type="radio" name="map" id="tile2btn" value="2"
+								onclick="changeSelectedTile(this.value)">(1, -1)</input></td>
+						</tr>
+						<tr>
+							<td><input type="radio" name="map" id="tile3btn" value="3"
+								onclick="changeSelectedTile(this.value)">(-1, 0)</input></td>
+							<td><input type="radio" name="map" id="tile4btn" value="4"
+								onclick="changeSelectedTile(this.value)">(0, 0)</input></td>
+							<td><input type="radio" name="map" id="tile5btn" value="5"
+								onclick="changeSelectedTile(this.value)">(1, 0)</input></td>
+						</tr>
+						<tr>
+							<td><input type="radio" name="map" id="tile6btn" value="6"
+								onclick="changeSelectedTile(this.value)">(-1, 1)</input></td>
+							<td><input type="radio" name="map" id="tile7btn" value="7"
+								onclick="changeSelectedTile(this.value)">(0, 1)</input></td>
+							<td><input type="radio" name="map" id="tile8btn" value="8"
+								onclick="changeSelectedTile(this.value)">(1, 1)</input></td>
+						</tr>
+					</table>
+					
+					<input type="button" name="tileNavigation" value="Move"
+						onclick="moveToTile()"></input>
+				
+				</div>
 			</fieldset>
+
 		</form>
-		<br>
+		
 		<div id="displayDiv" style="display: none">
 			<div id="borderArtDiv">
 				<div id="cornerArtDiv">
@@ -773,6 +845,12 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 	 onload="initSVG(evt)">
 
 	<script type="text/ecmascript"> <![CDATA[
+		var selectedTile = 4;			// for the midpoint check version
+		var xTile = 0;					// x-coord of tile
+		var yTile = 0;					// y-coord of tile
+		var password = "12345";			// user-entered password string for tile
+		var svgFileHeader = "<!--FROM THE BLANK--\>";	// for generated files
+		var loadingPage = true;			// flag to mark initial page loading
 		var masking = false;			// toggle the platform masking tools
 		var canvas;						// the SVG drawing region
 		var drawingGroup;				// the group of SVG art objects
@@ -800,7 +878,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		var toolChoice = 0;				// currently selected tool
 		var previousDrawTool = 0;		// saved tool choice for mode switching
 		var previousPlatformTool = 7;	// saved tool choice for mode switching
-		var strokeWidthChoice = 1;		// currently selected stroke width
+		var strokeWidthChoice = 5;		// currently selected stroke width
 		var shapeFillChoice = false;	// currently selected fill option
 		var shapeFillNone = "none";
 		var shapeFillChoiceString = shapeFillNone;
@@ -865,181 +943,690 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			canvas.addEventListener("click", mouseClick);
 			canvas.addEventListener("wheel", scrollWheel);
 
+			// load data from the server
+			svgLoadFromServer(xTile, yTile, password);
+			initTileNavRadioButtons(xTile, yTile); // just for midpoint check version
+			
 			// debug message
 			if (debugging) {
 				console.log("Loaded SVG with debug messages turned on.");
 			}
+
+			// set flag
+			pageLoading = false;
 		}
 
+		// update the value of selectedTile when a new radio button is clicked
+		// needed for the midpoint check version
+		function changeSelectedTile(newTile) {
+			selectedTile = parseInt(newTile);
+		}
+		
+		// move to the tile indicated by global var selectedTile
+		// needed for the midpoint check version
+		function moveToTile() {
+			// set tile coordinates for the currently selected tile
+			switch (selectedTile) {
+				case 0:
+						xTile = -1;
+						yTile = -1;
+						break;
+				case 1:
+						xTile = 0;
+						yTile = -1;
+						break;
+				case 2:
+						xTile = 1;
+						yTile = -1;
+						break;
+				case 3:
+						xTile = -1;
+						yTile = 0;
+						break;
+				case 4:
+						xTile = 0;
+						yTile = 0;
+						break;
+				case 5:
+						xTile = 1;
+						yTile = 0;
+						break;
+				case 6:
+						xTile = -1;
+						yTile = 1;
+						break;
+				case 7:
+						xTile = 0;
+						yTile = 1;
+						break;
+				case 8:
+						xTile = 1;
+						yTile = 1;
+						break;
+				default: // should never get here
+						console.log("Something went horribly awry with moving to a new tile.");
+			}
+			
+			// debug message
+			if (debugging) {
+				console.log("Chose to navigate to tile (" +
+							xTile.toString() + ", " + yTile.toString() + ").");
+			}
+			
+			// use the new xTile and yTile coords to switch to the new tile
+			// start Mark's code
+			// ###
+			// end Mark's code
+		}
+		
+		// updates the navigation radio buttons
+		// needed on page load, just for the midpoint check version
+		function initTileNavRadioButtons(x, y) {
+			// get all the nav buttons
+			var tile0 = document.getElementById("tile0btn");
+			var tile1 = document.getElementById("tile1btn");
+			var tile2 = document.getElementById("tile2btn");
+			var tile3 = document.getElementById("tile3btn");
+			var tile4 = document.getElementById("tile4btn");
+			var tile5 = document.getElementById("tile5btn");
+			var tile6 = document.getElementById("tile6btn");
+			var tile7 = document.getElementById("tile7btn");
+			var tile8 = document.getElementById("tile8btn");
+			var navButtons = [tile0, tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8];
+			
+			// set them all to unchecked
+			for (var i = 0; i < navButtons.length; i += 1) {
+				navButtons[i].checked = false;
+			}
+			
+			// check the button for the given tile
+			switch (x) {
+				case -1:
+						switch (y) {
+							case -1:
+									navButtons[0].checked = true;
+									break;
+							case 0:
+									navButtons[3].checked = true;
+									break;
+							case 1:
+									navButtons[6].checked = true;
+									break;
+							default: // should never get here
+									console.log("Something went horribly awry with the tile navigation radio buttons.");
+						}
+						break;
+						
+				case 0: 
+						switch (y) {
+							case -1:
+									navButtons[1].checked = true;
+									break;
+							case 0:
+									navButtons[4].checked = true;
+									break;
+							case 1:
+									navButtons[7].checked = true;
+									break;
+							default: // should never get here
+									console.log("Something went horribly awry with the tile navigation radio buttons.");
+						}
+						break;
+				
+				case 1:
+						switch (y) {
+							case -1:
+									navButtons[2].checked = true;
+									break;
+							case 0:
+									navButtons[5].checked = true;
+									break;
+							case 1:
+									navButtons[8].checked = true;
+									break;
+							default: // should never get here
+									console.log("Something went horribly awry with the tile navigation radio buttons.");
+						}
+						break;
+				
+				default: // should never get here
+					console.log("Something went horribly awry with the tile navigation radio buttons.");
+			}
+		}
+		
 		// get an element's ID number from its ID string, given its type
 		// typestring should be either objectStr or platformStr
 		function getIDNumFromIDString(typestring, idstring) {
 			return parseInt(idstring.substring(typestring.length, idstring.length));
 		}
 
-		// save current drawing data to local storage
-		function svgSaveToLocal () {
-			alert("Sorry, saving to local storage doesn't work yet.");
-		}
-
-		// load drawing data from local storage
-		function svgLoadFromLocal () {
-			alert("Sorry, loading from local storage doesn't work yet.");
-		}
-
-		//TO DO: eliminate function to save overhead. This is a stand-in for the engine init of editing a cell.
-		function svgPullFromServer(xcoord,ycoord,pw1){
-			//load parameters into payload
-			var payload = {};
-			payload["xcoord"] = xcoord;
-			payload["ycoord"] = ycoord;
-			payload["pw"] = pw1;
-			//create request
-			var request = new XMLHttpRequest();
-			request.open("POST","/retrieve",true);
-			//set header
-			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
-			//set callback functions
-			request.onload = function(){
-				if (request.readyState === 4){
-					if (request.status === 200) {
-						body = JSON.parse(request.responseText);
-						console.log(body.svg);
-						//use svg.js load to load into main svg
-						var draw = SVG('svgCanvas');
-						//load the svg xml as stirng
-						draw.svg(body.svg);
-					} else {
-						console.error(request.statusText);
-					}
-				}
-			};
-			request.onerror = function(args){
-				console.error(request.statusText);
-			};
-			request.send(JSON.stringify(payload));
-		}
-
-		/* submit drawing and platform data to server
-			JSON payload structure (key value pairs)
-			{
-				"xcoord" : (value of tile x-coordinate as string),
-				"ycoord" : (value of tile y-coordinate as string),
-				"password" : (value of password. Eventually, since already proved editing rights, 
-							  overwrites previous pw),
-				"svg" : (svg values of art and string platforms concatenated with minimum svg tags),
-				"graphic" : (JSON Blob formatted image/png. Pulled from white backdrop invis canvas)
-		*/
-		//STILL NEED TO ADD ASYNCHRONOUS CODE FOR PASSWORD CHECK / CHANGE
-
-		function svgSubmitToServer (imgCanvas) {
-			//check that passwords match
-			var pw1 = $("#firstPassword").val();
-			var pw2 = $("#secondPassword").val();
-			if (!(pw1 === pw2)){
-				window.alert("Entered passwords do not match. You must correct before submitting edits.");
+		// helper function to save the given svg data to the given file
+		// modified from: http://stackoverflow.com/a/33542499
+		function saveToFile(filename, textdata) {
+			var blob = new Blob([textdata], {type: 'text/plain'});
+			if (window.navigator.msSaveOrOpenBlob) {
+				window.navigator.msSaveBlob(blob, filename);
+			} else {
+				var elem = window.document.createElement('a');
+				elem.href = window.URL.createObjectURL(blob);
+				elem.download = filename;        
+				document.body.appendChild(elem);
+				elem.addEventListener("click", function(evt) {
+					//evt.preventDefault(); // stops page reload, but also stops save operation!
+					document.body.removeChild(elem);
+					window.URL.revokeObjectURL(blob);
+				});
+				elem.click();
 			}
-			updateCanvas();
-			console.log(imgCanvas);
-			//var imgContext = imgCanvas.getContext("2d");
-			//var gblob = imgContext.toDataUrl();
-			updateCanvas();
-			//because of blob size, call has to be asynchronous. generate blob here.
-			imgCanvas.toBlob(function(blob){
-				console.log("Blob:");
-				console.log(blob);
-				//concat art and platform groups to string
-				var svgPayload = svgMinPrepend + artToString() + platformToString() + svgAppend;
-				//populate body in array
-				var payload = {};
-				//add coordinates to payload
-				payload["xcoord"] = $("#xcoord").val();
-				payload["ycoord"] = $("#ycoord").val();
-				//add password to payload
-				payload["pw"] = pw1;
-				payload["svg"] = svgPayload;
-				payload["graphic"] = blob;
-				if (debugging){
-					console.log("Payload to server:");
-					console.log(payload);
+		}
+		
+		// save current drawing data to local storage
+		// borrows a bit from Mark's code for loading/saving SVG on the server
+		// references: https://www.html5rocks.com/en/tutorials/file/dndfiles/
+		function svgSaveToLocal() {
+			handleShapeInProgress();
+
+			// generate the file string
+			var myFileString = svgFileHeader +
+								svgMinPrepend +
+								artToString() +
+								platformToString() +
+								svgAppend;
+					
+			// get filename to save to
+			myFileName = "art.svg";
+			if (msgTextInput.value != "") {
+				myFileName = msgTextInput.value;
+			}
+			if (myFileName.substr(myFileName.length - 4) != ".svg") {
+				myFileName += ".svg";
+			}
+
+			// call helper function
+			saveToFile(myFileName, myFileString);
+			
+			// debug message
+			if (debugging) {
+				console.log("Saved SVG data to file: " + myFileName);
+			}
+
+			// hide message box
+			messageDiv.style.display = "none";
+		}
+
+		// helper function that empties out all the SVG data currently stored in the page
+		// this includes undo/redo data
+		function svgClearAll() {
+			clearUndoRedoLists();
+			
+			// clear out drawn objects
+			var myObject;
+			for (var i = 1; i < currentObject; i += 1) {
+				myObject = document.getElementById(objectStr + i.toString());
+				if (myObject != null) {
+					drawingGroup.removeChild(myObject);
 				}
-				//create request
-				var request = new XMLHttpRequest();
-				//configure to post asynchronously to server
-				request.open("POST","/edit",true);
-				//set header
-				request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
-				//set callback functions
-				request.onload = function(){
-					if (request.readyState === 4){
-						if (request.status === 200) {
-							console.log(request.responseText);
-						} else {
-							console.error(request.statusText);
+			}
+			currentObject = 1;
+
+			// clear out platform objects
+			var myParent;
+			for (var j = 1; j < currentPlatform; j += 1) {
+				myObject = document.getElementById(platformStr + j.toString());
+				myParent = myObject.parentNode;
+				myParent.removeChild(myObject);
+			}
+			currentPlatform = 1;
+			
+			// clear out platform actions list
+			for (var i = platformActionsList.length - 1; i >= 0; i -= 1) {
+				myID = platformActionsList.pop();
+			}
+		}
+
+		// helper function loads a given SVG string into the drawing canvas
+		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+		function svgLoadFromString(myString) {
+			// parse the given string into a document and get its parts
+			var parser = new DOMParser();
+			var doc = parser.parseFromString(myString, "image/svg+xml");
+			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
+			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
+			
+			// clear out current art data
+			svgClearAll();
+
+			// set up to copy data
+			// have to slice to real arrays so looping will work correctly
+			var myObject;
+			var drawingArray = Array.prototype.slice.call(strDrawingGroup.children);
+			var platformsArray = Array.prototype.slice.call(strPlatformsGroup.children);
+
+			// copy drawing data and update currentObject counter
+			for (var i = 0; i < drawingArray.length; i += 1) {
+				myObject = drawingArray[i];
+				drawingGroup.appendChild(myObject);
+				currentObject += 1;
+				if (verboseDebugging) {
+					console.log("Loaded object with ID#: " + i.toString() + " / " + myObject.id);
+				}
+			}
+
+			// copy platform data and update currentPlatform counter
+			for (var j = 0; j < platformsArray.length; j += 1) {
+				myObject = platformsArray[j];
+				platformsGroup.appendChild(myObject);
+				platformActionsList.push(getIDNumFromIDString(platformStr, myObject.id));
+				if (verboseDebugging) {
+					console.log("Loaded platform with ID#: " + j.toString() + " / " + myObject.id);
+				}
+			}
+			if (platformsArray.length != 0) {
+				currentPlatform = getIDNumFromIDString(platformStr, platformsArray[platformsArray.length - 1].id) + 1;
+			}
+		}
+
+		// helper function that is called when user chooses a file to load
+		// borrows a bit from Mark's code for loading/saving SVG on the server
+		// references: https://www.html5rocks.com/en/tutorials/file/dndfiles/
+		function doLoadFromLocal() {
+			// only continue with action if user actually selected a file
+			if (myFileInput.files.length != 0) {
+				// open file and grab contents
+				var myReader = new FileReader();
+				myReader.onloadend = function(evt) {
+					var myFileString = evt.target.result;
+					
+					// extract the header and svg data from this string
+					var myFileHeader = myFileString.slice(0, svgFileHeader.length);
+					var myFileSVG = myFileString.slice(svgFileHeader.length, myFileString.length);
+					
+					// debug printouts
+					if (verboseDebugging) {
+						console.log("Found file header: " + myFileHeader);
+						console.log("Found file contents:");
+						console.log(myFileSVG);
+					}
+					
+					// validate that this is a file generated by this app
+					if (myFileHeader == svgFileHeader) {
+						// load this into the svg drawing canvas
+						svgLoadFromString(myFileSVG);
+						
+						// debug message
+						if (debugging) {
+							console.log("Loaded drawing and platform data from a valid file.");
+						}
+						
+						// hide message box
+						messageDiv.style.display = "none";
+					} else { // error message
+						// use custom message box
+						displayMessage("Sorry, that is not a valid file.", doNothing, doNothing, false)
+					
+						// debug message
+						if (debugging) {
+							console.log("Tried to load drawing and platform data from an invalid file.");
 						}
 					}
 				};
-				request.onerror = function(args){
-					console.error(request.statusText);
-				};
-				request.send(JSON.stringify(payload));
-			});
+				myReader.readAsText(myFileInput.files[0]);
+			} else { // do nothing with the request
+				// hide message box
+				messageDiv.style.display = "none";
+			}
+		}
+		
+		// load drawing data from local storage
+		function svgLoadFromLocal() {
+			handleShapeInProgress();
+			doZoomReset();
+
+			// choose file to load from
+			myFileInput.value = "";
+			myFileInput.addEventListener("change", doLoadFromLocal);
+			myFileInput.click();
+		}
+
+		// submit drawing and platform data to server
+		// ??? integrate this with Mark's code
+		function svgSubmitToServer() {
+			handleShapeInProgress();
+
+			// start Mark's code
+			// ###
+			// end Mark's code
+			
+			// debug message
+			if (debugging) {
+				console.log("Submitted drawing and platform data to the server.");
+			}
+			
+			// hide message box
+			messageDiv.style.display = "none";
+		}
+		
+		// load drawing and platform data from the server
+		// call this from the svg init function
+		// ??? integrate this with Mark's code
+		function svgLoadFromServer(xTile, yTile, password) {
+			handleShapeInProgress();
+
+			// start Mark's code
+			// ###
+			// end Mark's code
+
+			// and/or use my helper function
+			//svgLoadFromString(theSVGDataString);
+			
+			// debug message
+			if (debugging) {
+				console.log("Loaded drawing and platform data for tile (" + xTile + ", " + yTile + ") from the server.");
+			}
+			
+			// hide message box if not in the process of loading the page the first time
+			if (!loadingPage) {
+				messageDiv.style.display = "none";
+			}
+			
 		}
 		
 		// close out an in-progress shape first if an option selection changes
+		// ??? much of this is copy-pasted and really should be refactored
 		function handleShapeInProgress() {
-			// the only shape this could be is a polygon <-- WRONG! ???
-			// could hit ctrl+z on keyboard while still dragging a rect/ellipse
-			// so clean up a partly-completed polygon by leaving it a polyline
-			// ??? this is copy-pasted and really should be refactored
+			// only need to do something if there is a shape in progress
 			if (inProgress) {
-				// get the current shape and its info, including the marker
-				var newPolyline = document.getElementById(objectStr + currentObject.toString());
-				var pointString = newPolyline.getAttribute("points");
-				var numPoints = pointString.split(" ").length-1;
-				var startMarker = document.getElementById(polygonStartMarker);
-				var pointMarker = document.getElementById(polygonPointMarker);
+				var shapeInProgress;
+				// determine what tool is active / what type of shape
+				switch (toolChoice) {
+					case 0: // rectangle
+						// clean up an in-progress rectangle by finishing it at the current coordinates
+						
+						// get the new rectangle and its info
+						shapeInProgress = document.getElementById(objectStr + currentObject.toString());
+						
+						// check for width or height equal to 0
+						if (shapeInProgress.getAttribute("width") == 0) {
+							shapeInProgress.setAttribute("width", "1");
+						}
+						if (shapeInProgress.getAttribute("height") == 0) {
+							shapeInProgress.setAttribute("height", "1");
+						}
+						
+						// debug output for completed rectangle
+						if (debugging) {
+							console.log(objectStr + currentObject.toString() + ": Made a rectangle at (" +
+									shapeInProgress.getAttribute("x") +	", " +
+									shapeInProgress.getAttribute("y") + ") with width: " +
+									shapeInProgress.getAttribute("width") + " and height: " +
+									shapeInProgress.getAttribute("height") + ".");
+						}
+
+						// increment counter and set flag to false
+						currentObject += 1;
+						inProgress = false;
+						break;
+
+					case 1: // ellipse
+
+						// get the new ellipse and its info
+						shapeInProgress = document.getElementById(objectStr + currentObject.toString());
+						
+						// check for either radius equal to 0
+						if (shapeInProgress.getAttribute("rx") == 0) {
+							shapeInProgress.setAttribute("rx", "1");
+						}
+						if (shapeInProgress.getAttribute("ry") == 0) {
+							shapeInProgress.setAttribute("ry", "1");
+						}
+					
+						// debug output for completed ellipse
+						if (debugging) {
+							console.log(objectStr + currentObject.toString() + ": Made an ellipse at (" +
+									shapeInProgress.getAttribute("cx") +	", " +
+									shapeInProgress.getAttribute("cy") + ") with x-radius: " +
+									shapeInProgress.getAttribute("rx") + " and y-radius: " +
+									shapeInProgress.getAttribute("ry") + ".");
+						}
+						
+						// increment shape counter and turn off inProgress flag
+						currentObject += 1;
+						inProgress = false;
+						break;
+
+					case 2: // polygon
+						// clean up a partly-completed polygon by leaving it a polyline
+
+						// get the current shape and its info, including the marker
+						var newPolyline = document.getElementById(objectStr + currentObject.toString());
+						var pointString = newPolyline.getAttribute("points");
+						var numPoints = pointString.split(" ").length-1;
+						var startMarker = document.getElementById(polygonStartMarker);
+						var pointMarker = document.getElementById(polygonPointMarker);
 				
-				// remove the polygon point markers from the DOM
-				drawingGroup.removeChild(startMarker);
-				drawingGroup.removeChild(pointMarker);
+						// remove the polygon point markers from the DOM
+						drawingGroup.removeChild(startMarker);
+						drawingGroup.removeChild(pointMarker);
 				
-				// handle the case where there is only one point
-				if (numPoints == 1) {
-					// delete the polyline
-					drawingGroup.removeChild(newPolyline);
+						// handle the case where there is only one point
+						if (numPoints == 1) {
+							// delete the polyline
+							drawingGroup.removeChild(newPolyline);
 					
-					// create a dot/ellipse and set its attributes
-					// use the original xStart and yStart for this click
-					var newDot;
-					newDot = document.createElementNS(svgns, "ellipse");
-					newDot.setAttribute("id", objectStr + currentObject.toString());
-					newDot.setAttribute("cx", xStart.toString());
-					newDot.setAttribute("cy", yStart.toString());
-					newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
-					newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
-					newDot.setAttribute("style", "fill: " +
-						colorChoice + "; stroke: " + colorChoice);
+							// create a dot/ellipse and set its attributes
+							// use the original xStart and yStart for this click
+							var newDot;
+							newDot = document.createElementNS(svgns, "ellipse");
+							newDot.setAttribute("id", objectStr + currentObject.toString());
+							newDot.setAttribute("cx", xStart.toString());
+							newDot.setAttribute("cy", yStart.toString());
+							newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("style", "fill: " +
+								colorChoice + "; stroke: " + colorChoice);
 					
-					// append dot to canvas
-					drawingGroup.appendChild(newDot);
+							// append dot to canvas
+							drawingGroup.appendChild(newDot);
 					
-					// debug message for the dot
-					if (debugging) {
-						console.log(objectStr + currentObject.toString() +
-						": Made a polyline at point: " + pointString + ".");
-					}
-				} else {
-					// debug message for the polyline
-					if (debugging) {
-						console.log(objectStr + currentObject.toString() +
-						": Made a polyline at points: " + pointString + ".");
-					}
+							// debug message for the dot
+							if (debugging) {
+								console.log(objectStr + currentObject.toString() +
+								": Made a polyline at point: " + pointString + ".");
+							}
+						} else {
+							// debug message for the polyline
+							if (debugging) {
+								console.log(objectStr + currentObject.toString() +
+								": Made a polyline at points: " + pointString + ".");
+							}
+						}
+				
+						// increment counter and set flag to false
+						currentObject += 1;
+						inProgress = false;
+						break;
+
+					case 3: // brush
+
+						// get the current brush stroke and its info
+						var brushObj = document.getElementById(objectStr + currentObject.toString());
+						var pointString = brushObj.getAttribute("points");
+						var numPoints = pointString.split(" ").length-1;
+						
+						// if there's only one point, handle as a single click
+						if (numPoints == 1) {
+							// delete the polyline
+							drawingGroup.removeChild(brushObj);
+							
+							// create a dot/ellipse and set its attributes
+							// use the original xStart and yStart for this click
+							var newDot;
+							newDot = document.createElementNS(svgns, "ellipse");
+							newDot.setAttribute("id", objectStr + currentObject.toString());
+							newDot.setAttribute("cx", xStart.toString());
+							newDot.setAttribute("cy", yStart.toString());
+							newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("style", "fill: " +
+								colorChoice + "; stroke: " + colorChoice);
+							
+							// append dot to canvas
+							drawingGroup.appendChild(newDot);
+						} else { // if fill is on, add the fill
+							if (shapeFillChoice) {
+								brushObj.style.fill = colorChoice;
+							}
+						}
+					
+						// debug output for completed brush stroke
+						if (debugging) {
+							console.log(objectStr + currentObject.toString() + ": Made a brush stroke.");
+						}
+						
+						// increment shape counter and turn off inProgress flag
+						currentObject += 1;
+						inProgress = false;
+						break;
+
+					case 4: // eraser
+
+						// get the current eraser stroke and its info
+						var eraserObj = document.getElementById(objectStr + currentObject.toString());
+						var pointString = eraserObj.getAttribute("points");
+						var numPoints = pointString.split(" ").length-1;
+						
+						// if there's only one point, handle as a single click
+						if (numPoints == 1) {
+							// delete the polyline
+							drawingGroup.removeChild(eraserObj);
+							
+							// create a dot/ellipse and set its attributes
+							// use the original xStart and yStart for this click
+							var newDot;
+							newDot = document.createElementNS(svgns, "ellipse");
+							newDot.setAttribute("id", objectStr + currentObject.toString());
+							newDot.setAttribute("cx", xStart.toString());
+							newDot.setAttribute("cy", yStart.toString());
+							newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("style", "fill: " +
+								eraserColor + "; stroke: " + eraserColor);
+							
+							// append dot to canvas
+							drawingGroup.appendChild(newDot);
+						} else { // if fill is on, add the fill
+							if (shapeFillChoice) {
+								eraserObj.style.fill = eraserColor;
+							}
+						}
+						
+						// debug output for completed eraser stroke
+						if (debugging) {
+							console.log(objectStr + currentObject.toString() + ": Made an eraser stroke.");
+						}
+						
+						// increment shape counter and turn off inProgress flag
+						currentObject += 1;
+						inProgress = false;
+						break;
+
+					case 5: // eye dropper
+						break;
+
+					case 6: // paint can
+						break;
+
+					case 7: // wall
+
+						// get the current wall stroke and its info
+						var wallObj = document.getElementById(platformStr + currentPlatform.toString());
+						var pointString = wallObj.getAttribute("points");
+						var numPoints = pointString.split(" ").length-1;
+						
+						// if there's only one point, handle as a single click
+						if (numPoints == 1) {
+							// delete the polyline
+							platformsGroup.removeChild(wallObj);
+							
+							// create a dot/ellipse and set its attributes
+							// use the original xStart and yStart for this click
+							var newDot;
+							newDot = document.createElementNS(svgns, "ellipse");
+							newDot.setAttribute("id", platformStr + currentPlatform.toString());
+							newDot.setAttribute("cx", xStart.toString());
+							newDot.setAttribute("cy", yStart.toString());
+							newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("style", "fill: " +
+								wallColor + "; stroke: " + wallColor);
+							newDot.setAttribute("class", "platformDot");
+							
+							// append dot to canvas
+							platformsGroup.appendChild(newDot);
+						}
+					
+						// debug output for completed wall
+						if (debugging) {
+							console.log(platformStr + currentPlatform.toString() + ": Made a wall.");
+						}
+
+						// add the index of the new wall to the platform actions list
+						platformActionsList.push(currentPlatform);
+						
+						// increment shape counter and turn off inProgress flag
+						currentPlatform += 1;
+						inProgress = false;
+						break;
+
+					case 8: // ladder
+
+						// get the current ladder stroke and its info
+						var ladderObj = document.getElementById(platformStr + currentPlatform.toString());
+						var pointString = ladderObj.getAttribute("points");
+						var numPoints = pointString.split(" ").length-1;
+						
+						// if there's only one point, handle as a single click
+						if (numPoints == 1) {
+							// delete the polyline
+							platformsGroup.removeChild(ladderObj);
+							
+							// create a dot/ellipse and set its attributes
+							// use the original xStart and yStart for this click
+							var newDot;
+							newDot = document.createElementNS(svgns, "ellipse");
+							newDot.setAttribute("id", platformStr + currentPlatform.toString());
+							newDot.setAttribute("cx", xStart.toString());
+							newDot.setAttribute("cy", yStart.toString());
+							newDot.setAttribute("rx", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("ry", strokeWidthChoice.toString()/2);
+							newDot.setAttribute("style", "fill: " +
+								ladderColor + "; stroke: " + ladderColor);
+							newDot.setAttribute("class", "platformDot");
+							
+							// append dot to canvas
+							platformsGroup.appendChild(newDot);
+						}
+					
+						// debug output for completed ladder
+						if (debugging) {
+							console.log(platformStr + currentPlatform.toString() + ": Made a ladder.");
+						}
+
+						// add the index of the new ladder to the platform actions list
+						platformActionsList.push(currentPlatform);
+						
+						// increment shape counter and turn off inProgress flag
+						currentPlatform += 1;
+						inProgress = false;
+						break;
+
+					case 9: // platform select
+						break;
+						
+					default: // should never get here
+						console.log("Something went horribly awry with handling a shape in progress.");
+
 				}
-				
-				// increment counter and set flag to false
-				currentObject += 1;
-				inProgress = false;
 			}
 		}
 		
@@ -1316,7 +1903,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				myID = undoneDrawingList.pop();
 			}
 			// clear undone platforms info
-			for (var i = undonePlatformsList.length - 1; i >=0; i -=1) {
+			for (var i = undonePlatformsList.length - 1; i >= 0; i -= 1) {
 				// only look for the element if the entry found is positive
 				if (undonePlatformsList[i] > 0) {
 					// get the next element to clear out
@@ -1347,7 +1934,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		}
 		
 		// update xMouse and yMouse with the current click info
-		// turns a drawing area coords into canvas coords regardless of zoom
+		// turns a drawing area coords into canvas coords regardless of zoom/pan
 		function updateMouseCoords(evt) {
 			// adjust for screen offset
 			xMouse = evt.clientX - xOffset;
@@ -1601,7 +2188,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						// get the mouse coordinates in the canvas
 						updateMouseCoords(evt);
 						
-						// get the current circle
+						// get the current ellipse
 						shapeInProgress = document.getElementById(objectStr + currentObject.toString());
 						
 						// calculate new rectangle info
@@ -1610,13 +2197,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						var wNew =  Math.max(1, Math.abs(xMouse - xStart));
 						var hNew =  Math.max(1, Math.abs(yMouse - yStart));
 						
-						// calculate new circle info
+						// calculate new ellipse info
 						var rxNew = wNew/2;
 						var ryNew = hNew/2;
 						var cxNew = xNew + rxNew;
 						var cyNew = yNew + ryNew;
 						
-						// set new circle info
+						// set new ellipse info
 						shapeInProgress.setAttribute("cx", cxNew.toString());
 						shapeInProgress.setAttribute("cy", cyNew.toString());
 						shapeInProgress.setAttribute("rx", rxNew.toString());
@@ -2309,6 +2896,35 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 	]]> </script>
 </svg>
 			</div>
+		</div>
+
+		<!--Heights that worked before temporary nav buttons were
+				div: 476px and fieldset: 449px-->
+		<div id="messageDiv"
+			style="display: block; width: 1031px; height: 535px; position: absolute; top: 40px; left: 5px; background-color: grey">
+
+			<form id="messageControls" onsubmit="return onFormSubmit(this)">
+				<fieldset style="width: 1002px; height: 508px; position: absolute; top: 2px; left: 0px">
+
+					<legend id="messageLegend"></legend>
+
+					<h1 id="messageText"
+						style="font-size: 350%; width: 1002px; text-align: center; position: absolute; top: 100px">
+					</h1>
+
+					<input type="text" id="msgTextInput" value="art.svg"
+						style="display: block; width: 235px; position: absolute; top: 350px; left: 380px">
+					</input>
+
+					<input type="button" id="msgBtnOK" onclick="doMsgBtnOK()" value="Okay"
+						style="display: block; width: 80px; position: absolute; top: 400px; left: 380px">
+					</input>
+
+					<input type="button" id="msgBtnCancel" onclick="doMsgBtnCancel()" value="Cancel"
+						style="display: block; width: 80px; position: absolute; top: 400px; left: 540px">
+					</input>
+				</fieldset>
+			</form>
 		</div>
 	</body>
 </html>
