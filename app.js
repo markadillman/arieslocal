@@ -95,20 +95,19 @@ app.post('/edit',function(req,res){
 	});
 });
 
-/*this pull takes 8 sets of coordinates. Payload body format:
+/*this pull takes 8 sets of coordinates. Payload body format, coordinates as integer pairs
 -----"ul":{<upper left coords>}
 -----"um":{<upper middle coords>}
 -----"ur":{<upper right coords>}
 -----"cl":{<center left coords>}
------"cm":{<center middle coords>}
 -----"cr":{<center right coords>}
 -----"bl":{<bottom left coords>}
 -----"bm":{<bottom middle coords>}
 -----"br":{<bottom right coords>}
-*/
-app.post('/readpull',function(req,res)){
 
-}
+RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
+
+*/
 
 var insertDocument = function(db,insertDoc,res,callback){
 	var collection = db.collection('tiles');
@@ -155,6 +154,13 @@ app.post('/retrieve',function(req,res){
 		findDocument(db,query,req,res,findCallback);
 	});
 });
+
+app.post('/readpull',function(req,res)){
+	var query = {};
+	var variableArray = new Array();
+	return;
+});
+
 
 var findDocument = function(db,query,req,res,callback){
 	var collection = db.collection('tiles');

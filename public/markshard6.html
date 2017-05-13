@@ -76,15 +76,15 @@ Mark, search for ### to find 4 places to integrate your code.
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
 			//MARK'S CODE: coordinates match above display dict for concise looping JSON payload formation
-			var coordinatePairs = {"ul": {"x":-1,"y":-1},//------upper left ("ul")
-								   "uc": {"x":0,"y":-1}, //------upper middle ("uc")
-								   "ur": {"x":1,"y":-1}, //------upper right ("ur")
-								   "cl": {"x":-1,"y":0}, //------center left ("cl")
-								   "cm": {"x":0,"y":0},  //------center middle ("cm") <-dummy for continuous loop interval
-								   "cr": {"x":1,"y":0},  //------center right ("cr")
-								   "bl": {"x":-1,"y":1}, //------bottom left ("bl")
-								   "bm": {"x":0,"y":1},  //------bottom middle ("bm")
-								   "br": {"x":1,"y":1}    //------bottom right ("br")
+			var coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},//------upper left ("ul")
+								   "uc": {"x":0,"y":-1,"canvasId":"aboveDivCanvas"}, //------upper middle ("uc")
+								   "ur": {"x":1,"y":-1,"canvasId":"aboveRightDivCanvas"}, //------upper right ("ur")
+								   "cl": {"x":-1,"y":0,"canvasId":"leftDivCanvas"}, //------center left ("cl")
+								   "cm": {"x":0,"y":0,"canvasId":"svgCanvas"},  //------center middle ("cm") <-dummy for index loops
+								   "cr": {"x":1,"y":0,"canvasId":"rightDivCanvas"},  //------center right ("cr")
+								   "bl": {"x":-1,"y":1,"canvasId":"belowLeftDivCanvas"}, //------bottom left ("bl")
+								   "bm": {"x":0,"y":1,"canvasId":"belowDivCanvas"},  //------bottom middle ("bm")
+								   "br": {"x":1,"y":1,"canvasId":"belowRightDivCanvas"}    //------bottom right ("br")
 								};
 			//end MARK'S CODE
 			var myFileInput;		// HTML input element for handling files
@@ -311,8 +311,11 @@ Mark, search for ### to find 4 places to integrate your code.
 					
 					// start Mark's code
 					// ###
-					//declate JSON object for payload
+					//declare JSON object for payload
 					var readOnlyPayload = generateSurroundingsPayload();
+					//execute request
+					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
+					//do more stuff with request response if need be, but probably not necessary
 				}
 				
 				// position the overall display div
@@ -1032,11 +1035,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			// end Mark's code
 		}
 
-		//generic functions to Mark's helper code. Must be in scope of var xTile and yTile
-		//This function pulls objects solely in read mode:
-		//------No password check
-		//------No callback responses to server
-		//------Look into accomplishing this all in one post
+		//KEEP: HELPER FUNCTION TO GENERATE FORMATTED SURROUNDING PAYLOAD GIVEN CURRENT TILE
 		function generateSurroundingsPayload(){
 			//initialize payload JS object
 			var payload = {};
@@ -1058,6 +1057,58 @@ Mark, search for ### to find 4 places to integrate your code.
 			}
 			return payload;
 		}
+
+		//KEEP: HELPER FUNCTION : args url to post, payload as Object, onload funciton, error function
+		function postRequest(url,payload,onload,error){
+			var request = new XMLHttpRequest();
+			request.open("POST",payload,true);
+			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+			request.onload = onload;
+			request.onerror = error;
+			request.send();
+			return request;
+		}
+		//KEEP: HELPER FUNCTION: request error helper
+		function postOnError(args,request){
+			console.error(request.statusText);
+		}
+		//KEEP: HELPER FUNCTION: load into center, editing SVG environment
+		function svgEditOnLoad(request){
+			if (request.readyState === 4){
+				if (request.status === 200) {
+					body = JSON.parse(request.responseText);
+					if (debugging){
+						console.log(body.svg);
+					}
+					//use svg.js load to load into main svg
+					var draw = SVG('svgCanvas');
+					//load the svg xml as stirng
+					draw.svg(body.svg);
+				} else {
+					console.error(request.statusText);
+				}
+			}
+		}
+		//KEEP: HELPER FUNCTION: ASYNCH LOAD INTO SURROUNDING TILES
+		function surroundingsOnLoad(request){
+			if (reqest.readyState === 4){
+				if (request.status === 200) {
+					body = JSON.parse(request.responseText);
+					if (debugging){
+						console.log(body);
+					}
+					//iterate over all cavases except center and populate
+					for (key in coordinatePairs){
+						//get canvas that matches up with key
+						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
+						//get that canvas context
+						var targetContext = targetCanvas.getContext("2d");
+						putGroupInCanvas(body[key],targetContext);
+					}
+				}
+			}
+		}
+
 		
 		// updates the navigation radio buttons
 		// needed on page load, just for the midpoint check version

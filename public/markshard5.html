@@ -893,7 +893,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			var payload = {};
 			payload["xcoord"] = xcoord;
 			payload["ycoord"] = ycoord;
-			payload["pw"] = pw1;
+			//payload["pw"] = pw1; -------- TEMP DISABLED FOR DEMO
 			//create request
 			var request = new XMLHttpRequest();
 			request.open("POST","/retrieve",true);
@@ -928,7 +928,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				"password" : (value of password. Eventually, since already proved editing rights, 
 							  overwrites previous pw),
 				"svg" : (svg values of art and string platforms concatenated with minimum svg tags),
-				"graphic" : (JSON Blob formatted image/png. Pulled from white backdrop invis canvas)
+				"graphic" : (JSON Blob formatted image/png. Pulled from "#hiddenCanvas")
 		*/
 		//STILL NEED TO ADD ASYNCHRONOUS CODE FOR PASSWORD CHECK / CHANGE
 
