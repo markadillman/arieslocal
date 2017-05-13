@@ -1063,6 +1063,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			var request = new XMLHttpRequest();
 			request.open("POST",url,true);
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
+			request.responseType = "json";
 			request.onload = onload(request);
 			request.onerror = error(request);
 			request.send(JSON.stringify(payload));
