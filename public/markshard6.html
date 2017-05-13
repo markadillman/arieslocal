@@ -485,7 +485,7 @@ Mark, search for ### to find 4 places to integrate your code.
 				displayMessage("Use the dialog to select an art file to load.", svgLoadFromLocal, doNothing, false);
 			}
 			function submitButton () {
-				displayMessage("Sorry, submitting to the server doesn't work yet.", svgSubmitToServer, doNothing), false;
+				svgSubmitToServer(document.getElementById('hiddenCanvas'));
 			}
 			function undoButton() {
 				svgUndoAction();
