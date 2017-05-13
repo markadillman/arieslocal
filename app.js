@@ -35,6 +35,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 app.use('/users', users);
 
+const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},//------upper left ("ul")
+					     "uc": {"x":0,"y":-1,"canvasId":"aboveDivCanvas"},     //------upper middle ("uc")
+					     "ur": {"x":1,"y":-1,"canvasId":"aboveRightDivCanvas"},//------upper right ("ur")
+					     "cl": {"x":-1,"y":0,"canvasId":"leftDivCanvas"},      //------center left ("cl")
+					     "cm": {"x":0,"y":0,"canvasId":"svgCanvas"},           //------center middle ("cm") <-dummy for index loops
+					     "cr": {"x":1,"y":0,"canvasId":"rightDivCanvas"},      //------center right ("cr")
+					     "bl": {"x":-1,"y":1,"canvasId":"belowLeftDivCanvas"}, //------bottom left ("bl")
+					     "bm": {"x":0,"y":1,"canvasId":"belowDivCanvas"},      //------bottom middle ("bm")
+					     "br": {"x":1,"y":1,"canvasId":"belowRightDivCanvas"}  //------bottom right ("br")
+					};
+
 //HELPER FUNCTION FOR SVG VALIDITY
 function isValidSvg(svgString){
 	//parse and see if there are any errors
@@ -95,20 +106,6 @@ app.post('/edit',function(req,res){
 	});
 });
 
-/*this pull takes 8 sets of coordinates. Payload body format, coordinates as integer pairs
------"ul":{<upper left coords>}
------"um":{<upper middle coords>}
------"ur":{<upper right coords>}
------"cl":{<center left coords>}
------"cr":{<center right coords>}
------"bl":{<bottom left coords>}
------"bm":{<bottom middle coords>}
------"br":{<bottom right coords>}
-
-RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
-
-*/
-
 var insertDocument = function(db,insertDoc,res,callback){
 	var collection = db.collection('tiles');
 	//insert the document
@@ -131,36 +128,6 @@ var insertCallback = function(db,res){
 	db.close();
 	res.sendStatus(200);
 }
-
-app.post('/retrieve',function(req,res){
-	var query = {};
-	query['xcoord'] = parseInt(req.body.xcoord);
-	query['ycoord'] = parseInt(req.body.ycoord);
-	if (req.body.pw){
-		query['pw'] = req.body.pw;
-	}
-	else {
-		query['pw']="";
-	}
-	if (!(Number.isInteger(query['xcoord'])&&Number.isInteger(query['ycoord']))){
-		res.status(511).send("Tile coordinates invalid or out of bounds.");
-		return;
-	}
-	MongoClient.connect(dbUrl,function(err,db){
-		//test for errors, pop out if there are errors present
-		assert.equal(null,err);
-		console.log("connected succesfully to server");
-		//perform lookup
-		findDocument(db,query,req,res,findCallback);
-	});
-});
-
-app.post('/readpull',function(req,res)){
-	var query = {};
-	var variableArray = new Array();
-	return;
-});
-
 
 var findDocument = function(db,query,req,res,callback){
 	var collection = db.collection('tiles');
@@ -191,6 +158,96 @@ var findCallback = function(db,req,res,docs){
 	}
 	db.close();
 }
+
+
+/*this pull takes 8 sets of coordinates. Payload body format, coordinates as integer pairs
+-----"ul":{<upper left coords>}
+-----"um":{<upper middle coords>}
+-----"ur":{<upper right coords>}
+-----"cl":{<center left coords>}
+-----"cr":{<center right coords>}
+-----"bl":{<bottom left coords>}
+-----"bm":{<bottom middle coords>}
+-----"br":{<bottom right coords>}
+
+RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
+*/
+var readSurroundingsCallback = function(db,req,res,docs,initCoords){
+	//if no matches, send client-interpretable 555 for all blank canvases
+	if (docs.length === 0){
+		res.status(555).send("No surroundings. All environments in surroundings are empty.");
+	}
+	else {
+		//initialize response object
+		var responseObject = {};
+		//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
+		for (tile in coordinatePairs){
+			//inner loop iterates over returned matches that have been edited and are owned
+			for (doc in docs){
+				//if there are custom art assets at a given tile, add that document to the response body
+				if ((docs.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
+					 docs.ycoord - initCoords.y == coordinatePairs[tile]['y'])
+				{
+					responseObject[tile] = docs[doc];
+				}
+			}
+		}
+		console.log(util.inspect(responseObject));
+		//send response
+		res.setHeader('Content-Type','application/json');
+		res.status(200);
+		res.send(JSON.stringify(responseObject));
+	}
+}
+
+app.post('/retrieve',function(req,res){
+	var query = {};
+	query['xcoord'] = parseInt(req.body.xcoord);
+	query['ycoord'] = parseInt(req.body.ycoord);
+	if (req.body.pw){
+		query['pw'] = req.body.pw;
+	}
+	else {
+		query['pw']="";
+	}
+	if (!(Number.isInteger(query['xcoord'])&&Number.isInteger(query['ycoord']))){
+		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		return;
+	}
+	MongoClient.connect(dbUrl,function(err,db){
+		//test for errors, pop out if there are errors present
+		assert.equal(null,err);
+		console.log("connected succesfully to server");
+		//perform lookup
+		findDocument(db,query,req,res,findCallback);
+	});
+});
+
+app.post('/readpull',function(req,res)){
+	var query = {};
+	var variableArray = new Array();
+	//iteratively create variableArray
+	var initCoords = {};
+	var initCoords['x'] = var.body['cl']['x'] + 1;
+	var initCoords['y'] = var.body['cl']['y'];
+	for (key in req.body){
+		var tempCoords = {};
+		tempCoords['xcoord'] = req.body['key']['x'];
+		tempCoords['ycoord'] = req.body['key']['y'];
+		variableArray.push(tempCoords);
+	}
+	console.log(util.inspect(variableArray));
+	query['$or'] = variableArray;
+	console.log(util.inspect(query));
+		MongoClient.connect(dbUrl,function(err,db){
+		//test for errors, pop out if there are errors present
+		assert.equal(null,err);
+		console.log("connected succesfully to server");
+		//perform lookup
+		findDocument(db,query,req,res,findCallback,initCoords);
+	});
+	return;
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
