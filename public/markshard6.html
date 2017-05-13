@@ -399,14 +399,6 @@ Mark, search for ### to find 4 places to integrate your code.
 					console.log("Loaded HTML with debug messages turned on.");
 				}
 			}
-
-			window.onload = function(){
-					var readOnlyPayload = generateSurroundingsPayload();
-					//execute request
-					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
-					//do more stuff with request response if need be, but probably not necessary
-					svgLoadFromServer(xTile, yTile, password);
-			}
 			
 			// stop event propagation so form doesn't actually submit
 			function onFormSubmit(form_element) {
@@ -3081,5 +3073,14 @@ Mark, search for ### to find 4 places to integrate your code.
 				</fieldset>
 			</form>
 		</div>
+		<script type="text/javascript">
+					window.onload = function(){
+					var readOnlyPayload = generateSurroundingsPayload();
+					//execute request
+					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
+					//do more stuff with request response if need be, but probably not necessary
+					svgLoadFromServer(xTile, yTile, password);
+			}
+		</script>
 	</body>
 </html>
