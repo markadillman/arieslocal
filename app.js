@@ -224,6 +224,7 @@ app.post('/retrieve',function(req,res){
 });
 
 app.post('/readpull',function(req,res){
+	console.log(util.inspect(req.body));
 	var query = {};
 	var variableArray = new Array();
 	//iteratively create variableArray
@@ -232,8 +233,8 @@ app.post('/readpull',function(req,res){
 	initCoords.y = req.body.cl.y;
 	for (key in req.body){
 		var tempCoords = {};
-		tempCoords['xcoord'] = req.body['key']['x'];
-		tempCoords['ycoord'] = req.body['key']['y'];
+		tempCoords['xcoord'] = req.body[key]['x'];
+		tempCoords['ycoord'] = req.body[key]['y'];
 		variableArray.push(tempCoords);
 	}
 	console.log(util.inspect(variableArray));
