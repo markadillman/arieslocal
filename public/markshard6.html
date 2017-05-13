@@ -1097,7 +1097,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		//KEEP: HELPER FUNCTION: ASYNCH LOAD INTO SURROUNDING TILES
 		function surroundingsOnLoad(request){
 			if (request.readyState === 4){
-				if (request.status === 200) {
+				if (request.status === 200 || request.status === 0) {
 					console.log("Made it to good surroundings callback");
 					body = JSON.parse(request.responseText);
 					if (debugging){
