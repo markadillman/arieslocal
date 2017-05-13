@@ -202,8 +202,8 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 
 app.post('/retrieve',function(req,res){
 	var query = {};
-	query['xcoord'] = parseInt(req.body.xcoord);
-	query['ycoord'] = parseInt(req.body.ycoord);
+	query['xcoord'] = req.body.xcoord;
+	query['ycoord'] = req.body.ycoord;
 	if (req.body.pw){
 		query['pw'] = req.body.pw;
 	}
