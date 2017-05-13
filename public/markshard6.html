@@ -1101,7 +1101,10 @@ Mark, search for ### to find 4 places to integrate your code.
 					}
 					//iterate over all cavases except center and populate
 					for (key in coordinatePairs){
-						console.log()
+						console.log("Key");
+						console.log(key);
+						console.log("Body value");
+						console.log(body[key]);
 						//get canvas that matches up with key
 						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
 						//get that canvas context

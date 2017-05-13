@@ -129,7 +129,7 @@ var insertCallback = function(db,res){
 	res.sendStatus(200);
 }
 
-var findDocument = function(db,query,req,res,callback){
+var findDocument = function(db,query,req,res,callback, initCoords){
 	var collection = db.collection('tiles');
 	console.log(util.inspect(query));
 	collection.find(query).toArray(function(err,docs){
@@ -139,11 +139,15 @@ var findDocument = function(db,query,req,res,callback){
 		console.log(docs);
 		console.log("Size of docs:");
 		console.log(docs.length);
-		callback(db,req,res,docs);
+		if (initCoords){
+			callback(db,req,res,docs,initCoords);
+		} else {
+			callback(db,req,res,docs);
+		}
 	});
 }
 
-var findCallback = function(db,req,res,docs){
+var findCallback = function(db,req,res,docs,initCoords){
 	if (docs.length === 1){
 		res.setHeader('Content-Type','application/json');
 		console.log(docs[0]);
@@ -173,7 +177,6 @@ var findCallback = function(db,req,res,docs){
 RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
 */
 var readSurroundingsCallback = function(db,req,res,docs,initCoords){
-
 	//initialize response object
 	var responseObject = {};
 	//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
