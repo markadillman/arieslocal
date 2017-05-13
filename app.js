@@ -223,7 +223,7 @@ app.post('/retrieve',function(req,res){
 	});
 });
 
-app.post('/readpull',function(req,res)){
+app.post('/readpull',function(req,res){
 	var query = {};
 	var variableArray = new Array();
 	//iteratively create variableArray
