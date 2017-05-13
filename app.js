@@ -129,16 +129,16 @@ var insertCallback = function(db,res){
 	res.sendStatus(200);
 }
 
-var findDocument = function(db,query,req,res,callback, initCoords){
+var findDocument = function(db,query,req,res,callback,initCoords){
 	var collection = db.collection('tiles');
 	console.log(util.inspect(query));
 	collection.find(query).toArray(function(err,docs){
 		//if error, pop
 		assert.equal(err,null);
-		console.log("Found following records:");
-		console.log(docs);
-		console.log("Size of docs:");
-		console.log(docs.length);
+		//console.log("Found following records:");
+		//console.log(docs);
+		//console.log("Size of docs:");
+		//console.log(docs.length);
 		if (initCoords){
 			callback(db,req,res,docs,initCoords);
 		} else {
@@ -181,6 +181,10 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 	var responseObject = {};
 	//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
 	for (tile in coordinatePairs){
+		console.log("tile");
+		console.log(tile);
+		console.log("init coords");
+		console.log(initCoords);
 		//inner loop iterates over returned matches that have been edited and are owned
 		for (doc in docs){
 			//if there are custom art assets at a given tile, add that document to the response body
