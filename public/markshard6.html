@@ -1064,16 +1064,17 @@ Mark, search for ### to find 4 places to integrate your code.
 			request.open("POST",url,true);
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
 			request.onload = onload(request);
-			//request.onerror = error(request);
+			request.onerror = error(request);
 			request.send(JSON.stringify(payload));
 			return request;
 		}
 		//KEEP: HELPER FUNCTION: request error helper
 		function postOnError(request){
+			console.log("REQUEST");
 			console.log(request);
-			console.error(request.statusText);
+			//console.error(request.statusText);
+			console.log("REQUEST STATUS");
 			console.log(request.statusText);
-			console.log(request);
 		}
 		//KEEP: HELPER FUNCTION: load into center, editing SVG environment
 		function svgEditOnLoad(request){
