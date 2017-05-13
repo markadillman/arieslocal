@@ -228,8 +228,8 @@ app.post('/readpull',function(req,res){
 	var variableArray = new Array();
 	//iteratively create variableArray
 	var initCoords = {};
-	initCoords.x = var.body.cl.x + 1;
-	initCoords.y = var.body.cl.y;
+	initCoords.x = req.body.cl.x + 1;
+	initCoords.y = req.body.cl.y;
 	for (key in req.body){
 		var tempCoords = {};
 		tempCoords['xcoord'] = req.body['key']['x'];
