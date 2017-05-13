@@ -179,6 +179,8 @@ RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
 var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 	//initialize response object
 	var responseObject = {};
+	console.log("init coords");
+	console.log(initCoords);
 	//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
 	for (tile in coordinatePairs){
 		console.log("tile");
@@ -188,8 +190,8 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 		//inner loop iterates over returned matches that have been edited and are owned
 		for (doc in docs){
 			//if there are custom art assets at a given tile, add that document to the response body
-			if ((docs.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
-				 docs.ycoord - initCoords.y == coordinatePairs[tile]['y'])
+			if ((doc.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
+				 doc.ycoord - initCoords.y == coordinatePairs[tile]['y'])
 			{
 				responseObject[tile] = docs[doc];
 			}
