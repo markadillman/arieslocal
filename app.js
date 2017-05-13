@@ -190,10 +190,11 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 		//inner loop iterates over returned matches that have been edited and are owned
 		for (doc in docs){
 			//if there are custom art assets at a given tile, add that document to the response body
-			if ((doc.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
-				 doc.ycoord - initCoords.y == coordinatePairs[tile]['y'])
+			if ((docs[doc][xcoord] - initCoords.x == coordinatePairs[tile]['x']) &&
+				 docs[doc][ycoord] - initCoords.y == coordinatePairs[tile]['y'])
 			{
 				responseObject[tile] = docs[doc];
+				console.log("match found");
 			}
 		}
 	}
