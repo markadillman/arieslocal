@@ -1075,7 +1075,8 @@ Mark, search for ### to find 4 places to integrate your code.
 			console.log(request);
 			console.log("REQUEST STATUS");
 			console.log(request.status);
-			//console.error(request.statusText);
+			console.log(request.getAllResponseHeaders());
+			console.error(request.statusText);
 		}
 		//KEEP: HELPER FUNCTION: load into center, editing SVG environment
 		function svgEditOnLoad(request){
