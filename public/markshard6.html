@@ -1091,7 +1091,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		}
 		//KEEP: HELPER FUNCTION: ASYNCH LOAD INTO SURROUNDING TILES
 		function surroundingsOnLoad(request){
-			if (reqest.readyState === 4){
+			if (request.readyState === 4){
 				if (request.status === 200) {
 					body = JSON.parse(request.responseText);
 					if (debugging){
