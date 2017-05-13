@@ -211,7 +211,7 @@ app.post('/retrieve',function(req,res){
 		query['pw']="";
 	}
 	if (!(Number.isInteger(query['xcoord'])&&Number.isInteger(query['ycoord']))){
-		res.status(511).send("Tile coordinates invalid or out of bounds.");
+		res.status(527).send("Tile coordinates invalid or out of bounds.");
 		return;
 	}
 	MongoClient.connect(dbUrl,function(err,db){
