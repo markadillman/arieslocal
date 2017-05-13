@@ -152,7 +152,7 @@ var findCallback = function(db,req,res,docs,initCoords){
 		res.setHeader('Content-Type','application/json');
 		console.log(docs[0]);
 		res.status(200);
-		res.send(JSON.stringify(docs[0]));
+		res.status(200).send(JSON.stringify(docs[0]));
 	}
 	else if (docs.length === 0) {
 		res.status(555).send("No coordinate / password matches found.");
@@ -197,7 +197,7 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 	res.status(200);
 	console.log("res status:");
 	console.log(res.status);
-	res.send(JSON.stringify(responseObject));
+	res.status(200).send(JSON.stringify(responseObject));
 }
 
 app.post('/retrieve',function(req,res){
