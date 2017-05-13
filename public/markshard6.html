@@ -84,7 +84,7 @@ Mark, search for ### to find 4 places to integrate your code.
 								   "cr": {"x":1,"y":0},  //------center right ("cr")
 								   "bl": {"x":-1,"y":1}, //------bottom left ("bl")
 								   "bm": {"x":0,"y":1},  //------bottom middle ("bm")
-								   "br" {"x":1,"y":1}    //------bottom right ("br")
+								   "br": {"x":1,"y":1}    //------bottom right ("br")
 								};
 			//end MARK'S CODE
 			var myFileInput;		// HTML input element for handling files
@@ -1044,7 +1044,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			for (var key in coordinatePairs){
 				//if key is not the middle, add adjusted coord to payload
 				if (!(key === "cm")){
-					payload[key] = {(xTile+coordinatePairs[key][x]),(yTile+coordinatePairs[key][y])}
+					var tempXCoord = xTile + coordinatePairs[key]["x"];
+					var tempYCoord = xTile + coordinatePairs[key]["y"];
+					payload[key] = {tempXCoord,tempYCoord};
 				}
 			}
 			//return array of SVG XML as JSON object
@@ -1052,6 +1054,7 @@ Mark, search for ### to find 4 places to integrate your code.
 				console.log("Payload for surroundings POST:");
 				console.log(payload);
 			}
+			return payload;
 		}
 		
 		// updates the navigation radio buttons
