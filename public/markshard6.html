@@ -312,10 +312,6 @@ Mark, search for ### to find 4 places to integrate your code.
 					// start Mark's code
 					// ###
 					//declare JSON object for payload
-					var readOnlyPayload = generateSurroundingsPayload();
-					//execute request
-					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
-					//do more stuff with request response if need be, but probably not necessary
 				}
 				
 				// position the overall display div
@@ -402,6 +398,14 @@ Mark, search for ### to find 4 places to integrate your code.
 				if (debugging) {
 					console.log("Loaded HTML with debug messages turned on.");
 				}
+			}
+
+			window.onload = function(){
+					var readOnlyPayload = generateSurroundingsPayload();
+					//execute request
+					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
+					//do more stuff with request response if need be, but probably not necessary
+					svgLoadFromServer(xTile, yTile, password);
 			}
 			
 			// stop event propagation so form doesn't actually submit
@@ -960,7 +964,6 @@ Mark, search for ### to find 4 places to integrate your code.
 			canvas.addEventListener("wheel", scrollWheel);
 
 			// load data from the server
-			svgLoadFromServer(xTile, yTile, password);
 			initTileNavRadioButtons(xTile, yTile); // just for midpoint check version
 			
 			// debug message
