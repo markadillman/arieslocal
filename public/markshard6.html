@@ -1096,12 +1096,14 @@ Mark, search for ### to find 4 places to integrate your code.
 		function surroundingsOnLoad(request){
 			if (request.readyState === 4){
 				if (request.status === 200) {
+					console.log("Made it to good surroundings callback");
 					body = JSON.parse(request.responseText);
 					if (debugging){
 						console.log("Response Body:");
 						console.log(body);
 					}
 					//iterate over all cavases except center and populate
+					console.log(coordinatePairs);
 					for (key in coordinatePairs){
 						console.log("Key");
 						console.log(key);
