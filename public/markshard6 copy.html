@@ -1058,7 +1058,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			return payload;
 		}
 
-		//KEEP: HELPER FUNCTION : args url to post, payload as Object, onload function, error function
+		//KEEP: HELPER FUNCTION : args url to post, payload as Object, onload funciton, error function
 		function postRequest(url,payload,onload,error){
 			var request = new XMLHttpRequest();
 			request.open("POST",payload,true);
@@ -1379,36 +1379,13 @@ Mark, search for ### to find 4 places to integrate your code.
 			myFileInput.click();
 		}
 
-		//HELPER CALLBACK FUNCTION TO SERVER SUBMIT
-		function editSubmitCallback(request){
-			if (request.readyState === 4){
-				if (request.status === 200) {
-					console.log(request.responseText);
-				} else {
-					console.error(request.statusText);
-				}
-			}
-		}
-
 		// submit drawing and platform data to server
 		// ??? integrate this with Mark's code
 		function svgSubmitToServer(imgCanvas) {
 			handleShapeInProgress();
+
 			// start Mark's code
-			//form payload request
-			var payload = {};
-			//fill out coordinate fields
-			payload["xcoord"] = xTile;
-			payload["ycoord"] = yTile;
-			//TO CHANGE: EVERYTHING CURRENTLY HAS NO PASSWORD
-			payload["pw"] = '';
-			//add svg to payload
-			payload["svg"] = svgMinPrepend + artToString() + platformToString() + svgAppend;
-						if (debugging){
-				console.log("Paylaod to server");
-				console.log(payload);
-			}
-			postRequest("/edit",payload,editSubmitCallback,postOnError);
+			
 			// end Mark's code
 			
 			// debug message
@@ -1419,23 +1396,6 @@ Mark, search for ### to find 4 places to integrate your code.
 			// hide message box
 			messageDiv.style.display = "none";
 		}
-
-		//HELPER FUNCTION TO HANDLE CALLBACK FROM SERVER LOAD
-		function svgPullCallback(request){
-			//if response is received and in good order
-			if (request.readyState === 4){
-				if (request.status === 200){
-					body = JSON.parse(request.resposneText);
-					if (debugging){
-						console.log(body.svg);
-					}
-					//load SVG into editable SVG region
-					svgLoadFromString(body.svg);
-				} else {
-					console.error(request.statusText);
-				}
-			}
-		}
 		
 		// load drawing and platform data from the server
 		// call this from the svg init function
@@ -1444,13 +1404,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			handleShapeInProgress();
 
 			// start Mark's code
-			var payload = {};
-			//fill out coordinate fields
-			payload["xcoord"] = xTile;
-			payload["ycoord"] = yTile;
-			//TO CHANGE: EVERYTHING CURRENTLY HAS NO PASSWORD
-			payload["pw"] = '';
-			postRequest("/retrieve",payload,svgPullCallback,postOnError);
+			// ###
 			// end Mark's code
 
 			// and/or use my helper function
