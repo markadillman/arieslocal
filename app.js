@@ -95,6 +95,21 @@ app.post('/edit',function(req,res){
 	});
 });
 
+/*this pull takes 8 sets of coordinates. Payload body format:
+-----"ul":{<upper left coords>}
+-----"um":{<upper middle coords>}
+-----"ur":{<upper right coords>}
+-----"cl":{<center left coords>}
+-----"cm":{<center middle coords>}
+-----"cr":{<center right coords>}
+-----"bl":{<bottom left coords>}
+-----"bm":{<bottom middle coords>}
+-----"br":{<bottom right coords>}
+*/
+app.post('/readpull',function(req,res)){
+
+}
+
 var insertDocument = function(db,insertDoc,res,callback){
 	var collection = db.collection('tiles');
 	//insert the document

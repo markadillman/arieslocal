@@ -75,6 +75,18 @@ Mark, search for ### to find 4 places to integrate your code.
 								  6: "belowLeftDiv",
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
+			//MARK'S CODE: coordinates match above display dict for concise looping JSON payload formation
+			var coordinatePairs = {"ul": {"x":-1,"y":-1},//------upper left ("ul")
+								   "uc": {"x":0,"y":-1}, //------upper middle ("uc")
+								   "ur": {"x":1,"y":-1}, //------upper right ("ur")
+								   "cl": {"x":-1,"y":0}, //------center left ("cl")
+								   "cm": {"x":0,"y":0},  //------center middle ("cm") <-dummy for continuous loop interval
+								   "cr": {"x":1,"y":0},  //------center right ("cr")
+								   "bl": {"x":-1,"y":1}, //------bottom left ("bl")
+								   "bm": {"x":0,"y":1},  //------bottom middle ("bm")
+								   "br" {"x":1,"y":1}    //------bottom right ("br")
+								};
+			//end MARK'S CODE
 			var myFileInput;		// HTML input element for handling files
 			// start Mark's code, slightly modified by Toni to add the white rectangle
 			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>"
@@ -299,7 +311,8 @@ Mark, search for ### to find 4 places to integrate your code.
 					
 					// start Mark's code
 					// ###
-					// end Mark's code
+					//declate JSON object for payload
+					var readOnlyPayload = generateSurroundingsPayload();
 				}
 				
 				// position the overall display div
@@ -535,7 +548,7 @@ Mark, search for ### to find 4 places to integrate your code.
 				return groupToString(4);
 			}
 			function groupToString(groupnum){
-				//using jQuery nodes, art group is index 3, platform 4
+				//using nodes, art group is index 3, platform 4
 				// slight modification by Toni to use extant canvas variable
 				var tarGroup = canvas.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
@@ -1018,6 +1031,28 @@ Mark, search for ### to find 4 places to integrate your code.
 			// ###
 			// end Mark's code
 		}
+
+		//generic functions to Mark's helper code. Must be in scope of var xTile and yTile
+		//This function pulls objects solely in read mode:
+		//------No password check
+		//------No callback responses to server
+		//------Look into accomplishing this all in one post
+		function generateSurroundingsPayload(){
+			//initialize payload JS object
+			var payload = {};
+			//cycle through every key in the dict
+			for (var key in coordinatePairs){
+				//if key is not the middle, add adjusted coord to payload
+				if (!(key === "cm")){
+					payload[key] = {(xTile+coordinatePairs[key][x]),(yTile+coordinatePairs[key][y])}
+				}
+			}
+			//return array of SVG XML as JSON object
+			if (debugging){
+				console.log("Payload for surroundings POST:");
+				console.log(payload);
+			}
+		};
 		
 		// updates the navigation radio buttons
 		// needed on page load, just for the midpoint check version
