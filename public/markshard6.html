@@ -1096,10 +1096,12 @@ Mark, search for ### to find 4 places to integrate your code.
 				if (request.status === 200) {
 					body = JSON.parse(request.responseText);
 					if (debugging){
+						console.log("Response Body:");
 						console.log(body);
 					}
 					//iterate over all cavases except center and populate
 					for (key in coordinatePairs){
+						console.log()
 						//get canvas that matches up with key
 						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
 						//get that canvas context
