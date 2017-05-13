@@ -191,7 +191,7 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 			}
 		}
 	}
-	console.log(util.inspect(responseObject));
+	console.log(JSON.stringify(responseObject));
 	//send response
 	res.setHeader('Content-Type','application/json');
 	res.status(200);
