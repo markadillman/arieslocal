@@ -245,7 +245,7 @@ app.post('/readpull',function(req,res){
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
 		//perform lookup
-		findDocument(db,query,req,res,findCallback,initCoords);
+		findDocument(db,query,req,res,readSurroundingsCallback,initCoords);
 	});
 	return;
 });
