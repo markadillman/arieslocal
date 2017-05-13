@@ -1065,7 +1065,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
 			request.onload = onload(request);
 			request.onerror = error(request);
-			request.send();
+			request.send(JSON.stringify(payload));
 			return request;
 		}
 		//KEEP: HELPER FUNCTION: request error helper
