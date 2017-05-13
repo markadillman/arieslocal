@@ -198,13 +198,12 @@ var readSurroundingsCallback = function(db,req,res,docs,initCoords){
 			}
 		}
 	}
-	console.log(JSON.stringify(responseObject));
 	//send response
 	res.setHeader('Content-Type','application/json');
 	res.status(200);
 	console.log("res status:");
-	console.log(res.status);
-	res.status(200).send(JSON.stringify(responseObject));
+	console.log(JSON.stringify(res._headers))
+	res.send(JSON.stringify(responseObject));
 }
 
 app.post('/retrieve',function(req,res){
