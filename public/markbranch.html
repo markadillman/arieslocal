@@ -1040,7 +1040,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			for (var key in coordinatePairs){
 				//if key is not the middle, add adjusted coord to payload
 				if (!(key === "cm")){
-					payload[key] = {(xTile+coordinatePairs[key][x]),(yTile+coordinatePairs[key][y])};
+					var tempXCoord = xTile + coordinatePairs[key]["x"];
+					var tempYCoord = xTile + coordinatePairs[key]["y"];
+					payload[key] = {tempXCoord,tempYCoord};
 				}
 			}
 			//return array of SVG XML as JSON object
