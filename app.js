@@ -173,31 +173,26 @@ var findCallback = function(db,req,res,docs){
 RETURN PACKET WILL FOLLOW SAME CONVENTION IN BODY
 */
 var readSurroundingsCallback = function(db,req,res,docs,initCoords){
-	//if no matches, send client-interpretable 555 for all blank canvases
-	if (docs.length === 0){
-		res.status(555).send("No surroundings. All environments in surroundings are empty.");
-	}
-	else {
-		//initialize response object
-		var responseObject = {};
-		//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
-		for (tile in coordinatePairs){
-			//inner loop iterates over returned matches that have been edited and are owned
-			for (doc in docs){
-				//if there are custom art assets at a given tile, add that document to the response body
-				if ((docs.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
-					 docs.ycoord - initCoords.y == coordinatePairs[tile]['y'])
-				{
-					responseObject[tile] = docs[doc];
-				}
+
+	//initialize response object
+	var responseObject = {};
+	//outer loop iterates over required response fieldsreturned matches that have been edited and are owned
+	for (tile in coordinatePairs){
+		//inner loop iterates over returned matches that have been edited and are owned
+		for (doc in docs){
+			//if there are custom art assets at a given tile, add that document to the response body
+			if ((docs.xcoord - initCoords.x == coordinatePairs[tile]['x']) &&
+				 docs.ycoord - initCoords.y == coordinatePairs[tile]['y'])
+			{
+				responseObject[tile] = docs[doc];
 			}
 		}
-		console.log(util.inspect(responseObject));
-		//send response
-		res.setHeader('Content-Type','application/json');
-		res.status(200);
-		res.send(JSON.stringify(responseObject));
 	}
+	console.log(util.inspect(responseObject));
+	//send response
+	res.setHeader('Content-Type','application/json');
+	res.status(200);
+	res.send(JSON.stringify(responseObject));
 }
 
 app.post('/retrieve',function(req,res){
