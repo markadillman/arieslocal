@@ -1046,7 +1046,7 @@ Mark, search for ### to find 4 places to integrate your code.
 				if (!(key === "cm")){
 					var tempXCoord = xTile + coordinatePairs[key]["x"];
 					var tempYCoord = xTile + coordinatePairs[key]["y"];
-					payload[key] = {tempXCoord,tempYCoord};
+					payload[key] = {tempXCoord[0],tempYCoord[0]};
 				}
 			}
 			//return array of SVG XML as JSON object
