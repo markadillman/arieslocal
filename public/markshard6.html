@@ -561,18 +561,19 @@ Mark, search for ### to find 4 places to integrate your code.
 					console.log(groupArray[i].nodeName);
 					if (groupArray[i].nodeName === "g"){
 						if (groupArray[i].getAttribute("id") === "drawingGroup"){
+							console.log()
 							console.log(groupArray[i].getAttribute("id"));
 							targetNum = i;
 						}
 					}
 				}
 				if (targetNum === null){
-					return groupToString(targetNum);
-				}
-				else {
 					if (debugging){
 						console.log("NO ART GROUP FOUND");
 					}
+				}
+				else {
+					return groupToString(targetNum);
 				}
 			}
 			function platformToString(){
