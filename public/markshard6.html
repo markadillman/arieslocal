@@ -1580,8 +1580,6 @@ Mark, search for ### to find 4 places to integrate your code.
 							}
 						}
 					}*/
-
-					//DOESN'T WORK: NOT A DOCUMENT svgLoadFromString(body.svg);
 					//use svg.js load to load into main svg
 					//var draw = SVG('svgCanvas');
 					//load the svg xml as stirng
@@ -1589,14 +1587,14 @@ Mark, search for ### to find 4 places to integrate your code.
 					console.log("Working String:");
 					console.log(body.svg);
 					var parseString = svgMinPrepend + body.svg + svgAppend;
-					var parser = new DOMParser();
+					/*var parser = new DOMParser();
 					var xmlDoc = parser.parseFromString(parseString,"text/xml");
-					var root = xmlDoc.getElementsByTagName("g");
 					var dg = xmlDoc.getElementById("drawingGroup");
 					var pg = xmlDoc.getElementById("platformsGroup");
-					console.log(root);
 					console.log(dg);
-					console.log(pg);
+					console.log(pg);*/
+					svgLoadFromString(parseString);
+
 				} else if (request.status === 242){
 					console.log("fresh tile.");
 				} else {
