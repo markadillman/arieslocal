@@ -1299,8 +1299,12 @@ Mark, search for ### to find 4 places to integrate your code.
 			clearUndoRedoLists();
 			
 			// clear out drawn objects
-			var tarGroup = canvas.childNodes[3].childNodes;
+			var tarGroup = canvas.childNodes[3];
+			console.log("tarGroup");
 			console.log(tarGroup);
+			var tarChildren = tarGroup.childNodes;
+			console.log("tarGroup");
+			console.log(tarChildren);
 			//TONI'S OLD CODE rep by Mark
 			/*var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
