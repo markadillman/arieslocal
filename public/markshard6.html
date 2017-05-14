@@ -1298,13 +1298,15 @@ Mark, search for ### to find 4 places to integrate your code.
 		function svgClearAll() {
 			clearUndoRedoLists();
 			
-			// clear out drawn objects
-			var tarGroup = canvas.childNodes[3];
-			console.log("tarGroup");
-			console.log(tarGroup);
-			console.log("tarGroup id");
-			console.log(tarGroup.getAttribute("id"));
-			var tarChildren = tarGroup.children;
+			// clear out drawn objects, draw group node 3, platform node 4
+			for (var i=3;i<5;i+=1){
+				var tarGroup = canvas.childNodes[3];
+				console.log("tarGroup");
+				console.log(tarGroup);
+				console.log("tarGroup id");
+				console.log(tarGroup.getAttribute("id"));
+				canvas.removeChild(tarGroup.getAttribute("id"));
+			}
 			//TONI'S OLD CODE rep by Mark
 			/*var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
