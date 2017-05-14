@@ -1039,8 +1039,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			// use the new xTile and yTile coords to switch to the new tile
 			// start Mark's code
 			// ###
-			console.log("PREMOVE");
-			console.log(xTile,yTile);
+			svgClearAll();
 			//load editable svg in middle frame
 			svgLoadFromServer(xTile, yTile, password);
 			//generate set of surrounding coordinates
@@ -1113,7 +1112,6 @@ Mark, search for ### to find 4 places to integrate your code.
 					if (debugging){
 						console.log(body.svg);
 					}
-					svgClearAll();
 					//use svg.js load to load into main svg
 					var draw = SVG('svgCanvas');
 					//load the svg xml as string
