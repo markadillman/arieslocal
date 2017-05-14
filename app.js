@@ -26,14 +26,23 @@ app.set('view engine', 'hbs');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.all('/',function(req,res,next){
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-ALlow-Origin-Headers","X-Requested-With");
+	next();
+});
+
+app.use(function(req,res,next){
+	res.header("Access-Control-Allow-Origin","*");
+	res.header("Access-Control-ALlow-Origin-Headers","X-Requested-With");
+	next();
+});
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.use('/', index);
-app.use('/users', users);
 
 const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},//------upper left ("ul")
 					     "uc": {"x":0,"y":-1,"canvasId":"aboveDivCanvas"},     //------upper middle ("uc")
