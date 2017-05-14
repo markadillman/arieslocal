@@ -1588,8 +1588,9 @@ Mark, search for ### to find 4 places to integrate your code.
 					//draw.svg(body.svg);
 					console.log("Working String:");
 					console.log(body.svg);
+					var parseString = svgMinPrepend + body.svg + svgAppend;
 					var parser = new DOMParser();
-					var xmlDoc = parser.parseFromString(body.svg,"text/xml");
+					var xmlDoc = parser.parseFromString(parseString,"text/xml");
 					var root = xmlDoc.getElementsByTagName("g");
 					var dg = xmlDoc.getElementById("drawingGroup");
 					var pg = xmlDoc.getElementById("platformsGroup");
