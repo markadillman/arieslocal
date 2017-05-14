@@ -1065,7 +1065,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		//KEEP: HELPER FUNCTION : args url to post, payload as Object, onload function, error function
 		function postRequest(url,payload,onload,error){
 			var request = new XMLHttpRequest();
-			request.open("POST",url,false);
+			request.open("POST",url,true);
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
 			request.responseType = "json";
 			request.onload = onload(request);
