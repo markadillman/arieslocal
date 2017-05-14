@@ -1123,7 +1123,6 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log(body);
 					}
 					//iterate over all cavases except center and populate
-					console.log(coordinatePairs);
 					for (key in body){
 						console.log(key);
 						console.log(body[key]);
@@ -1131,7 +1130,7 @@ Mark, search for ### to find 4 places to integrate your code.
 						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
 						//get that canvas context
 						var targetContext = targetCanvas.getContext("2d");
-						putGroupInCanvas(body[key],targetContext);
+						putGroupInCanvas(body[key]['svg'],targetContext);
 					}
 				} else {
 					console.error(request.statusText);
