@@ -1588,6 +1588,12 @@ Mark, search for ### to find 4 places to integrate your code.
 					//draw.svg(body.svg);
 					console.log("Working String:");
 					console.log(body.svg);
+					var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString(body.svg,"text/xml");
+					var dg = xmlDoc.getElementById("drawingGroup");
+					var pg = xmlDoc.getElementById("platformsGroup");
+					console.log(dg);
+					console.log(pg);
 				} else if (request.status === 242){
 					console.log("fresh tile.");
 				} else {
