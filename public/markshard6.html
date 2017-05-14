@@ -1068,9 +1068,21 @@ Mark, search for ### to find 4 places to integrate your code.
 			request.open("POST",url,true);
 			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
 			request.responseType = "json";
-			request.onload = onload(request);
-			request.onerror = error(request);
+			request.onload = function(){
+				if (request.readyState === 4){
+					if (request.status === 200) {
+						onload(request);
+					} else {
+						console.error(request.statusText);
+						error(request);
+					}
+				}
+			};
+			request.onerror = function(){
+				error(request);
+			};
 			request.send(JSON.stringify(payload));
+
 		}
 		//KEEP: HELPER FUNCTION: request error helper
 		function postOnError(request){
