@@ -1123,11 +1123,11 @@ Mark, search for ### to find 4 places to integrate your code.
 					if (debugging){
 						console.log(body.svg);
 					}
-					//use svg.js load to load into main svg
-					var draw = SVG('svgCanvas');
 					//remove existing draw and platform groups
 					drawingGroup.remove();
 					platformGroup.remove();
+					//use svg.js load to load into main svg
+					var draw = SVG('svgCanvas');
 					//load the svg xml as string
 					draw.svg(body.svg);
 				} else {
