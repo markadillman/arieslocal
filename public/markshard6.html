@@ -1064,8 +1064,12 @@ Mark, search for ### to find 4 places to integrate your code.
 				//if key is not the middle, add adjusted coord to payload
 				if (!(key === "cm")){
 					var x = xTile + coordinatePairs[key]["x"];
+					console.log("X");
+					console.log(x);
 					var y = xTile + coordinatePairs[key]["y"];
 					payload[key] = {x,y};
+					console.log("Y");
+					console.log(y);
 				}
 				console.log(payload);
 			}
