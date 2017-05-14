@@ -1039,6 +1039,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			// use the new xTile and yTile coords to switch to the new tile
 			// start Mark's code
 			// ###
+			svgLoadFromServer(xTile, yTile, password);
+			var readOnlyPayload = generateSurroundingsPayload();
+			var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
 			// end Mark's code
 		}
 
