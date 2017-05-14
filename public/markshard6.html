@@ -1133,15 +1133,23 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log("Response Body:");
 						console.log(body);
 					}
-					//iterate over all cavases except center and populate
+					var alreadyDrawn = {};
+					//this will color all tiles with legit art assets
 					for (key in body){
-						console.log(key);
-						console.log(body[key]);
 						//get canvas that matches up with key
 						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
 						//get that canvas context
 						var targetContext = targetCanvas.getContext("2d");
 						putGroupInCanvas(body[key]['svg'],targetContext);
+						alreadyDrawn[key] = key;
+					}
+					for (tile in coordinatePairs){
+						//color in all tiles not yet colored with a blank white rectangle
+						if (!(alreadyDrawn[tile] === tile)){
+							var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
+							var blankContext = blankCanvas.getContext("2d");
+							putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext);
+						}
 					}
 				} else {
 					console.error(request.statusText);
@@ -2913,7 +2921,6 @@ Mark, search for ### to find 4 places to integrate your code.
 				cornerArtDiv.style.display = "block";
 				edgeArtDiv.style.display = "block";
 			}
-
 		}
 
 		// zoom function
