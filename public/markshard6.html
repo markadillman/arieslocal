@@ -1313,38 +1313,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			if ($("#svgCanvas")){
 				$("#svgCanvas").empty();
 			}
-			//TONI'S OLD CODE rep by Mark
-			/*var myObject;
-			for (var i = 1; i < currentObject; i += 1) {
-				myObject = document.getElementById(objectStr + i.toString());
-				if (myObject != null) {
-					drawingGroup.removeChild(myObject);
-				}
-			}
-			currentObject = 1;*/
 
-			// clear out platform objects
-			//TONI'S OLD CODE rep by Mark
-			/*var myParent;
-			for (var j = 1; j < currentPlatform; j += 1) {
-				myObject = document.getElementById(platformStr + j.toString());
-				myParent = myObject.parentNode;
-				myParent.removeChild(myObject);
-			}
-			currentPlatform = 1;*/
-			
-			// clear out platform actions list
-			for (var i = platformActionsList.length - 1; i >= 0; i -= 1) {
-				myID = platformActionsList.pop();
-			}
-		}
-
-		// helper function loads a given SVG string into the drawing canvas
-		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
-		function svgLoadFromString(myString) {
-			// parse the given string into a document and get its parts
-			var parser = new DOMParser();
-			svgClearAll();
 			//DUPLICATE FROM SVGINIT
 			// create the drawn objects group
 			drawingGroup = document.createElementNS(svgns, "g");
@@ -1377,7 +1346,43 @@ Mark, search for ### to find 4 places to integrate your code.
 			var doc = parser.parseFromString(myString, "image/svg+xml");
 			var strDrawingGroup = document.getElementById("drawingGroup");
 			var strPlatformsGroup = document.getElementById("platformsGroup");
+			//TONI'S OLD CODE rep by Mark
+			/*var myObject;
+			for (var i = 1; i < currentObject; i += 1) {
+				myObject = document.getElementById(objectStr + i.toString());
+				if (myObject != null) {
+					drawingGroup.removeChild(myObject);
+				}
+			}
+			currentObject = 1;*/
 
+			// clear out platform objects
+			//TONI'S OLD CODE rep by Mark
+			/*var myParent;
+			for (var j = 1; j < currentPlatform; j += 1) {
+				myObject = document.getElementById(platformStr + j.toString());
+				myParent = myObject.parentNode;
+				myParent.removeChild(myObject);
+			}
+			currentPlatform = 1;*/
+			
+			// clear out platform actions list
+			for (var i = platformActionsList.length - 1; i >= 0; i -= 1) {
+				myID = platformActionsList.pop();
+			}
+		}
+
+		// helper function loads a given SVG string into the drawing canvas
+		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
+		function svgLoadFromString(myString) {
+			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
+			svgClearAll();
+			// parse the given string into a document and get its parts
+			var parser = new DOMParser();
+			var doc = parser.parseFromString(myString, "image/svg+xml");
+			//TONI: check on how supported this is. I read the only mandated support for browsers is document.getElementById()
+			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
+			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
 			// set up to copy data
 			// have to slice to real arrays so looping will work correctly
 			var myObject;
@@ -1612,7 +1617,7 @@ Mark, search for ### to find 4 places to integrate your code.
 						}
 						if (shapeInProgress.getAttribute("ry") == 0) {
 							shapeInProgress.setAttribute("ry", "1");
-						}
+						} 
 					
 						// debug output for completed ellipse
 						if (debugging) {
