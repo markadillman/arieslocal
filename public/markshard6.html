@@ -1125,7 +1125,6 @@ Mark, search for ### to find 4 places to integrate your code.
 		function surroundingsOnLoad(request){
 			if (request.readyState === 4){
 				if (request.status === 200 || request.status === 0) {
-					console.log(request.responseText);
 					body = JSON.parse(request.responseText);
 					if (debugging){
 						console.log("Response Body:");
@@ -1146,7 +1145,6 @@ Mark, search for ### to find 4 places to integrate your code.
 						if (!(alreadyDrawn[tile] === tile)){
 							//if not the middle tile which is SVG, not Canvas
 							if (!(coordinatePairs[tile]["canvasId"] === "svgCanvas")){
-								console.log(coordinatePairs[tile]["canvasId"]);
 								var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
 								var blankContext = blankCanvas.getContext("2d");
 								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext);
