@@ -1580,11 +1580,14 @@ Mark, search for ### to find 4 places to integrate your code.
 							}
 						}
 					}*/
-					svgLoadFromString(body.svg);
+
+					//DOESN'T WORK: NOT A DOCUMENT svgLoadFromString(body.svg);
 					//use svg.js load to load into main svg
 					//var draw = SVG('svgCanvas');
 					//load the svg xml as stirng
 					//draw.svg(body.svg);
+					console.log("Working String:");
+					console.log(body.svg);
 				} else if (request.status === 242){
 					console.log("fresh tile.");
 				} else {
