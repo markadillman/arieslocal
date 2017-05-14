@@ -1144,8 +1144,8 @@ Mark, search for ### to find 4 places to integrate your code.
 						alreadyDrawn[key] = key;
 					}
 					for (tile in coordinatePairs){
-						//color in all tiles not yet colored with a blank white rectangle
-						if (!(alreadyDrawn[tile] === tile)){
+						//color in all tiles not yet colored in and not center tile with a blank white rectangle
+						if (!(alreadyDrawn[tile] === tile || coordinatePairs[tile] === "cm")){
 							console.log(coordinatePairs[tile]["canvasId"]);
 							var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
 							var blankContext = blankCanvas.getContext("2d");
