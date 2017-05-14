@@ -1345,7 +1345,35 @@ Mark, search for ### to find 4 places to integrate your code.
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			svgClearAll();
-			initSVG();
+			//DUPLICATE FROM SVGINIT
+			// create the drawn objects group
+			drawingGroup = document.createElementNS(svgns, "g");
+			drawingGroup.setAttribute("id", "drawingGroup");
+			drawingGroup.setAttribute("style", "opacity: 1");
+			canvas.appendChild(drawingGroup);
+			
+			// create the platforms group
+			platformsGroup = document.createElementNS(svgns, "g");
+			platformsGroup.setAttribute("id", "platformsGroup");
+			platformsGroup.setAttribute("style", "visibility: hidden");
+			platformsGroup.addEventListener("click", platformClick);
+			canvas.appendChild(platformsGroup);
+			
+			// create the dead/deleted platforms group
+			deadPlatformsGroup = document.createElementNS(svgns, "g");
+			deadPlatformsGroup.setAttribute("id", "deadPlatformsGroup");
+			deadPlatformsGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(deadPlatformsGroup);
+
+			// create the undone objects groups
+			undoneDrawingGroup = document.createElementNS(svgns, "g");
+			undoneDrawingGroup.setAttribute("id", "undoneDrawingGroup");
+			undoneDrawingGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(undoneDrawingGroup);
+			undonePlatformsGroup = document.createElementNS(svgns, "g");
+			undonePlatformsGroup.setAttribute("id", "undonePlatformsGroup");
+			undonePlatformsGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(undonePlatformsGroup);
 			var doc = parser.parseFromString(myString, "image/svg+xml");
 			var strDrawingGroup = document.getElementById("drawingGroup");
 			var strPlatformsGroup = document.getElementById("platformsGroup");
