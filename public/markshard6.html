@@ -558,9 +558,11 @@ Mark, search for ### to find 4 places to integrate your code.
 				console.log(groupArray);
 				var targetNum;
 				for (var i = 0 ; i < groupArray.length ; i += 1){
-					if (groupArray[i].getAttribute("id") === "drawingGroup"){
-						console.log(groupArray[i].getAttribute("id"));
-						targetNum = i;
+					if (groupArray[i].nodeName === "G"){
+						if (groupArray[i].getAttribute("id") === "drawingGroup"){
+							console.log(groupArray[i].getAttribute("id"));
+							targetNum = i;
+						}
 					}
 				}
 				if (targetNum){
@@ -579,8 +581,10 @@ Mark, search for ### to find 4 places to integrate your code.
 				var groupArray = Array.prototype.slice.call(groups);
 				var targetNum;
 				for (var i = 0 ; i < groupArray.length ; i += 1){
-					if (groupArray[i].getAttribute("id") === "platformsGroup"){
-						targetNum = i;
+					if (groupArray[i].nodeName === "G"){
+						if (groupArray[i].getAttribute("id") === "platformsGroup"){
+							targetNum = i;
+						}
 					}
 				}
 				if (targetNum){
