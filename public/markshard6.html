@@ -1354,7 +1354,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			clearUndoRedoLists();
 			
 			// clear out drawn objects, draw group node 3, platform node 4
-			if ($("#svgCanvas")){
+			/*if ($("#svgCanvas")){
 				$("#svgCanvas").empty();
 			}
 
@@ -1387,8 +1387,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			undonePlatformsGroup.setAttribute("id", "undonePlatformsGroup");
 			undonePlatformsGroup.setAttribute("style", "visibility: hidden");
 			canvas.appendChild(undonePlatformsGroup);
+			*/
 			//TONI'S OLD CODE rep by Mark
-			/*var myObject;
+			var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
 				myObject = document.getElementById(objectStr + i.toString());
 				if (myObject != null) {
@@ -1399,13 +1400,13 @@ Mark, search for ### to find 4 places to integrate your code.
 
 			// clear out platform objects
 			//TONI'S OLD CODE rep by Mark
-			/*var myParent;
+			var myParent;
 			for (var j = 1; j < currentPlatform; j += 1) {
 				myObject = document.getElementById(platformStr + j.toString());
 				myParent = myObject.parentNode;
 				myParent.removeChild(myObject);
 			}
-			currentPlatform = 1;*/
+			currentPlatform = 1;
 			
 			// clear out platform actions list
 			for (var i = platformActionsList.length - 1; i >= 0; i -= 1) {
@@ -1421,7 +1422,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
-			//TONI: check on how supported this is. I read the only mandated support for browsers is document.getElementById()
+
 			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
 			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
 			// set up to copy data
@@ -1568,7 +1569,7 @@ Mark, search for ### to find 4 places to integrate your code.
 					}
 					//load SVG into editable SVG region
 					//must do away with any drawingGroup and platformsGroup higher in DOM
-					var groups = canvas.childNodes;
+					/*var groups = canvas.childNodes;
 					console.log(groups);
 					var groupArray = Array.prototype.slice.call(groups);
 					console.log(groupArray);
@@ -1583,12 +1584,12 @@ Mark, search for ### to find 4 places to integrate your code.
 								groupArray[i].remove();
 							}
 						}
-					}
-					//DOESN'T WORK svgLoadFromString(body.svg);
+					}*/
+					svgLoadFromString(body.svg);
 					//use svg.js load to load into main svg
-					var draw = SVG('svgCanvas');
+					//var draw = SVG('svgCanvas');
 					//load the svg xml as stirng
-					draw.svg(body.svg);
+					//draw.svg(body.svg);
 				} else if (request.status === 242){
 					console.log("fresh tile.");
 				} else {
