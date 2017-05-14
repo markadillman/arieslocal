@@ -1344,12 +1344,11 @@ Mark, search for ### to find 4 places to integrate your code.
 		function svgLoadFromString(myString) {
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
+			svgClearAll();
+			initSVG();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
 			var strDrawingGroup = document.getElementById("drawingGroup");
 			var strPlatformsGroup = document.getElementById("platformsGroup");
-			
-			// clear out current art data
-			//svgClearAll();
 
 			// set up to copy data
 			// have to slice to real arrays so looping will work correctly
