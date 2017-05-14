@@ -1065,11 +1065,11 @@ Mark, search for ### to find 4 places to integrate your code.
 				if (!(key === "cm")){
 					var x = xTile + coordinatePairs[key]["x"];
 					console.log("X");
-					console.log(x);
-					var y = xTile + coordinatePairs[key]["y"];
+					console.log(xTile + coordinatePairs[key]["x"]);
+					var y = yTile + coordinatePairs[key]["y"];
 					payload[key] = {x,y};
 					console.log("Y");
-					console.log(y);
+					console.log(yTile + coordinatePairs[key]["y"]);
 				}
 				console.log(payload);
 			}
