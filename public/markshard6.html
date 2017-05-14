@@ -1071,6 +1071,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			request.onload = function(){
 				if (request.readyState === 4){
 					if (request.status === 200) {
+						console.log("Here come that goodgood");
 						onload(request);
 					} else {
 						console.error(request.statusText);
@@ -1115,7 +1116,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		function surroundingsOnLoad(request){
 			if (request.readyState === 4){
 				if (request.status === 200 || request.status === 0) {
-					console.log("Made it to good surroundings callback");
+					console.log(request.responseText);
 					body = JSON.parse(request.responseText);
 					if (debugging){
 						console.log("Response Body:");
