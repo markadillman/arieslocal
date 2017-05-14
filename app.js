@@ -153,7 +153,7 @@ var findCallback = function(db,req,res,docs,initCoords){
 		res.status(200).send(JSON.stringify(docs[0]));
 	}
 	else if (docs.length === 0) {
-		res.status(555).send("No coordinate / password matches found.");
+		res.status(242).send("No coordinate / password matches found.");
 	}
 	else {
 		res.status(566).send("Database error: duplicate entries.");
