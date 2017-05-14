@@ -1311,8 +1311,8 @@ Mark, search for ### to find 4 places to integrate your code.
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
-			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
-			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
+			var strDrawingGroup = document.getElementById("drawingGroup");
+			var strPlatformsGroup = document.getElementById("platformsGroup");
 			
 			// clear out current art data
 			svgClearAll();
