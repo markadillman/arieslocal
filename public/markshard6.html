@@ -589,12 +589,12 @@ Mark, search for ### to find 4 places to integrate your code.
 					}
 				}
 				if (targetNum === null){
-					return groupToString(targetNum);
-				}
-				else {
 					if (debugging){
 						console.log("NO PLATFORMS GROUP FOUND");
 					}
+				}
+				else {
+					return groupToString(targetNum);
 				}
 			}
 			function groupToString(groupnum){
