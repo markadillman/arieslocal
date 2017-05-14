@@ -553,7 +553,9 @@ Mark, search for ### to find 4 places to integrate your code.
 				//using jQuery nodes, art group is index 3, platform 4
 				//find id
 				var groups = canvas.childNodes;
+				console.log(groups);
 				var groupArray = Array.prototype.slice.call(groups);
+				console.log(groupArray);
 				var targetNum;
 				for (var i = 0 ; i < groupArray.length ; i += 1){
 					if (groupArray[i].getAttribute("id") === "drawingGroup"){
