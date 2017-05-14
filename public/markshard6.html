@@ -1146,6 +1146,7 @@ Mark, search for ### to find 4 places to integrate your code.
 					for (tile in coordinatePairs){
 						//color in all tiles not yet colored with a blank white rectangle
 						if (!(alreadyDrawn[tile] === tile)){
+							console.log(coordinatePairs[tile]["canvasId"]);
 							var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
 							var blankContext = blankCanvas.getContext("2d");
 							putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext);
