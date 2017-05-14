@@ -1039,8 +1039,13 @@ Mark, search for ### to find 4 places to integrate your code.
 			// use the new xTile and yTile coords to switch to the new tile
 			// start Mark's code
 			// ###
+			console.log("PREMOVE");
+			console.log(xTile,yTile);
+			//load editable svg in middle frame
 			svgLoadFromServer(xTile, yTile, password);
+			//generate set of surrounding coordinates
 			var readOnlyPayload = generateSurroundingsPayload();
+			//send packet to query for surrounding tile assets
 			var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
 			// end Mark's code
 		}
