@@ -33,6 +33,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			input[type=number] {width: 35px;}
 		</style>
 
+		<script src="js/svg.js/dist/svg.min.js"></script>
+		<script src="js/jquery-3.2.1.js"></script>
+
 		<script type="text/javascript">
 		
 			var debugging = true;	// toggle debug messages
@@ -1106,7 +1109,7 @@ Mark, search for ### to find 4 places to integrate your code.
 					}
 					//use svg.js load to load into main svg
 					var draw = SVG('svgCanvas');
-					//load the svg xml as stirng
+					//load the svg xml as string
 					draw.svg(body.svg);
 				} else {
 					console.error(request.statusText);
@@ -1460,7 +1463,11 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log(body.svg);
 					}
 					//load SVG into editable SVG region
-					svgLoadFromString(body.svg);
+					//DOESN'T WORK svgLoadFromString(body.svg);
+					//use svg.js load to load into main svg
+					var draw = SVG('svgCanvas');
+					//load the svg xml as stirng
+					draw.svg(body.svg);
 				} else {
 					console.error(request.statusText);
 				}
