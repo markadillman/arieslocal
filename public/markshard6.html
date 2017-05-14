@@ -1299,7 +1299,9 @@ Mark, search for ### to find 4 places to integrate your code.
 			clearUndoRedoLists();
 			
 			// clear out drawn objects, draw group node 3, platform node 4
-			$("#svgCanvas").empty();
+			if ($("#svgCanvas")){
+				$("#svgCanvas").empty();
+			}
 			//TONI'S OLD CODE rep by Mark
 			/*var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
