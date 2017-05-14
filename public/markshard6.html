@@ -1105,14 +1105,9 @@ Mark, search for ### to find 4 places to integrate your code.
 				//if key is not the middle, add adjusted coord to payload
 				if (!(key === "cm")){
 					var x = xTile + coordinatePairs[key]["x"];
-					console.log("X");
-					console.log(xTile + coordinatePairs[key]["x"]);
 					var y = yTile + coordinatePairs[key]["y"];
 					payload[key] = {x,y};
-					console.log("Y");
-					console.log(yTile + coordinatePairs[key]["y"]);
 				}
-				console.log(payload);
 			}
 			//return array of SVG XML as JSON object
 			if (debugging){
