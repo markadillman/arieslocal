@@ -1051,6 +1051,12 @@ Mark, search for ### to find 4 places to integrate your code.
 
 		//KEEP: HELPER FUNCTION TO GENERATE FORMATTED SURROUNDING PAYLOAD GIVEN CURRENT TILE
 		function generateSurroundingsPayload(){
+			if (debugging){
+				console.log("generating surroundings: xTile is now:");
+				console.log(xTile);
+				console.log("yTile is now:");
+				console.log(yTile);
+			}
 			//initialize payload JS object
 			var payload = {};
 			//cycle through every key in the dict
