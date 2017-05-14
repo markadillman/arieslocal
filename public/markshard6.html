@@ -1099,6 +1099,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		function svgEditOnLoad(request){
 			if (request.readyState === 4){
 				if (request.status === 200) {
+					console.log(request.responseText);
 					body = JSON.parse(request.responseText);
 					if (debugging){
 						console.log(body.svg);
