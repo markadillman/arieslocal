@@ -1303,23 +1303,27 @@ Mark, search for ### to find 4 places to integrate your code.
 			clearUndoRedoLists();
 			
 			// clear out drawn objects
-			var myObject;
+			var tarGroup = canvas.childNodes[3].childNodes;
+			log.console(tarGroup);
+			//TONI'S OLD CODE rep by Mark
+			/*var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
 				myObject = document.getElementById(objectStr + i.toString());
 				if (myObject != null) {
 					drawingGroup.removeChild(myObject);
 				}
 			}
-			currentObject = 1;
+			currentObject = 1;*/
 
 			// clear out platform objects
-			var myParent;
+			//TONI'S OLD CODE rep by Mark
+			/*var myParent;
 			for (var j = 1; j < currentPlatform; j += 1) {
 				myObject = document.getElementById(platformStr + j.toString());
 				myParent = myObject.parentNode;
 				myParent.removeChild(myObject);
 			}
-			currentPlatform = 1;
+			currentPlatform = 1;*/
 			
 			// clear out platform actions list
 			for (var i = platformActionsList.length - 1; i >= 0; i -= 1) {
