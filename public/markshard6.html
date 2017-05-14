@@ -551,11 +551,43 @@ Mark, search for ### to find 4 places to integrate your code.
 			// helper functions
 			function artToString(){
 				//using jQuery nodes, art group is index 3, platform 4
-				return groupToString(3);
+				//find id
+				var groups = canvas.childNodes;
+				var groupArray = Array.prototype.slice.call(groups);
+				var targetNum;
+				for (var i = 0 ; i < groupArray.length ; i += 1){
+					if (groupArray[i].getAttribute("id") === "drawingGroup"){
+						targetNum = i;
+					}
+				}
+				if (targetNum){
+					return groupToString(targetNum);
+				}
+				else {
+					if (debugging){
+						console.log("NO ART GROUP FOUND");
+					}
+				}
 			}
 			function platformToString(){
 				//using jQuery nodes, art group is index 3, platform 4
-				return groupToString(4);
+				//find id
+				var groups = canvas.childNodes;
+				var groupArray = Array.prototype.slice.call(groups);
+				var targetNum;
+				for (var i = 0 ; i < groupArray.length ; i += 1){
+					if (groupArray[i].getAttribute("id") === "platformsGroup"){
+						targetNum = i;
+					}
+				}
+				if (targetNum){
+					return groupToString(targetNum);
+				}
+				else {
+					if (debugging){
+						console.log("NO PLATFORMS GROUP FOUND");
+					}
+				}
 			}
 			function groupToString(groupnum){
 				//using nodes, art group is index 3, platform 4
