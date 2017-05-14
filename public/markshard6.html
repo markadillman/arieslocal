@@ -1455,7 +1455,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			//if response is received and in good order
 			if (request.readyState === 4){
 				if (request.status === 200){
-					body = JSON.parse(request.resposneText);
+					body = JSON.parse(request.responseText);
 					if (debugging){
 						console.log(body.svg);
 					}
