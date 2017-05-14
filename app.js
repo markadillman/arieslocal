@@ -95,21 +95,24 @@ app.post('/edit',function(req,res){
 	insertDoc['ycoord'] = ycoord;
 	insertDoc['pw'] = pw;
 	insertDoc['svg'] = rawSVG;
+	var filter = {};
+	filter['xcoord'] = xcoord;
+	filter['ycoord'] = ycoord;
 	console.log(util.inspect(insertDoc,false,null));
 	MongoClient.connect(dbUrl,function(err,db){
 		//test for errors, pop out if there are errors present
 		assert.equal(null,err);
 		console.log("connected succesfully to server");
-		insertDocument(db,insertDoc,res,insertCallback);
+		insertDocument(db,insertDoc,filter,res,insertCallback);
 	});
 });
 
-var insertDocument = function(db,insertDoc,res,callback){
+var insertDocument = function(db,insertDoc,filter,res,callback){
 	var collection = db.collection('tiles');
 	//insert the document
 	console.log("About to insert:");
 	console.log(util.inspect(insertDoc));
-	collection.insertOne(insertDoc,function(err,result){
+	collection.update(filter,insertDoc,{upsert:true},function(err,result){
 		if (err === null){
 			console.log("Inserted tile into database");
 			console.log(result);
