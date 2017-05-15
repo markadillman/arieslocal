@@ -5,14 +5,16 @@
 Antonina (Toni) York
 OSU CS 467 Spring 2017
 Team Aries: Infinite Blank
-Midpoint Check Drawing Tool
-drawingtool.html
+Week 6 Drawing Tool
+week6test.html
 
 This draws heavily from examples found at:
 https://github.com/oreillymedia/svg-essentials-examples
 
 Also includes several chunks of code by fellow Team Aries member Mark Dillman.
 These chunks are tagged with the phrase "Mark's code" in comments.
+
+Mark, search for ### to find 4 places to integrate your code.
 
 -->
 
@@ -22,7 +24,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-		<title>Team Aries: Midpoint Check Drawing Tool</title>
+		<title>Team Aries: Week 6 Drawing Tool</title>
 
 		<style type="text/css">
 			/* make form entries begin on a new line */
@@ -31,15 +33,12 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			input[type=number] {width: 35px;}
 		</style>
 
-		<script src="js/svg.js/dist/svg.min.js"></script>
-		<script src="js/jquery-3.2.1.js"></script>
-
 		<script type="text/javascript">
 		
-			var debugging = false;	// toggle debug messages
+			var debugging = true;	// toggle debug messages
 			var verboseDebugging = false; // toggle verbose debugging messages
 			var useRedBox = false;	// canvas is just a red box (for debugging)
-			var useFakeSurroundings = false; // surroundings are colored boxes (for debugging)
+			var useFakeSurroundings = true; // surroundings are colored boxes (for debugging)
 			var masking = false;	// toggle the platform masking tools
 			var hiddenCanvas;		// hidden canvas for getting color info
 			var hiddenContext;		// the context of the hidden canvas
@@ -76,18 +75,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 								  6: "belowLeftDiv",
 								  7: "belowDiv",
 								  8: "belowRightDiv"};
-			//MARK'S CODE: coordinates match above display dict for concise looping JSON payload formation
-			var coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},//------upper left ("ul")
-								   "uc": {"x":0,"y":-1,"canvasId":"aboveDivCanvas"}, //------upper middle ("uc")
-								   "ur": {"x":1,"y":-1,"canvasId":"aboveRightDivCanvas"}, //------upper right ("ur")
-								   "cl": {"x":-1,"y":0,"canvasId":"leftDivCanvas"}, //------center left ("cl")
-								   "cm": {"x":0,"y":0,"canvasId":"svgCanvas"},  //------center middle ("cm") <-dummy for index loops
-								   "cr": {"x":1,"y":0,"canvasId":"rightDivCanvas"},  //------center right ("cr")
-								   "bl": {"x":-1,"y":1,"canvasId":"belowLeftDivCanvas"}, //------bottom left ("bl")
-								   "bm": {"x":0,"y":1,"canvasId":"belowDivCanvas"},  //------bottom middle ("bm")
-								   "br": {"x":1,"y":1,"canvasId":"belowRightDivCanvas"}    //------bottom right ("br")
-								};
-			//end MARK'S CODE
 			var myFileInput;		// HTML input element for handling files
 			// start Mark's code, slightly modified by Toni to add the white rectangle
 			var svgPrepend = "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"600\" height=\"350\" viewBox=\"0 0 600 350\"> <rect width=\"600\" height=\"350\" fill=\"white\"></rect>"
@@ -312,11 +299,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					
 					// start Mark's code
 					// ###
-					//declare JSON object for payload
-					var readOnlyPayload = generateSurroundingsPayload();
-					//execute request
-					var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
-					//do more stuff with request response if need be, but probably not necessary
+					// end Mark's code
 				}
 				
 				// position the overall display div
@@ -404,10 +387,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					console.log("Loaded HTML with debug messages turned on.");
 				}
 			}
-
-			window.onload = function(){
-
-			}
 			
 			// stop event propagation so form doesn't actually submit
 			function onFormSubmit(form_element) {
@@ -490,7 +469,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				displayMessage("Use the dialog to select an art file to load.", svgLoadFromLocal, doNothing, false);
 			}
 			function submitButton () {
-				svgSubmitToServer(document.getElementById('hiddenCanvas'));
+				svgSubmitToServer();
 			}
 			function undoButton() {
 				svgUndoAction();
@@ -549,63 +528,14 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			// helper functions
 			function artToString(){
 				//using jQuery nodes, art group is index 3, platform 4
-				//find id
-				var groups = canvas.childNodes;
-				if (verboseDebugging) {
-					console.log(groups);
-				}
-				var groupArray = Array.prototype.slice.call(groups);
-				if (verboseDebugging) {
-					console.log(groupArray);
-				}
-				var targetNum;
-				for (var i = 0 ; i < groupArray.length ; i += 1){
-					if (verboseDebugging) {
-						console.log(groupArray[i].nodeName);
-					}
-					if (groupArray[i].nodeName === "g"){
-						if (groupArray[i].getAttribute("id") === "drawingGroup"){
-							if (verboseDebugging) {
-								console.log()
-								console.log(groupArray[i].getAttribute("id"));
-							}
-							targetNum = i;
-						}
-					}
-				}
-				if (targetNum === null){
-					if (debugging){
-						console.log("NO ART GROUP FOUND");
-					}
-				}
-				else {
-					return groupToString(targetNum);
-				}
+				return groupToString(3);
 			}
 			function platformToString(){
 				//using jQuery nodes, art group is index 3, platform 4
-				//find id
-				var groups = canvas.childNodes;
-				var groupArray = Array.prototype.slice.call(groups);
-				var targetNum;
-				for (var i = 0 ; i < groupArray.length ; i += 1){
-					if (groupArray[i].nodeName === "g"){
-						if (groupArray[i].getAttribute("id") === "platformsGroup"){
-							targetNum = i;
-						}
-					}
-				}
-				if (targetNum === null){
-					if (debugging){
-						console.log("NO PLATFORMS GROUP FOUND");
-					}
-				}
-				else {
-					return groupToString(targetNum);
-				}
+				return groupToString(4);
 			}
 			function groupToString(groupnum){
-				//using nodes, art group is index 3, platform 4
+				//using jQuery nodes, art group is index 3, platform 4
 				// slight modification by Toni to use extant canvas variable
 				var tarGroup = canvas.childNodes[groupnum];
 				//use xml serializer to convert inaccessible InnerHTML to String
@@ -623,8 +553,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			// Toni's generic version of the SVG-to-Canvas function
 			// adapted from Mark's version
 			// puts myGroupStr's data into myContext's canvas
-			// using given clipping values
-			function putGroupInCanvas(myGroupStr, myContext, clipX, clipY, clipW, clipH, canvX, canvY, canvW, canvH) {
+			function putGroupInCanvas(myGroupStr, myContext) {
 				// prepend and append svg open and close tag constants
 				myGroupStr = svgPrepend + myGroupStr + svgAppend;
 				// debug message
@@ -641,7 +570,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						// clear the given canvas
 						myContext.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
 						// draw the new image
-						myContext.drawImage(img, clipX, clipY, clipW, clipH, canvX, canvY, canvW, canvH);
+						myContext.drawImage(img,0,0);
 					}
 					img.src = url;
 			}
@@ -649,7 +578,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			// load the current SVG into the canvas, overwriting the old data
 			// version written by Toni to use the generic putGroupinCanvas function 
 			function updateCanvas() {
-				putGroupInCanvas(artToString(), hiddenContext, 0, 0, canvasHeight, canvasWidth, 0, 0, canvasHeight, canvasWidth);
+				putGroupInCanvas(artToString(), hiddenContext);
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -715,7 +644,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 
 	<body onload="initHTML()">
 
-		<h1>Team Aries: Midpoint Check Drawing Tool</h1>
+		<h1>Team Aries: Week 6 Drawing Tool</h1>
 
 		<form id="controls" onsubmit="return onFormSubmit(this)">
 		
@@ -1101,13 +1030,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			
 			// use the new xTile and yTile coords to switch to the new tile
 			// start Mark's code
-			svgClearAll();
-			//load editable svg in middle frame
-			svgLoadFromServer(xTile, yTile, password);
-			//generate set of surrounding coordinates
-			var readOnlyPayload = generateSurroundingsPayload();
-			//send packet to query for surrounding tile assets
-			var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
+			// ###
 			// end Mark's code
 			
 			// debug message
@@ -1116,156 +1039,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							xTile.toString() + ", " + yTile.toString() + ").");
 			}
 		}
-
-		// start Mark's code
-		//KEEP: HELPER FUNCTION TO GENERATE FORMATTED SURROUNDING PAYLOAD GIVEN CURRENT TILE
-		function generateSurroundingsPayload(){
-			if (debugging){
-				console.log("generating surroundings: xTile is now:");
-				console.log(xTile);
-				console.log("yTile is now:");
-				console.log(yTile);
-			}
-			//initialize payload JS object
-			var payload = new Object();
-			//cycle through every key in the dict
-			for (var key in coordinatePairs){
-				//if key is not the middle, add adjusted coord to payload
-				if (!(key === "cm")){
-					var x = xTile + coordinatePairs[key]["x"];
-					var y = yTile + coordinatePairs[key]["y"];
-					payload[key] = {x,y};
-				}
-			}
-			//return array of SVG XML as JSON object
-			if (debugging){
-				console.log("Payload for surroundings POST:");
-				console.log(payload);
-				console.log("String:");
-				console.log(JSON.stringify(payload));
-			}
-			return payload;
-		}
-
-		//KEEP: HELPER FUNCTION : args url to post, payload as Object, onload function, error function
-		function postRequest(url,payload,onload,error){
-			var request = new XMLHttpRequest();
-			request.open("POST",url,true);
-			request.setRequestHeader('Content-Type','application/json; charset=UTF-8');
-			//request.responseType = "json";
-			request.onload = function(){
-				if (request.readyState === 4){
-					if (request.status === 200 || request.status === 242) {
-						onload(request);
-					} else {
-						console.error(request.statusText);
-						error(request);
-					}
-				}
-			};
-			request.onerror = function(){
-				error(request);
-			};
-			request.send(JSON.stringify(payload));
-
-		}
-		//KEEP: HELPER FUNCTION: request error helper
-		function postOnError(request){
-			if (debugging) {
-				console.log("ERROR");
-				console.log("REQUEST");
-				console.log(request);
-				console.log("REQUEST STATUS");
-				console.log(request.status);
-				console.log(request.getAllResponseHeaders());
-				console.error(request.statusText);
-			}
-		}
-		//KEEP: HELPER FUNCTION: load into center, editing SVG environment
-		function svgEditOnLoad(request){
-			if (request.readyState === 4){
-				if (request.status === 200) {
-					body = JSON.parse(request.responseText);
-					if (debugging){
-						console.log(body.svg);
-					}
-					//remove existing draw and platform groups
-					drawingGroup.remove();
-					platformGroup.remove();
-					//use svg.js load to load into main svg
-					var draw = SVG('svgCanvas');
-					//load the svg xml as string
-					draw.svg(body.svg);
-				} else {
-					console.error(request.statusText);
-				}
-			}
-		}
-		//KEEP: HELPER FUNCTION: ASYNCH LOAD INTO SURROUNDING TILES
-		function surroundingsOnLoad(request){
-			if (request.readyState === 4){
-				if (request.status === 200 || request.status === 0) {
-					body = JSON.parse(request.responseText);
-					if (debugging){
-						console.log("Response Body:");
-						console.log(body);
-					}
-					var alreadyDrawn = {};
-					//this will color all tiles with legit art assets
-					for (key in body){
-						//get canvas that matches up with key
-						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
-						//get that canvas context
-						var targetContext = targetCanvas.getContext("2d");
-						// start Toni's code
-						// based on which surrounding edge this is, modify its top left corner coordinates
-						var clipX = 0;
-						var clipY = 0;
-						var clipW = canvasWidth;
-						var clipH = canvasHeight;
-						if (key == "ul" || key == "cl" || key == "bl") {
-							// tiles 0, 3, and 6 show only leftmost edges
-							// and are only canvasEdge wide
-							clipX = canvasWidth - canvasEdge;
-							clipW = canvasEdge;
-						}
-						if (key == "ur" || key == "cr" || key == "br") {
-							// tiles 2, 5, and 8 are only canvasEdge wide
-							clipW = canvasEdge;
-						}
-						if (key == "ul" || key == "um" || key == "ur") {
-							// tiles 0, 1, and 2 only show bottommost edges
-							// and are only canvasHeight tall
-							clipY = canvasHeight - canvasEdge;
-							clipH = canvasEdge;
-						}
-						if (key == "bl" || key == "bm" || key == "br") {
-							// tiles 6, 7, and 8 are only canvasHeight tall
-							clipH = canvasEdge;
-						}
-						var canvW = clipW;
-						var canvH = clipH;
-						// end Toni's code
-						putGroupInCanvas(body[key]['svg'],targetContext, clipX, clipY, clipW, clipH, 0, 0, canvW, canvH);
-						alreadyDrawn[key] = key;
-					}
-					for (tile in coordinatePairs){
-						//color in all tiles not yet colored in and not center tile with a blank white rectangle
-						if (!(alreadyDrawn[tile] === tile)){
-							//if not the middle tile which is SVG, not Canvas
-							if (!(coordinatePairs[tile]["canvasId"] === "svgCanvas")){
-								var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
-								var blankContext = blankCanvas.getContext("2d");
-								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext, 0, 0, canvasHeight, canvasWidth, 0, 0, canvasHeight, canvasWidth);
-							}
-						}
-					}
-				} else {
-					console.error(request.statusText);
-				}
-			}
-		}
-		// end Mark's code
 		
 		// updates the navigation radio buttons
 		// needed on page load, just for the midpoint check version
@@ -1430,42 +1203,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		function svgClearAll() {
 			clearUndoRedoLists();
 			
-			// clear out drawn objects, draw group node 3, platform node 4
-			/*if ($("#svgCanvas")){
-				$("#svgCanvas").empty();
-			}
-
-			//DUPLICATE FROM SVGINIT
-			// create the drawn objects group
-			drawingGroup = document.createElementNS(svgns, "g");
-			drawingGroup.setAttribute("id", "drawingGroup");
-			drawingGroup.setAttribute("style", "opacity: 1");
-			canvas.appendChild(drawingGroup);
-			
-			// create the platforms group
-			platformsGroup = document.createElementNS(svgns, "g");
-			platformsGroup.setAttribute("id", "platformsGroup");
-			platformsGroup.setAttribute("style", "visibility: hidden");
-			platformsGroup.addEventListener("click", platformClick);
-			canvas.appendChild(platformsGroup);
-			
-			// create the dead/deleted platforms group
-			deadPlatformsGroup = document.createElementNS(svgns, "g");
-			deadPlatformsGroup.setAttribute("id", "deadPlatformsGroup");
-			deadPlatformsGroup.setAttribute("style", "visibility: hidden");
-			canvas.appendChild(deadPlatformsGroup);
-
-			// create the undone objects groups
-			undoneDrawingGroup = document.createElementNS(svgns, "g");
-			undoneDrawingGroup.setAttribute("id", "undoneDrawingGroup");
-			undoneDrawingGroup.setAttribute("style", "visibility: hidden");
-			canvas.appendChild(undoneDrawingGroup);
-			undonePlatformsGroup = document.createElementNS(svgns, "g");
-			undonePlatformsGroup.setAttribute("id", "undonePlatformsGroup");
-			undonePlatformsGroup.setAttribute("style", "visibility: hidden");
-			canvas.appendChild(undonePlatformsGroup);
-			*/
-			//TONI'S OLD CODE rep by Mark
+			// clear out drawn objects
 			var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
 				myObject = document.getElementById(objectStr + i.toString());
@@ -1476,7 +1214,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			currentObject = 1;
 
 			// clear out platform objects
-			//TONI'S OLD CODE rep by Mark
 			var myParent;
 			for (var j = 1; j < currentPlatform; j += 1) {
 				myObject = document.getElementById(platformStr + j.toString());
@@ -1494,14 +1231,15 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		// helper function loads a given SVG string into the drawing canvas
 		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 		function svgLoadFromString(myString) {
-			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
-			svgClearAll();
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
-
 			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
 			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
+			
+			// clear out current art data
+			svgClearAll();
+
 			// set up to copy data
 			// have to slice to real arrays so looping will work correctly
 			var myObject;
@@ -1594,40 +1332,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			myFileInput.click();
 		}
 
-		//HELPER CALLBACK FUNCTION TO SERVER SUBMIT
-		function editSubmitCallback(request){
-			if (request.readyState === 4){
-				if (request.status === 200) {
-					if (debugging) {
-						console.log(request.responseText);
-					}
-				} else {
-					if (debugging) {
-						console.error(request.statusText);
-					}
-				}
-			}
-		}
-
 		// submit drawing and platform data to server
 		// ??? integrate this with Mark's code
-		function svgSubmitToServer(imgCanvas) {
+		function svgSubmitToServer() {
 			handleShapeInProgress();
+
 			// start Mark's code
-			//form payload request
-			var payload = {};
-			//fill out coordinate fields
-			payload["xcoord"] = xTile;
-			payload["ycoord"] = yTile;
-			//TO CHANGE: EVERYTHING CURRENTLY HAS NO PASSWORD
-			payload["pw"] = '';
-			//add svg to payload
-			payload["svg"] = svgMinPrepend + artToString() + platformToString() + svgAppend;
-						if (debugging){
-				console.log("Paylaod to server");
-				console.log(payload);
-			}
-			postRequest("/edit",payload,editSubmitCallback,postOnError);
+			// ###
 			// end Mark's code
 			
 			// debug message
@@ -1635,64 +1346,11 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				console.log("Submitted drawing and platform data to the server.");
 			}
 			
+			// hide old message box
+			messageDiv.style.display = "none";
+			
 			// use message box to put up confirmation message
 			displayMessage("Your art has been submitted.", doNothing, doNothing, false)
-		}
-
-		//HELPER FUNCTION TO HANDLE CALLBACK FROM SERVER LOAD
-		function svgPullCallback(request){
-			//if response is received and in good order
-			if (request.readyState === 4){
-				if (request.status === 200){
-					body = JSON.parse(request.responseText);
-					if (debugging){
-						console.log(body.svg);
-					}
-					//load SVG into editable SVG region
-					//must do away with any drawingGroup and platformsGroup higher in DOM
-					/*var groups = canvas.childNodes;
-					console.log(groups);
-					var groupArray = Array.prototype.slice.call(groups);
-					console.log(groupArray);
-					for (var i = 0 ; i < groupArray.length ; i += 1){
-					console.log(groupArray[i].nodeName);
-						if (groupArray[i].nodeName === "g"){
-							//find drawingGroup and platformGroup and remove them
-							if (groupArray[i].getAttribute("id") === "drawingGroup" ||
-								groupArray[i].getAttribute("id") === "platformsGroup" ){
-								console.log()
-								console.log(groupArray[i].getAttribute("id"));
-								groupArray[i].remove();
-							}
-						}
-					}*/
-					//use svg.js load to load into main svg
-					//var draw = SVG('svgCanvas');
-					//load the svg xml as stirng
-					//draw.svg(body.svg);
-					if (verboseDebugging) {
-						console.log("Working String:");
-						console.log(body.svg);
-					}
-					var parseString = svgMinPrepend + body.svg + svgAppend;
-					/*var parser = new DOMParser();
-					var xmlDoc = parser.parseFromString(parseString,"text/xml");
-					var dg = xmlDoc.getElementById("drawingGroup");
-					var pg = xmlDoc.getElementById("platformsGroup");
-					console.log(dg);
-					console.log(pg);*/
-					svgLoadFromString(parseString);
-
-				} else if (request.status === 242){
-					if (verboseDebugging) {
-						console.log("fresh tile.");
-					}
-				} else {
-					if (verboseDebugging) {
-						console.error(request.statusText);
-					}
-				}
-			}
 		}
 		
 		// load drawing and platform data from the server
@@ -1700,16 +1358,9 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		// ??? integrate this with Mark's code
 		function svgLoadFromServer(xTile, yTile, password) {
 			handleShapeInProgress();
-			svgClearAll();
 
 			// start Mark's code
-			var payload = {};
-			//fill out coordinate fields
-			payload["xcoord"] = xTile;
-			payload["ycoord"] = yTile;
-			//TO CHANGE: EVERYTHING CURRENTLY HAS NO PASSWORD
-			payload["pw"] = '';
-			postRequest("/retrieve",payload,svgPullCallback,postOnError);
+			// ###
 			// end Mark's code
 
 			// and/or use my helper function
@@ -1774,7 +1425,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						}
 						if (shapeInProgress.getAttribute("ry") == 0) {
 							shapeInProgress.setAttribute("ry", "1");
-						} 
+						}
 					
 						// debug output for completed ellipse
 						if (debugging) {
@@ -2714,6 +2365,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						
 						// debug output for completed rectangle
 						if (debugging) {
+							
 							console.log(objectStr + currentObject.toString() + ": Made a rectangle at (" +
 									shapeInProgress.getAttribute("x") +	", " +
 									shapeInProgress.getAttribute("y") + ") with width: " +
@@ -3127,6 +2779,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				cornerArtDiv.style.display = "block";
 				edgeArtDiv.style.display = "block";
 			}
+
 		}
 
 		// zoom function
