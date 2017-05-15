@@ -616,7 +616,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			// adapted from Mark's version
 			// puts myGroupStr's data into myContext's canvas
 			// using given clipping values
-			function putGroupInCanvas(myGroupStr, myContext, clipX, clipY, clipW, clipH) {
+			function putGroupInCanvas(myGroupStr, myContext, clipX, clipY, clipW, clipH, canvX, canvY, canvW, canvH) {
 				// prepend and append svg open and close tag constants
 				myGroupStr = svgPrepend + myGroupStr + svgAppend;
 				// debug message
@@ -633,7 +633,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						// clear the given canvas
 						myContext.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
 						// draw the new image
-						myContext.drawImage(img, clipX, clipY, clipW, clipH, 0, 0, myContext.canvas.clientWidth, myContext.canvas.clientHeight);
+						myContext.drawImage(img, clipX, clipY, clipW, clipH, canvX, canvY, canvW, canvH);
 					}
 					img.src = url;
 			}
@@ -641,7 +641,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			// load the current SVG into the canvas, overwriting the old data
 			// version written by Toni to use the generic putGroupinCanvas function 
 			function updateCanvas() {
-				putGroupInCanvas(artToString(), hiddenContext, 0, 0, canvasHeight, canvasWidth);
+				putGroupInCanvas(artToString(), hiddenContext, 0, 0, canvasHeight, canvasWidth, 0, 0, canvasHeight, canvasWidth);
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -1233,8 +1233,10 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							// tiles 6, 7, and 8 are only canvasHeight tall
 							clipH = canvasEdge;
 						}
+						var canvW = clipW;
+						var cavnH = clipH;
 						// end Toni's code
-						putGroupInCanvas(body[key]['svg'],targetContext, clipX, clipY, clipW, clipH);
+						putGroupInCanvas(body[key]['svg'],targetContext, clipX, clipY, clipW, clipH, 0, 0, canvW, canvH);
 						alreadyDrawn[key] = key;
 					}
 					for (tile in coordinatePairs){
@@ -1244,7 +1246,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							if (!(coordinatePairs[tile]["canvasId"] === "svgCanvas")){
 								var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
 								var blankContext = blankCanvas.getContext("2d");
-								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext, 0, 0, canvasHeight, canvasWidth);
+								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext, 0, 0, canvasHeight, canvasWidth, 0, 0, canvasHeight, canvasWidth);
 							}
 						}
 					}
@@ -1619,8 +1621,11 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				console.log("Submitted drawing and platform data to the server.");
 			}
 			
-			// hide message box
+			// hide old message box
 			messageDiv.style.display = "none";
+			
+			// use message box to put up confirmation message
+			displayMessage("Your art has been submitted.", doNothing, doNothing, false)
 		}
 
 		//HELPER FUNCTION TO HANDLE CALLBACK FROM SERVER LOAD
