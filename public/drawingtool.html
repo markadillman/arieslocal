@@ -551,16 +551,24 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 				//using jQuery nodes, art group is index 3, platform 4
 				//find id
 				var groups = canvas.childNodes;
-				console.log(groups);
+				if (verboseDebugging) {
+					console.log(groups);
+				}
 				var groupArray = Array.prototype.slice.call(groups);
-				console.log(groupArray);
+				if (verboseDebugging) {
+					console.log(groupArray);
+				}
 				var targetNum;
 				for (var i = 0 ; i < groupArray.length ; i += 1){
-					console.log(groupArray[i].nodeName);
+					if (verboseDebugging) {
+						console.log(groupArray[i].nodeName);
+					}
 					if (groupArray[i].nodeName === "g"){
 						if (groupArray[i].getAttribute("id") === "drawingGroup"){
-							console.log()
-							console.log(groupArray[i].getAttribute("id"));
+							if (verboseDebugging) {
+								console.log()
+								console.log(groupArray[i].getAttribute("id"));
+							}
 							targetNum = i;
 						}
 					}
@@ -1163,13 +1171,15 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		}
 		//KEEP: HELPER FUNCTION: request error helper
 		function postOnError(request){
-			console.log("ERROR");
-			console.log("REQUEST");
-			console.log(request);
-			console.log("REQUEST STATUS");
-			console.log(request.status);
-			console.log(request.getAllResponseHeaders());
-			console.error(request.statusText);
+			if (debugging) {
+				console.log("ERROR");
+				console.log("REQUEST");
+				console.log(request);
+				console.log("REQUEST STATUS");
+				console.log(request.status);
+				console.log(request.getAllResponseHeaders());
+				console.error(request.statusText);
+			}
 		}
 		//KEEP: HELPER FUNCTION: load into center, editing SVG environment
 		function svgEditOnLoad(request){
@@ -1219,17 +1229,17 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							clipX = canvasWidth - canvasEdge;
 							clipW = canvasEdge;
 						}
-						if (key == "" || key == "" || key == "") {
+						if (key == "ur" || key == "cr" || key == "br") {
 							// tiles 2, 5, and 8 are only canvasEdge wide
 							clipW = canvasEdge;
 						}
-						if (key == "" || key == "" || key == "") {
+						if (key == "ul" || key == "um" || key == "ur") {
 							// tiles 0, 1, and 2 only show bottommost edges
 							// and are only canvasHeight tall
 							clipY = canvasHeight - canvasEdge;
 							clipH = canvasEdge;
 						}
-						if (key == "" || key == "" || key == "") {
+						if (key == "bl" || key == "bm" || key == "br") {
 							// tiles 6, 7, and 8 are only canvasHeight tall
 							clipH = canvasEdge;
 						}
@@ -1588,9 +1598,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 		function editSubmitCallback(request){
 			if (request.readyState === 4){
 				if (request.status === 200) {
-					console.log(request.responseText);
+					if (debugging) {
+						console.log(request.responseText);
+					}
 				} else {
-					console.error(request.statusText);
+					if (debugging) {
+						console.error(request.statusText);
+					}
 				}
 			}
 		}
@@ -1656,8 +1670,10 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					//var draw = SVG('svgCanvas');
 					//load the svg xml as stirng
 					//draw.svg(body.svg);
-					console.log("Working String:");
-					console.log(body.svg);
+					if (verboseDebugging) {
+						console.log("Working String:");
+						console.log(body.svg);
+					}
 					var parseString = svgMinPrepend + body.svg + svgAppend;
 					/*var parser = new DOMParser();
 					var xmlDoc = parser.parseFromString(parseString,"text/xml");
@@ -1668,9 +1684,13 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 					svgLoadFromString(parseString);
 
 				} else if (request.status === 242){
-					console.log("fresh tile.");
+					if (verboseDebugging) {
+						console.log("fresh tile.");
+					}
 				} else {
-					console.error(request.statusText);
+					if (verboseDebugging) {
+						console.error(request.statusText);
+					}
 				}
 			}
 		}
@@ -2694,7 +2714,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 						
 						// debug output for completed rectangle
 						if (debugging) {
-							
 							console.log(objectStr + currentObject.toString() + ": Made a rectangle at (" +
 									shapeInProgress.getAttribute("x") +	", " +
 									shapeInProgress.getAttribute("y") + ") with width: " +
