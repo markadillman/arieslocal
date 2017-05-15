@@ -1233,14 +1233,14 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							// tiles 2, 5, and 8 are only canvasEdge wide
 							clipW = canvasEdge;
 						}
-						if (key == "ul" || key == "um" || key == "ur") {
+						if (key == "ul" || key == "uc" || key == "ur") {
 							// tiles 0, 1, and 2 only show bottommost edges
-							// and are only canvasHeight tall
+							// and are only canvasEdge tall
 							clipY = canvasHeight - canvasEdge;
 							clipH = canvasEdge;
 						}
 						if (key == "bl" || key == "bm" || key == "br") {
-							// tiles 6, 7, and 8 are only canvasHeight tall
+							// tiles 6, 7, and 8 are only canvasEdge tall
 							clipH = canvasEdge;
 						}
 						var canvW = clipW;
