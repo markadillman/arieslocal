@@ -5,16 +5,14 @@
 Antonina (Toni) York
 OSU CS 467 Spring 2017
 Team Aries: Infinite Blank
-Week 6 Drawing Tool
-week6test.html
+Midpoint Check Drawing Tool
+drawingtool.html
 
 This draws heavily from examples found at:
 https://github.com/oreillymedia/svg-essentials-examples
 
 Also includes several chunks of code by fellow Team Aries member Mark Dillman.
 These chunks are tagged with the phrase "Mark's code" in comments.
-
-Mark, search for ### to find 4 places to integrate your code.
 
 -->
 
@@ -24,7 +22,7 @@ Mark, search for ### to find 4 places to integrate your code.
 
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 
-		<title>Team Aries: Week 6 Drawing Tool</title>
+		<title>Team Aries: Midpoint Check Drawing Tool</title>
 
 		<style type="text/css">
 			/* make form entries begin on a new line */
@@ -617,7 +615,8 @@ Mark, search for ### to find 4 places to integrate your code.
 			// Toni's generic version of the SVG-to-Canvas function
 			// adapted from Mark's version
 			// puts myGroupStr's data into myContext's canvas
-			function putGroupInCanvas(myGroupStr, myContext) {
+			// using given clipping values
+			function putGroupInCanvas(myGroupStr, myContext, clipX, clipY, clipW, clipH) {
 				// prepend and append svg open and close tag constants
 				myGroupStr = svgPrepend + myGroupStr + svgAppend;
 				// debug message
@@ -634,7 +633,7 @@ Mark, search for ### to find 4 places to integrate your code.
 						// clear the given canvas
 						myContext.clearRect(0, 0, hiddenCanvas.width, hiddenCanvas.height);
 						// draw the new image
-						myContext.drawImage(img,0,0);
+						myContext.drawImage(img, clipX, clipY, clipW, clipH, 0, 0, myContext.canvas.clientWidth, myContext.canvas.clientHeight);
 					}
 					img.src = url;
 			}
@@ -642,7 +641,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			// load the current SVG into the canvas, overwriting the old data
 			// version written by Toni to use the generic putGroupinCanvas function 
 			function updateCanvas() {
-				putGroupInCanvas(artToString(), hiddenContext);
+				putGroupInCanvas(artToString(), hiddenContext, 0, 0, canvasHeight, canvasWidth);
 			}
 			
 			// helper functions to convert rgb integers into a hex color string
@@ -853,28 +852,46 @@ Mark, search for ### to find 4 places to integrate your code.
 					
 					<table>
 						<tr>
-							<td><input type="radio" name="map" id="tile0btn" value="0"
-								onclick="changeSelectedTile(this.value)">(-1, -1)</input></td>
-							<td><input type="radio" name="map" id="tile1btn" value="1"
-								onclick="changeSelectedTile(this.value)">(0, -1)</input></td>
-							<td><input type="radio" name="map" id="tile2btn" value="2"
-								onclick="changeSelectedTile(this.value)">(1, -1)</input></td>
+							<td><label id="tile0lbl">
+								<input type="radio" name="map" id="tile0btn" value="0"
+								onclick="changeSelectedTile(this.value)">(-1, -1)</input>
+							</label></td>
+							<td><label id="tile1lbl">
+								<input type="radio" name="map" id="tile1btn" value="1"
+								onclick="changeSelectedTile(this.value)">(0, -1)</input>
+							</label></td>
+							<td><label id="tile2lbl">
+								<input type="radio" name="map" id="tile2btn" value="2"
+								onclick="changeSelectedTile(this.value)">(1, -1)</input>
+							</label></td>
 						</tr>
 						<tr>
-							<td><input type="radio" name="map" id="tile3btn" value="3"
-								onclick="changeSelectedTile(this.value)">(-1, 0)</input></td>
-							<td><input type="radio" name="map" id="tile4btn" value="4"
-								onclick="changeSelectedTile(this.value)">(0, 0)</input></td>
-							<td><input type="radio" name="map" id="tile5btn" value="5"
-								onclick="changeSelectedTile(this.value)">(1, 0)</input></td>
+							<td><label id="tile3lbl">
+								<input type="radio" name="map" id="tile3btn" value="3"
+								onclick="changeSelectedTile(this.value)">(-1, 0)</input>
+							</label></td>
+							<td><label id="tile4lbl">
+								<input type="radio" name="map" id="tile4btn" value="4"
+								onclick="changeSelectedTile(this.value)">(0, 0)</input>
+							</label></td>
+							<td><label id="tile5lbl">
+								<input type="radio" name="map" id="tile5btn" value="5"
+								onclick="changeSelectedTile(this.value)">(1, 0)</input>
+							</label></td>
 						</tr>
 						<tr>
-							<td><input type="radio" name="map" id="tile6btn" value="6"
-								onclick="changeSelectedTile(this.value)">(-1, 1)</input></td>
-							<td><input type="radio" name="map" id="tile7btn" value="7"
-								onclick="changeSelectedTile(this.value)">(0, 1)</input></td>
-							<td><input type="radio" name="map" id="tile8btn" value="8"
-								onclick="changeSelectedTile(this.value)">(1, 1)</input></td>
+							<td><label id="tile6lbl">
+								<input type="radio" name="map" id="tile6btn" value="6"
+								onclick="changeSelectedTile(this.value)">(-1, 1)</input>
+							</label></td>
+							<td><label id="tile7lbl">
+								<input type="radio" name="map" id="tile7btn" value="7"
+								onclick="changeSelectedTile(this.value)">(0, 1)</input>
+							</label></td>
+							<td><label id="tile8lbl">
+								<input type="radio" name="map" id="tile8btn" value="8"
+								onclick="changeSelectedTile(this.value)">(1, 1)</input>
+							</label></td>
 						</tr>
 					</table>
 					
@@ -1071,15 +1088,12 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log("Something went horribly awry with moving to a new tile.");
 			}
 			
-			// debug message
-			if (debugging) {
-				console.log("Chose to navigate to tile (" +
-							xTile.toString() + ", " + yTile.toString() + ").");
-			}
+			// update nav buttons
+			initTileNavRadioButtons(xTile, yTile);
 			
 			// use the new xTile and yTile coords to switch to the new tile
 			// start Mark's code
-			// ###
+			svgClearAll();
 			//load editable svg in middle frame
 			svgLoadFromServer(xTile, yTile, password);
 			//generate set of surrounding coordinates
@@ -1087,8 +1101,15 @@ Mark, search for ### to find 4 places to integrate your code.
 			//send packet to query for surrounding tile assets
 			var request = postRequest("/readpull",readOnlyPayload,surroundingsOnLoad,postOnError);
 			// end Mark's code
+			
+			// debug message
+			if (debugging) {
+				console.log("Chose to navigate to tile (" +
+							xTile.toString() + ", " + yTile.toString() + ").");
+			}
 		}
 
+		// start Mark's code
 		//KEEP: HELPER FUNCTION TO GENERATE FORMATTED SURROUNDING PAYLOAD GIVEN CURRENT TILE
 		function generateSurroundingsPayload(){
 			if (debugging){
@@ -1186,7 +1207,34 @@ Mark, search for ### to find 4 places to integrate your code.
 						var targetCanvas = document.getElementById(coordinatePairs[key]["canvasId"]);
 						//get that canvas context
 						var targetContext = targetCanvas.getContext("2d");
-						putGroupInCanvas(body[key]['svg'],targetContext);
+						// start Toni's code
+						// based on which surrounding edge this is, modify its top left corner coordinates
+						var clipX = 0;
+						var clipY = 0;
+						var clipW = canvasWidth;
+						var clipH = canvasHeight;
+						if (key == "ul" || key == "cl" || key == "bl") {
+							// tiles 0, 3, and 6 show only leftmost edges
+							// and are only canvasEdge wide
+							clipX = canvasWidth - canvasEdge;
+							clipW = canvasEdge;
+						}
+						if (key == "" || key == "" || key == "") {
+							// tiles 2, 5, and 8 are only canvasEdge wide
+							clipW = canvasEdge;
+						}
+						if (key == "" || key == "" || key == "") {
+							// tiles 0, 1, and 2 only show bottommost edges
+							// and are only canvasHeight tall
+							clipY = canvasHeight - canvasEdge;
+							clipH = canvasEdge;
+						}
+						if (key == "" || key == "" || key == "") {
+							// tiles 6, 7, and 8 are only canvasHeight tall
+							clipH = canvasEdge;
+						}
+						// end Toni's code
+						putGroupInCanvas(body[key]['svg'],targetContext, clipX, clipY, clipW, clipH);
 						alreadyDrawn[key] = key;
 					}
 					for (tile in coordinatePairs){
@@ -1196,7 +1244,7 @@ Mark, search for ### to find 4 places to integrate your code.
 							if (!(coordinatePairs[tile]["canvasId"] === "svgCanvas")){
 								var blankCanvas = document.getElementById(coordinatePairs[tile]["canvasId"]);
 								var blankContext = blankCanvas.getContext("2d");
-								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext);
+								putGroupInCanvas("<rect width=\"600\" height=\"350\" fill=\"white\"></rect>",blankContext, 0, 0, canvasHeight, canvasWidth);
 							}
 						}
 					}
@@ -1205,12 +1253,12 @@ Mark, search for ### to find 4 places to integrate your code.
 				}
 			}
 		}
-
+		// end Mark's code
 		
 		// updates the navigation radio buttons
 		// needed on page load, just for the midpoint check version
 		function initTileNavRadioButtons(x, y) {
-			// get all the nav buttons
+			// get all the nav buttons and their labels
 			var tile0 = document.getElementById("tile0btn");
 			var tile1 = document.getElementById("tile1btn");
 			var tile2 = document.getElementById("tile2btn");
@@ -1222,23 +1270,40 @@ Mark, search for ### to find 4 places to integrate your code.
 			var tile8 = document.getElementById("tile8btn");
 			var navButtons = [tile0, tile1, tile2, tile3, tile4, tile5, tile6, tile7, tile8];
 			
-			// set them all to unchecked
+			// get all the nav button labels
+			var label0 = document.getElementById("tile0lbl");
+			var label1 = document.getElementById("tile1lbl");
+			var label2 = document.getElementById("tile2lbl");
+			var label3 = document.getElementById("tile3lbl");
+			var label4 = document.getElementById("tile4lbl");
+			var label5 = document.getElementById("tile5lbl");
+			var label6 = document.getElementById("tile6lbl");
+			var label7 = document.getElementById("tile7lbl");
+			var label8 = document.getElementById("tile8lbl");
+			var navBtnLabels = [label0, label1, label2, label3, label4, label5, label6, label7, label8];
+			
+			// set them all to unchecked and regular text color
 			for (var i = 0; i < navButtons.length; i += 1) {
 				navButtons[i].checked = false;
+				navBtnLabels[i].style.color = "black";
+				
 			}
 			
-			// check the button for the given tile
+			// check the button for the given tile and change its text color
 			switch (x) {
 				case -1:
 						switch (y) {
 							case -1:
 									navButtons[0].checked = true;
+									navBtnLabels[0].style.color = "blue";
 									break;
 							case 0:
 									navButtons[3].checked = true;
+									navBtnLabels[3].style.color = "blue";
 									break;
 							case 1:
 									navButtons[6].checked = true;
+									navBtnLabels[6].style.color = "blue";
 									break;
 							default: // should never get here
 									console.log("Something went horribly awry with the tile navigation radio buttons.");
@@ -1249,12 +1314,15 @@ Mark, search for ### to find 4 places to integrate your code.
 						switch (y) {
 							case -1:
 									navButtons[1].checked = true;
+									navBtnLabels[1].style.color = "blue";
 									break;
 							case 0:
 									navButtons[4].checked = true;
+									navBtnLabels[4].style.color = "blue";
 									break;
 							case 1:
 									navButtons[7].checked = true;
+									navBtnLabels[7].style.color = "blue";
 									break;
 							default: // should never get here
 									console.log("Something went horribly awry with the tile navigation radio buttons.");
@@ -1265,12 +1333,15 @@ Mark, search for ### to find 4 places to integrate your code.
 						switch (y) {
 							case -1:
 									navButtons[2].checked = true;
+									navBtnLabels[2].style.color = "blue";
 									break;
 							case 0:
 									navButtons[5].checked = true;
+									navBtnLabels[5].style.color = "blue";
 									break;
 							case 1:
 									navButtons[8].checked = true;
+									navBtnLabels[8].style.color = "blue";
 									break;
 							default: // should never get here
 									console.log("Something went horribly awry with the tile navigation radio buttons.");
@@ -1345,9 +1416,44 @@ Mark, search for ### to find 4 places to integrate your code.
 		// helper function that empties out all the SVG data currently stored in the page
 		// this includes undo/redo data
 		function svgClearAll() {
-
 			clearUndoRedoLists();
+			
+			// clear out drawn objects, draw group node 3, platform node 4
+			/*if ($("#svgCanvas")){
+				$("#svgCanvas").empty();
+			}
 
+			//DUPLICATE FROM SVGINIT
+			// create the drawn objects group
+			drawingGroup = document.createElementNS(svgns, "g");
+			drawingGroup.setAttribute("id", "drawingGroup");
+			drawingGroup.setAttribute("style", "opacity: 1");
+			canvas.appendChild(drawingGroup);
+			
+			// create the platforms group
+			platformsGroup = document.createElementNS(svgns, "g");
+			platformsGroup.setAttribute("id", "platformsGroup");
+			platformsGroup.setAttribute("style", "visibility: hidden");
+			platformsGroup.addEventListener("click", platformClick);
+			canvas.appendChild(platformsGroup);
+			
+			// create the dead/deleted platforms group
+			deadPlatformsGroup = document.createElementNS(svgns, "g");
+			deadPlatformsGroup.setAttribute("id", "deadPlatformsGroup");
+			deadPlatformsGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(deadPlatformsGroup);
+
+			// create the undone objects groups
+			undoneDrawingGroup = document.createElementNS(svgns, "g");
+			undoneDrawingGroup.setAttribute("id", "undoneDrawingGroup");
+			undoneDrawingGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(undoneDrawingGroup);
+			undonePlatformsGroup = document.createElementNS(svgns, "g");
+			undonePlatformsGroup.setAttribute("id", "undonePlatformsGroup");
+			undonePlatformsGroup.setAttribute("style", "visibility: hidden");
+			canvas.appendChild(undonePlatformsGroup);
+			*/
+			//TONI'S OLD CODE rep by Mark
 			var myObject;
 			for (var i = 1; i < currentObject; i += 1) {
 				myObject = document.getElementById(objectStr + i.toString());
@@ -1358,6 +1464,7 @@ Mark, search for ### to find 4 places to integrate your code.
 			currentObject = 1;
 
 			// clear out platform objects
+			//TONI'S OLD CODE rep by Mark
 			var myParent;
 			for (var j = 1; j < currentPlatform; j += 1) {
 				myObject = document.getElementById(platformStr + j.toString());
@@ -1375,12 +1482,11 @@ Mark, search for ### to find 4 places to integrate your code.
 		// helper function loads a given SVG string into the drawing canvas
 		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 		function svgLoadFromString(myString) {
+			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
+			svgClearAll();
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
-
-			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
-			svgClearAll();
 
 			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
 			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
@@ -1527,7 +1633,36 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log(body.svg);
 					}
 					//load SVG into editable SVG region
+					//must do away with any drawingGroup and platformsGroup higher in DOM
+					/*var groups = canvas.childNodes;
+					console.log(groups);
+					var groupArray = Array.prototype.slice.call(groups);
+					console.log(groupArray);
+					for (var i = 0 ; i < groupArray.length ; i += 1){
+					console.log(groupArray[i].nodeName);
+						if (groupArray[i].nodeName === "g"){
+							//find drawingGroup and platformGroup and remove them
+							if (groupArray[i].getAttribute("id") === "drawingGroup" ||
+								groupArray[i].getAttribute("id") === "platformsGroup" ){
+								console.log()
+								console.log(groupArray[i].getAttribute("id"));
+								groupArray[i].remove();
+							}
+						}
+					}*/
+					//use svg.js load to load into main svg
+					//var draw = SVG('svgCanvas');
+					//load the svg xml as stirng
+					//draw.svg(body.svg);
+					console.log("Working String:");
+					console.log(body.svg);
 					var parseString = svgMinPrepend + body.svg + svgAppend;
+					/*var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString(parseString,"text/xml");
+					var dg = xmlDoc.getElementById("drawingGroup");
+					var pg = xmlDoc.getElementById("platformsGroup");
+					console.log(dg);
+					console.log(pg);*/
 					svgLoadFromString(parseString);
 
 				} else if (request.status === 242){
@@ -1543,8 +1678,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		// ??? integrate this with Mark's code
 		function svgLoadFromServer(xTile, yTile, password) {
 			handleShapeInProgress();
-			//attempting to put this into callback
-			//svgClearAll();
+			svgClearAll();
 
 			// start Mark's code
 			var payload = {};
