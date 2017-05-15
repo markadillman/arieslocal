@@ -1234,7 +1234,7 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 							clipH = canvasEdge;
 						}
 						var canvW = clipW;
-						var cavnH = clipH;
+						var canvH = clipH;
 						// end Toni's code
 						putGroupInCanvas(body[key]['svg'],targetContext, clipX, clipY, clipW, clipH, 0, 0, canvW, canvH);
 						alreadyDrawn[key] = key;
@@ -1620,9 +1620,6 @@ These chunks are tagged with the phrase "Mark's code" in comments.
 			if (debugging) {
 				console.log("Submitted drawing and platform data to the server.");
 			}
-			
-			// hide old message box
-			messageDiv.style.display = "none";
 			
 			// use message box to put up confirmation message
 			displayMessage("Your art has been submitted.", doNothing, doNothing, false)
