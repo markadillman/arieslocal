@@ -1346,7 +1346,6 @@ Mark, search for ### to find 4 places to integrate your code.
 		// helper function that empties out all the SVG data currently stored in the page
 		// this includes undo/redo data
 		function svgClearAll() {
-
 			clearUndoRedoLists();
 
 			var myObject;
@@ -1376,12 +1375,11 @@ Mark, search for ### to find 4 places to integrate your code.
 		// helper function loads a given SVG string into the drawing canvas
 		// references: https://developer.mozilla.org/en-US/docs/Web/API/DOMParser
 		function svgLoadFromString(myString) {
+			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
+			svgClearAll();
 			// parse the given string into a document and get its parts
 			var parser = new DOMParser();
 			var doc = parser.parseFromString(myString, "image/svg+xml");
-
-			//clear current canvas. MARK moved this to top of function to re-establish DOM earlier.
-			svgClearAll();
 
 			var strDrawingGroup = doc.documentElement.getElementById("drawingGroup");
 			var strPlatformsGroup = doc.documentElement.getElementById("platformsGroup");
@@ -1528,7 +1526,35 @@ Mark, search for ### to find 4 places to integrate your code.
 						console.log(body.svg);
 					}
 					//load SVG into editable SVG region
+					//must do away with any drawingGroup and platformsGroup higher in DOM
+					/*var groups = canvas.childNodes;
+					console.log(groups);
+					var groupArray = Array.prototype.slice.call(groups);
+					console.log(groupArray);
+					for (var i = 0 ; i < groupArray.length ; i += 1){
+					console.log(groupArray[i].nodeName);
+						if (groupArray[i].nodeName === "g"){
+							//find drawingGroup and platformGroup and remove them
+							if (groupArray[i].getAttribute("id") === "drawingGroup" ||
+								groupArray[i].getAttribute("id") === "platformsGroup" ){
+								console.log()
+								console.log(groupArray[i].getAttribute("id"));
+								groupArray[i].remove();
+							}
+						}
+					}*/
+					//use svg.js load to load into main svg
+					//var draw = SVG('svgCanvas');
+					//load the svg xml as stirng
+					//draw.svg(body.svg);
 					var parseString = svgMinPrepend + body.svg + svgAppend;
+					/*var parser = new DOMParser();
+					var xmlDoc = parser.parseFromString(parseString,"text/xml");
+					var dg = xmlDoc.getElementById("drawingGroup");
+					var pg = xmlDoc.getElementById("platformsGroup");
+					console.log(dg);
+					console.log(pg);*/
+
 					svgLoadFromString(parseString);
 
 				} else if (request.status === 242){
@@ -1544,7 +1570,7 @@ Mark, search for ### to find 4 places to integrate your code.
 		// ??? integrate this with Mark's code
 		function svgLoadFromServer(xTile, yTile, password) {
 			handleShapeInProgress();
-			//attempting to put this into callback
+			//moved to callback function svgPullCallback
 			//svgClearAll();
 
 			// start Mark's code
