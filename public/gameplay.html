@@ -7,8 +7,11 @@
     <div id="game"></div>
     <script type="text/javascript" src="lib/crafty.js"></script>
     <script type="text/javascript" src="src/game.js"></script>
-    <script>
-    	window.addEventListener('load', Game.start);
+    <script type="javascript">
+      window.onload(loadScript('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js',gameload));
+      function gameload = {
+        window.addEventListener('load', Game.start);
+      }
     </script>
   </body>
 </html>
