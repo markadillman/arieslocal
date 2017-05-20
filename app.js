@@ -10,7 +10,7 @@ var xmlParse = require('xml2js').parseString;
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
-var dbUrl = 'mongodb://172.31.34.164:27017/test'
+var dbUrl = 'mongodb://127.0.0.1:27017/test'
 
 var index = require('./routes/index');
 var users = require('./routes/users');
