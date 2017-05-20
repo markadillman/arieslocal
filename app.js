@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
-var io = require('socket.io')('app');
+var io = require('socket.io').listen('8080');
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
@@ -49,8 +49,8 @@ io.on('connection',function(socket){
 	socket.emit('news',{hello:'world'});
 	socket.on('my other event',function(data){
 		console.log(data);
-	})
-})
+	});
+});
 
 //HELPER FUNCTION FOR SVG VALIDITY
 function isValidSvg(svgString){
