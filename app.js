@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
-var http = require=('http');
+var http = require('http');
 var util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
