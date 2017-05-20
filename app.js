@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
-var io = require('socket.io').listen('8080');
+var io = require('socket.io')();
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
@@ -46,6 +46,7 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 					};
 //socket.io on connection code
 io.on('connection',function(socket){
+	console.log('socketio connection made');
 	socket.emit('news',{hello:'world'});
 	socket.on('my other event',function(data){
 		console.log(data);
