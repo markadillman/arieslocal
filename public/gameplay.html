@@ -5,11 +5,10 @@
     <script type="text/javascript" src="lib/crafty.js"></script>
     <script type="text/javascript" src="src/game.js"></script>
     <script type="text/javascript">
-      window.onload = loadScript('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js',gameload);
-      var gameload = function(){
+      window.onload = loadScript('https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js', function(){
         console.log('Onload triggered.');
         window.addEventListener('load', Game.start);
-      };
+      });
     </script>
   </head>
   <body>
