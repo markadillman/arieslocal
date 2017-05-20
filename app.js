@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
+var io = require('socket.io')('app');
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
@@ -43,6 +44,13 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 					     "bm": {"x":0,"y":1,"canvasId":"belowDivCanvas"},      //------bottom middle ("bm")
 					     "br": {"x":1,"y":1,"canvasId":"belowRightDivCanvas"}  //------bottom right ("br")
 					};
+//socket.io on connection code
+io.on('connection',function(socket){
+	socket.emit('news',{hello:'world'});
+	socket.on('my other event',function(data){
+		console.log(data);
+	})
+})
 
 //HELPER FUNCTION FOR SVG VALIDITY
 function isValidSvg(svgString){

@@ -1,3 +1,5 @@
+<script src-"https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.1/socket.io.js"></script>
+
 var tileWidth = 600;
 var tileHeight = 350;
 var canvasEdge = 50;
@@ -8,6 +10,8 @@ var currentCenterY = 0;
 var spriteWidth = 10;
 var spriteHeight = 50;
 var defaultTextColor = '#373854'
+//global value holder for socket.io socket
+var socket;
 
 Game =
 {
@@ -68,6 +72,17 @@ Game =
 				.attr({x: (screenWidth / 6) * 5 - 40, y: screenHeight / 3,
 					   w: 40, h: 40})
 				.color('red');
+
+			//create socket.io connection DIFFERENT ON LOCAL AND SERVER. ADJUST.
+			var socket = io('http://192.168.2.50');
+			socket.on('news', function(data){
+				console.log(data);
+				socket.emit('my other event',{my:'data'});
+			});
+
+			//load variables required for maintaining socket.io connection
+
+			//retreive stock avatars
 
 			// Selected avatar
 
