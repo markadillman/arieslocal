@@ -12,6 +12,7 @@ var util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
 var dbUrl = 'mongodb://127.0.0.1:27017/test'
+var socketioPort = 8080;
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -19,7 +20,9 @@ var users = require('./routes/users');
 var app = express();
 
 var server = http.createServer(app);
-var io = require('socket.io')(server);
+var io = require('socket.io');
+server.listen(socketioPort);
+var socket = io.listen(server);
 
 //make process trackable
 process.title = "ariesApp";
@@ -48,6 +51,9 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 					     "br": {"x":1,"y":1,"canvasId":"belowRightDivCanvas"}  //------bottom right ("br")
 					};
 //socket.io on connection code
+
+
+
 io.on('connection',function(socket){
 	console.log('socketio connection made');
 	socket.emit('news',{hello:'world'});

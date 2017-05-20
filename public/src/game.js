@@ -32,6 +32,12 @@ Game =
 {
 	start: function()
 	{
+		//create socket.io connection DIFFERENT ON LOCAL AND SERVER. ADJUST.
+		var socket = io('http://192.168.2.50:8080');
+		socket.on('news', function(data){
+			console.log(data);
+			socket.emit('my other event',{my:'data'});
+		});
 
 		Crafty.init(screenWidth, screenHeight, document.getElementById('game'));
 
@@ -88,13 +94,6 @@ Game =
 				.attr({x: (screenWidth / 6) * 5 - 40, y: screenHeight / 3,
 					   w: 40, h: 40})
 				.color('red');
-
-			//create socket.io connection DIFFERENT ON LOCAL AND SERVER. ADJUST.
-			var socket = io('http://192.168.2.50');
-			socket.on('news', function(data){
-				console.log(data);
-				socket.emit('my other event',{my:'data'});
-			});
 
 			//load variables required for maintaining socket.io connection
 
