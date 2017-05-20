@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var styles = require('stylus');
 var SVG = require('svg.js');
 var xmlParse = require('xml2js').parseString;
+var http = require=('http');
 const util = require('util');
 var MongoClient = require('mongodb').MongoClient, assert = require('assert');
 //database url
@@ -17,7 +18,8 @@ var users = require('./routes/users');
 
 var app = express();
 
-var io = require('socket.io')(app);
+var server = http.createServer(app);
+var io = require('socket.io')(server);
 
 //make process trackable
 process.title = "ariesApp";
