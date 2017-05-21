@@ -76,7 +76,7 @@ socket.on('connection',function(socket){
 	});
 	socket.on('disconnect',function(){
 		delete playerPositionMap[socket.id.toString()];
-		console.log(util.inspect.playerPositionMap);
+		console.log(util.inspect(playerPositionMap));
 	})
 });
 
