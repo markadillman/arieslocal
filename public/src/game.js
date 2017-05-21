@@ -195,7 +195,7 @@ Game =
 	       	Crafty.viewport.follow(player, 0, 50);
 
 	       	//trigger the player creation event
-	       	player.trigger('SceneLoaded',player);
+	       	player.trigger('SceneLoaded',{x:player.x,y:player.y,id:socketId});
       	});
 
 		// Start game on home screen
