@@ -10,6 +10,7 @@ var spriteHeight = 50;
 var defaultTextColor = '#373854'
 //global value holder for socket.io socket
 var socket;
+var coordinates = document.getElementById('coords');
 
 function loadScript(url, callback)
 {
@@ -146,7 +147,11 @@ Game =
 	      			if(e.key == Crafty.keys.DOWN_ARROW)
 	      			{
 	      				this.gravity('Platform');
-	      			}});
+	      			}})
+	      		//update with new coordinates every frame
+	      		.bind("EnterFrame",function(){
+	      			coordinates.innerHTML = "<p> x: " + this.x.toString() + " y : " + this.y.toString();
+	      		});
 
 	      	// Platforms
 	      	Crafty.e('Platform, 2D, Canvas, Color')
@@ -172,6 +177,9 @@ Game =
 
 	       	// Have camera follow player sprite
 	       	Crafty.viewport.follow(player, 0, 50);
+
+	       	//update the position of the player every frame
+
 
       	});
 
