@@ -74,7 +74,9 @@ socketUniversal.on('connection',function(socket){
 		socketUniversal.emit('new player',{x:data.x,y:data.y,id:socket.id});
 	});
 	socket.on('changeCoords',function(data){
-		console.log(data);
+		//console.log(data);
+		playerPositionMap[data.id]['x'] = data.x;
+		playerPositionMap[data.id]['y'] = data.y;
 	});
 	socket.on('disconnect',function(){
 		delete playerPositionMap[socket.id.toString()];
@@ -82,8 +84,8 @@ socketUniversal.on('connection',function(socket){
 		socketUniversal.emit('player logoff',{id:socket.id});
 	})
 	socket.on('position request',function(){
-		//console.log("position request payload");
-		//console.log(util.inspect(playerPositionMap));
+		console.log("position request payload");
+		console.log(util.inspect(playerPositionMap));
 		socket.emit('position response',playerPositionMap);
 	});
 });
