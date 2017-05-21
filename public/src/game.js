@@ -206,6 +206,7 @@ Game =
 	      			for (key in eventData){
 	      				//if the ID is in the current map and in the data for the update, update the coords
 	      				if (!(playerPositionMap[key] === null)){
+	      					console.log(playerPositionMap[key]);
 	      					//look up crafty entity for this player
 	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
 	      					targetPlayer.x = eventData[key]['x'];
