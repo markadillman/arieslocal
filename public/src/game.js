@@ -265,6 +265,8 @@ Game =
 	       	});
 	       	//this will trigger when server responds with updated positions
 	       	socket.on('position response',function(data){
+	       		console.log("positions");
+	       		console.log(data);
 	       		//actual event trigger
 	       		player.trigger('UpdateMap',data);
 	       	});
