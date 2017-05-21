@@ -237,7 +237,7 @@ Game =
 	      					//set the Crafty id as a field
 	      					oldPlayer.craftyId = oldPlayer.getId();
 	      					//add this to player position map
-	      					playerPositionMap[otherPlayer.friendId] = oldPlayer;			
+	      					playerPositionMap[oldPlayer.friendId] = oldPlayer;			
 	      				}
 	      				//if player is pre-existing player that does not have an avatar, make one
 	      				else {
