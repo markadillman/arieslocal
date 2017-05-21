@@ -226,7 +226,7 @@ Game =
 	      					console.log(playerPositionMap);	 				
 	      				}
 	      				//if player is pre-existing player that does not have an avatar, make one
-	      				if (playerPositionMap[key] === undefined){
+	      				if (playerPositionMap[key] === undefined && !(playerPositionMap[key] === socketId)){
 	      					//this function will either create a different colored rectangle or, in the future,
 	      					//load the player's avatar into memory and start rendering it over their hitbox
 	      					var otherPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
