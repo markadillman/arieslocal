@@ -195,9 +195,11 @@ Game =
 		// Start game on home screen
       	Crafty.enterScene('HomeScreen');
 	}
+}
 
-	//function to handle the initial admission to the player pool
-	var reportInitPosition = function(player){
+//function to handle the initial admission to the player pool
+var reportInitPosition = function(player){
+	if (!(player === null)){
 		socket.emit('init position',{x : player.x , y : player.y});
 	}
-}
+};
