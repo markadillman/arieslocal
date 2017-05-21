@@ -11,6 +11,7 @@ var defaultTextColor = '#373854'
 //global value holder for socket.io socket and socketId
 var socket;
 var socketId;
+var playerGlob;
 //global constant to determine number of logical frames per net frame
 const netFrameRate = 50;
 
@@ -155,7 +156,7 @@ Game =
 					//function to handle the initial admission to the player pool
 					if (!(eventData === null)){
 						console.log(eventData);
-						socket.emit('init position',{x : eventData.x , y : eventData.y});
+						socket.emit('init position',{x : playerGlob.x , y : playerGlob.y});
 					}
 	      		})
 	      		//update with new coordinates every second (50 fps)
@@ -168,6 +169,8 @@ Game =
 	      				socket.emit('changeCoords', {x : this.x , y : this.y , id : socketId});
 	      			}
 	      		});
+
+	      	playerGlob = player;
 
 	      	// Platforms
 	      	Crafty.e('Platform, 2D, Canvas, Color')
