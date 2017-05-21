@@ -22,7 +22,7 @@ var app = express();
 var server = http.createServer(app);
 var io = require('socket.io');
 server.listen(socketioPort);
-var socket = io.listen(server);
+var socketUniversal = io.listen(server);
 //data structure for Namespace (room) of players to poll for position.
 //declaring here allows for prototyping at server initialization.
 function Player(x,y,id) {
@@ -61,7 +61,7 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 					};
 
 //socket.io on connect event code
-socket.on('connection',function(socket){
+socketUniversal.on('connection',function(socket){
 	console.log('socketio connection made');
 	socket.emit('assign id',{id : socket.id});
 	socket.on('init position',function(data){
@@ -71,7 +71,7 @@ socket.on('connection',function(socket){
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
 		//broadcast new player to other active players
-		io.emit('new player',{x:data.x,y:data.y,id:socket.id});
+		socketUniversal.emit('new player',{x:data.x,y:data.y,id:socket.id});
 	});
 	socket.on('changeCoords',function(data){
 		console.log(data);
@@ -79,7 +79,7 @@ socket.on('connection',function(socket){
 	socket.on('disconnect',function(){
 		delete playerPositionMap[socket.id.toString()];
 		console.log(util.inspect(playerPositionMap));
-		io.emit('player logoff',{id:socket.id});
+		socketUniversal.emit('player logoff',{id:socket.id});
 	})
 	socket.on('position request',function(){
 		console.log("position request payload");
