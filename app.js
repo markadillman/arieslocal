@@ -70,6 +70,8 @@ socket.on('connection',function(socket){
 		playerPositionMap[socket.id.toString()] = {x:data.x,y:data.y,};
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
+		//broadcast new player to other active players
+		io.to('/').emit('new player',{x:data.x,y:data.y,id:socket.id});
 	});
 	socket.on('changeCoords',function(data){
 		console.log(data);
@@ -77,7 +79,11 @@ socket.on('connection',function(socket){
 	socket.on('disconnect',function(){
 		delete playerPositionMap[socket.id.toString()];
 		console.log(util.inspect(playerPositionMap));
+		io.to('/').emit('player logoff',{id:socket.id});
 	})
+	socket.on('position request',function()){
+		socket.emit('position response',playerPositionMap);
+	}
 });
 
 //HELPER FUNCTION FOR SVG VALIDITY

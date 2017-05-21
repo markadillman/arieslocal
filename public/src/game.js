@@ -8,12 +8,17 @@ var currentCenterY = 0;
 var spriteWidth = 10;
 var spriteHeight = 50;
 var defaultTextColor = '#373854'
+
+//BEGIN CODE ADDED BY MARK
+
 //global value holder for socket.io socket and socketId
 var socket;
 var socketId;
 var playerGlob;
-//global constant to determine number of logical frames per net frame
+//global constant to determine number of logical frames per network frame
 const netFrameRate = 50;
+var playerPositionMap = {};
+//END CODE ADDED BY MARK
 
 
 function loadScript(url, callback)
@@ -37,11 +42,13 @@ Game =
 {
 	start: function()
 	{
+		//BEGIN CODE ADDED BY MARK
 		//create socket.io connection DIFFERENT ON LOCAL AND SERVER. ADJUST.
 		var socket = io('http://192.168.2.50:8080');
 		socket.on('assign id', function(data){
 			socketId = data.id;
 		});
+		//END CODE ADDED BY MARK
 
 		Crafty.init(screenWidth, screenHeight, document.getElementById('game'));
 
@@ -99,8 +106,6 @@ Game =
 					   w: 40, h: 40})
 				.color('red');
 
-			//load variables required for maintaining socket.io connection
-
 			//retreive stock avatars
 
 			// Selected avatar
@@ -124,6 +129,14 @@ Game =
 		// Main game world scene
 		Crafty.defineScene('World', function()
 		{
+			//helper function that sets up the data structure for other player locs in memory
+			function _initPlayerStruct(){
+
+			}
+			//helper function. Argument takes {x,y,id} object.
+			function _updatePlayerStruct(){
+
+			}
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
@@ -151,6 +164,7 @@ Game =
 	      			{
 	      				this.gravity('Platform');
 	      			}})
+	      		//BEGIN CODE ADDED BY MARK
 	      		//this event will be triggered once the player is in the world.
 	      		.bind('SceneLoaded',function(eventData){
 					//function to handle the initial admission to the player pool
@@ -158,6 +172,46 @@ Game =
 						console.log(eventData);
 						socket.emit('init position',{x : eventData.x , y : eventData.y});
 					}
+	      		})
+	      		.bind('NewPlayer',function(eventData){
+	      			//this function will either create a different colored rectangle or, in the future,
+	      			//load the player's avatar into memory and start rendering it over their hitbox
+	      			var otherPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
+	      				// Initial position and size
+	      				.attr({x: eventData.x, y: eventData.y, w: 10, h: 50})
+	      				// Color of sprite (to be replaced)
+	      				.color('#F41')
+	      				.twoway(200)
+	      				// Set platforms to stop falling other player
+	      				.gravity('Platform')
+	      				.gravityConst(600);
+	      			//add a field that ties this player to an id
+	      			otherPlayer.friendId = eventData.id;
+	      			//set the Crafty id as a field
+	      			otherPlayer.craftyId = otherPlayer.getId();
+	      			//add this to player position map
+	      			playerPositionMap[otherPlayer.friendId] = otherPlayer;
+	      			console.log("Player position map.");
+	      			console.log(playerPositionMap);
+	      		})
+				//this removes a recently logged off player from the position map
+	      		.bind('OtherPlayerLogoff',function(eventData){
+	      			delete playerPositionMap[eventData.id];
+	      			console.log("Player position map post logoff");
+	      			console.log(playerPositionMap);
+	      		})
+	      		//update the position map with new data. Event data is complete wherabouts of active players keyed by id
+	      		.bind('UpdateMap',function(eventData){
+	      			//for each player, update position if entity exists
+	      			for (key in eventData){
+	      				//if the ID is in the current map and in the data for the update, update the coords
+	      				if (!(playerPositionMap[key] === null)){
+	      					//look up crafty entity for this player
+	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
+	      					targetPlayer.x = eventData[key]['x'];
+	      					targetPlayer.y = eventData[key]['y'];
+	      					console.log(playerPositionMap);	      				}
+	      			}
 	      		})
 	      		//update with new coordinates every second (50 fps)
 	      		.bind("EnterFrame",function(eventData){
@@ -167,10 +221,12 @@ Game =
 	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() + " id: " + socketId);
 	      				//END DEBUG
 	      				socket.emit('changeCoords', {x : this.x , y : this.y , id : socketId});
+	      				socket.emit('position request');
 	      			}
 	      		});
 
 	      	playerGlob = player;
+	      	//END CODE ADDED BY MARK
 
 	      	// Platforms
 	      	Crafty.e('Platform, 2D, Canvas, Color')
@@ -197,8 +253,26 @@ Game =
 	       	// Have camera follow player sprite
 	       	Crafty.viewport.follow(player, 0, 50);
 
+	       	//BEGIN CODE ADDED BY MARK
+
 	       	//trigger the player creation event
 	       	player.trigger('SceneLoaded',{x:player.x,y:player.y,id:socketId});
+	       	//this will trigger the player to call the function that adds to list of known players
+	       	socket.on('new player',function(data){
+	       		//actual event trigger
+	       		player.trigger('NewPlayer',data);
+	       	});
+	       	//this will trigger when server responds with updated positions
+	       	socket.on('position response',function(data){
+	       		//actual event trigger
+	       		player.trigger('UpdateMap',data);
+	       	});
+	       	//this will trigger when a player logs off
+	       	socket.on('player logoff',function(data){
+	       		//actual event trigger
+	       		player.trigger('OtherPlayerLogoff',data);
+	       	});
+	       	//END CODE ADDED BY MARK
       	});
 
 		// Start game on home screen
