@@ -150,10 +150,11 @@ Game =
 	      			}})
 	      		//update with new coordinates every frame
 	      		.bind("EnterFrame",function(eventData){
-	      			console.log(eventData);
-	      			//console.clear();
-	      			console.log(eventData);
-	      			console.log("<p> x: " + this.x.toString() + " y : " + this.y.toString());
+	      			console.clear();
+	      			if (eventData.frame() % 50 === 0){
+	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString());
+	      				socket.emit('changeCoords',{x : this.x , y : this.y});
+	      			}
 	      		});
 
 	      	// Platforms
