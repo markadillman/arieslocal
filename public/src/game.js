@@ -202,6 +202,8 @@ Game =
 	      		})
 	      		//update the position map with new data. Event data is complete wherabouts of active players keyed by id
 	      		.bind('UpdateMap',function(eventData){
+	      			console.log("event data");
+	      			console.log(eventData);
 	      			//for each player, update position if entity exists
 	      			for (key in eventData){
 	      				//if the ID is in the current map and in the data for the update, update the coords
