@@ -220,6 +220,7 @@ Game =
 	      				console.log(socketId);
 	      				//if the ID is in the current map and in the data for the update, update the coords
 	      				if (!(playerPositionMap[key] === undefined || key === socketId)){
+	      					console.log("SHOULD BE HERE NOW");
 	      					console.log(playerPositionMap[key]);
 	      					//look up crafty entity for this player
 	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
@@ -228,11 +229,11 @@ Game =
 	      					console.log(playerPositionMap);	 				
 	      				}
 	      				//if player is pre-existing player that does not have an avatar, make one
-	      				else if (playerPositionMap[key] === undefined && !(key === socketId)){
+	      				else {
 	      					console.log("SHOULDNT BE HERE WITHOUT ANOTHER PLAYER");
 	      					//this function will either create a different colored rectangle or, in the future,
 	      					//load the player's avatar into memory and start rendering it over their hitbox
-	      					var otherPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
+	      					var oldPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	      						// Initial position and size
 	      						.attr({x: eventData[key]['x'], y: eventData[key]['y'], w: 10, h: 50})
 	      						// Color of sprite (to be replaced)
@@ -242,11 +243,11 @@ Game =
 	      						.gravity('Platform')
 	      						.gravityConst(600);
 	      					//add a field that ties this player to an id
-	      					otherPlayer.friendId = eventData.id;
+	      					oldPlayer.friendId = eventData.id;
 	      					//set the Crafty id as a field
-	      					otherPlayer.craftyId = otherPlayer.getId();
+	      					oldPlayer.craftyId = oldPlayer.getId();
 	      					//add this to player position map
-	      					playerPositionMap[otherPlayer.friendId] = otherPlayer;
+	      					playerPositionMap[otherPlayer.friendId] = oldPlayer;
 	      				}
 	      			}
 	      		})
