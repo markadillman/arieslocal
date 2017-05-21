@@ -123,6 +123,14 @@ Game =
 		// Main game world scene
 		Crafty.defineScene('World', function()
 		{
+
+
+			//function to handle the initial admission to the player pool
+			var reportInitPosition = function(player){
+			if (!(player === null)){
+					socket.emit('init position',{x : player.x , y : player.y});
+				}
+			};
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
@@ -195,12 +203,4 @@ Game =
 		// Start game on home screen
       	Crafty.enterScene('HomeScreen');
 	}
-
-
-	//function to handle the initial admission to the player pool
-	var reportInitPosition = function(player){
-		if (!(player === null)){
-			socket.emit('init position',{x : player.x , y : player.y});
-		}
-	};
 }
