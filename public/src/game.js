@@ -156,7 +156,7 @@ Game =
 					//function to handle the initial admission to the player pool
 					if (!(eventData === null)){
 						console.log(eventData);
-						socket.emit('init position',{x : playerGlob.x , y : playerGlob.y});
+						socket.emit('init position',{x : eventData.x , y : eventData.y});
 					}
 	      		})
 	      		//update with new coordinates every second (50 fps)

@@ -30,11 +30,6 @@ function Player(x,y,id) {
 	this.y = y,
 	this.id = id
 };
-function Player() {
-	this.x = null,
-	this.y = null,
-	this.id = null
-}
 //player position map keyed by player id
 var playerPositionMap = {};
 
@@ -71,6 +66,7 @@ socket.on('connection',function(socket){
 	socket.emit('assign id',{id : socket.id});
 	socket.on('init position',function(data){
 		//add player to list of active players
+		console.log(util.inspect(data));
 		activePlayer = new Player(data.x,data.y,socket.id);
 		playerPositionMap[socket.id.toString()] = activePlayer;
 		console.log("Player added to position map.");
