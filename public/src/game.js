@@ -155,8 +155,8 @@ Game =
 	      		//this event will be triggered once the player is in the world.
 	      		.bind('SceneLoaded',function(){
 					//function to handle the initial admission to the player pool
-					if (!(player === null)){
-						socket.emit('init position',{x : player.x , y : player.y});
+					if (!(this === null)){
+						socket.emit('init position',{x : this.x , y : this.y});
 					}
 	      		})
 	      		//update with new coordinates every second (50 fps)
