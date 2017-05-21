@@ -26,14 +26,14 @@ var socket = io.listen(server);
 //data structure for Namespace (room) of players to poll for position.
 //declaring here allows for prototyping at server initialization.
 function Player(x,y,id) {
-	this.x : x,
-	this.y : y,
-	this.id : id
+	this.x = x,
+	this.y = y,
+	this.id = id
 };
 function Player() {
-	this.x : null,
-	this.y : null,
-	this.id : null
+	this.x = null,
+	this.y = null,
+	this.id = null
 }
 //player position map keyed by player id
 var playerPositionMap = {};
