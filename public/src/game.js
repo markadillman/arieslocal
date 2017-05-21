@@ -174,27 +174,33 @@ Game =
 					}
 	      		})
 	      		.bind('NewPlayer',function(eventData){
-	      			//this function will either create a different colored rectangle or, in the future,
-	      			//load the player's avatar into memory and start rendering it over their hitbox
-	      			var otherPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
-	      				// Initial position and size
-	      				.attr({x: eventData.x, y: eventData.y, w: 10, h: 50})
-	      				// Color of sprite (to be replaced)
-	      				.color('#F41')
-	      				.twoway(200)
-	      				// Set platforms to stop falling other player
-	      				.gravity('Platform')
-	      				.gravityConst(600);
-	      			//add a field that ties this player to an id
-	      			otherPlayer.friendId = eventData.id;
-	      			//set the Crafty id as a field
-	      			otherPlayer.craftyId = otherPlayer.getId();
-	      			//add this to player position map
-	      			playerPositionMap[otherPlayer.friendId] = otherPlayer;
-	      			console.log("OTHER PLAYER");
-	      			console.log(otherPlayer);
-	      			console.log("MAP ON NEW LOGIN.");
-	      			console.log(playerPositionMap);
+
+	      			if (!(eventData.id === socketId)){
+	      				//this function will either create a different colored rectangle or, in the future,
+	      				//load the player's avatar into memory and start rendering it over their hitbox
+	      				var otherPlayer = Crafty.e('2D, DOM, Color, Twoway, Gravity')
+	      					// Initial position and size
+	      					.attr({x: eventData.x, y: eventData.y, w: 10, h: 50})
+	      					// Color of sprite (to be replaced)
+	      					.color('#F41')
+	      					.twoway(200)
+	      					// Set platforms to stop falling other player
+	      					.gravity('Platform')
+	      					.gravityConst(600);
+	      				//add a field that ties this player to an id
+	      				otherPlayer.friendId = eventData.id;
+	      				//set the Crafty id as a field
+	      				otherPlayer.craftyId = otherPlayer.getId();
+	      				//add this to player position map
+	      				playerPositionMap[otherPlayer.friendId] = otherPlayer;
+	      				console.log("OTHER PLAYER");
+	      				console.log(otherPlayer);
+	      				console.log("MAP ON NEW LOGIN.");
+	      				console.log(playerPositionMap);
+	      			}
+	      			else {
+	      				console.log("id's equal");
+	      			}
 	      		})
 				//this removes a recently logged off player from the position map
 	      		.bind('OtherPlayerLogoff',function(eventData){
