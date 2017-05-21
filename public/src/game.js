@@ -191,7 +191,9 @@ Game =
 	      			otherPlayer.craftyId = otherPlayer.getId();
 	      			//add this to player position map
 	      			playerPositionMap[otherPlayer.friendId] = otherPlayer;
-	      			console.log("Player position map.");
+	      			console.log("OTHER PLAYER");
+	      			console.log(otherPlayer);
+	      			console.log("MAP ON NEW LOGIN.");
 	      			console.log(playerPositionMap);
 	      		})
 				//this removes a recently logged off player from the position map
