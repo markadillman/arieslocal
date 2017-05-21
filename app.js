@@ -56,6 +56,7 @@ socket.on('connection',function(socket){
 	console.log('socketio connection made');
 	socket.emit('news',{hello:'world'});
 	console.log(socket.id);
+	socket.emit('assign id',{id : socket.id});
 	socket.on('my other event',function(data){
 		console.log(data);
 	});

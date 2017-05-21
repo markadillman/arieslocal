@@ -38,9 +38,8 @@ Game =
 	{
 		//create socket.io connection DIFFERENT ON LOCAL AND SERVER. ADJUST.
 		var socket = io('http://192.168.2.50:8080');
-		socket.on('news', function(data){
-			console.log(data);
-			socket.emit('my other event',{my:'data'});
+		socket.on('assign id', function(data){
+			socketId = data.id;
 		});
 
 		Crafty.init(screenWidth, screenHeight, document.getElementById('game'));
