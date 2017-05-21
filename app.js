@@ -67,16 +67,16 @@ socket.on('connection',function(socket){
 	socket.on('init position',function(data){
 		//add player to list of active players
 		console.log(util.inspect(data));
-		activePlayer = new Player(data.x,data.y,socket.id);
-		playerPositionMap[socket.id.toString()] = activePlayer;
+		playerPositionMap[socket.id.toString()] = {x:data.x,y:data.y,}};
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
 	});
-
-	
 	socket.on('changeCoords',function(data){
 		console.log(data);
-
+	});
+	socket.on('disconnect',function(){
+		delete playerPositionMap[socket.id.toString()];
+		console.log(util.inspect.playerPositionMap);
 	})
 });
 
