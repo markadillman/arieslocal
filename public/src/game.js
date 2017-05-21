@@ -209,13 +209,13 @@ Game =
 	      				console.log("player position map");
 	      				console.log(playerPositionMap);
 	      				//if the ID is in the current map and in the data for the update, update the coords
-	      				if (!(playerPositionMap[key] === null)){
 	      					console.log(playerPositionMap[key]);
 	      					//look up crafty entity for this player
 	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
 	      					targetPlayer.x = eventData[key]['x'];
 	      					targetPlayer.y = eventData[key]['y'];
-	      					console.log(playerPositionMap);	      				}
+	      					console.log(playerPositionMap);	 				
+	      				}
 	      			}
 	      		})
 	      		//update with new coordinates every second (50 fps)
