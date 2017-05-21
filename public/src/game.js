@@ -156,6 +156,7 @@ Game =
 	      		.bind('SceneLoaded',function(){
 					//function to handle the initial admission to the player pool
 					if (!(this === null)){
+						console.log(this.toString());
 						socket.emit('init position',{x : this.x , y : this.y});
 					}
 	      		})
@@ -163,7 +164,7 @@ Game =
 	      		.bind("EnterFrame",function(eventData){
 	      			if (eventData.frame % netFrameRate === 0){
 	      				//DEBUG
-	      				console.clear();
+	      				//console.clear();
 	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() + " id: " + socketId);
 	      				//END DEBUG
 	      				socket.emit('changeCoords', {x : this.x , y : this.y , id : socketId});
