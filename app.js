@@ -71,7 +71,7 @@ socket.on('connection',function(socket){
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
 		//broadcast new player to other active players
-		socket.broadcast.to('/').emit('new player',{x:data.x,y:data.y,id:socket.id});
+		io.sockets.emit('new player',{x:data.x,y:data.y,id:socket.id});
 	});
 	socket.on('changeCoords',function(data){
 		console.log(data);
@@ -79,7 +79,7 @@ socket.on('connection',function(socket){
 	socket.on('disconnect',function(){
 		delete playerPositionMap[socket.id.toString()];
 		console.log(util.inspect(playerPositionMap));
-		socket.broadcast.to('/').emit('player logoff',{id:socket.id});
+		io.sockets.emit('player logoff',{id:socket.id});
 	})
 	socket.on('position request',function(){
 		console.log("position request payload");
