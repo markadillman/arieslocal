@@ -156,7 +156,7 @@ Game =
 	      			if (eventData.frame % netFrameRate === 0){
 	      				//DEBUG
 	      				console.clear();
-	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString());
+	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() " id: " + this.id);
 	      				//END DEBUG
 	      				socket.emit('changeCoords',{x : this.x , y : this.y, id : this.id});
 	      			}
