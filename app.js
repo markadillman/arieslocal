@@ -81,7 +81,7 @@ socket.on('connection',function(socket){
 		console.log(util.inspect(playerPositionMap));
 		io.to('/').emit('player logoff',{id:socket.id});
 	})
-	socket.on('position request',function()){
+	socket.on('position request',function(){
 		socket.emit('position response',playerPositionMap);
 	}
 });
