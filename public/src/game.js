@@ -218,18 +218,8 @@ Game =
 	      				console.log(playerPositionMap);
 	      				console.log("socket id");
 	      				console.log(socketId);
-	      				//if the ID is in the current map and in the data for the update, update the coords
-	      				if (!(playerPositionMap[key] === undefined || key === socketId)){
-	      					console.log("SHOULD BE HERE NOW");
-	      					console.log(playerPositionMap[key]);
-	      					//look up crafty entity for this player
-	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
-	      					targetPlayer.x = eventData[key]['x'];
-	      					targetPlayer.y = eventData[key]['y'];
-	      					console.log(playerPositionMap);	 				
-	      				}
-	      				//if player is pre-existing player that does not have an avatar, make one
-	      				else {
+	      				//if the ID is not in the current mapping data structure
+	      				if (playerPositionMap[key] === undefined && !(key === socketId)){
 	      					console.log("SHOULDNT BE HERE WITHOUT ANOTHER PLAYER");
 	      					//this function will either create a different colored rectangle or, in the future,
 	      					//load the player's avatar into memory and start rendering it over their hitbox
@@ -247,7 +237,18 @@ Game =
 	      					//set the Crafty id as a field
 	      					oldPlayer.craftyId = oldPlayer.getId();
 	      					//add this to player position map
-	      					playerPositionMap[otherPlayer.friendId] = oldPlayer;
+	      					playerPositionMap[otherPlayer.friendId] = oldPlayer;			
+	      				}
+	      				//if player is pre-existing player that does not have an avatar, make one
+	      				else {
+	      					//KEEP BELOW HERE AFTER PASTE
+	      					console.log("SHOULD BE HERE NOW");
+	      					console.log(playerPositionMap[key]);
+	      					//look up crafty entity for this player
+	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
+	      					targetPlayer.x = eventData[key]['x'];
+	      					targetPlayer.y = eventData[key]['y'];
+	      					console.log(playerPositionMap);	
 	      				}
 	      			}
 	      		})
