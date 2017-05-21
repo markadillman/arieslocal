@@ -149,7 +149,8 @@ Game =
 	      				this.gravity('Platform');
 	      			}})
 	      		//update with new coordinates every frame
-	      		.bind("EnterFrame",function(){
+	      		.bind("EnterFrame",function(eventData){
+	      			console.log(eventData);
 	      			console.clear();
 	      			console.log("<p> x: " + this.x.toString() + " y : " + this.y.toString());
 	      		});
