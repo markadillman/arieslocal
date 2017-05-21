@@ -150,7 +150,7 @@ Game =
 	      			}})
 	      		//update with new coordinates every frame
 	      		.bind("EnterFrame",function(){
-	      			console.API.clear();
+	      			console.clear();
 	      			console.log("<p> x: " + this.x.toString() + " y : " + this.y.toString());
 	      		});
 
