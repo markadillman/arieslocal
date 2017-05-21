@@ -16,7 +16,7 @@ var socket;
 var socketId;
 var playerGlob;
 //global constant to determine number of logical frames per network frame
-const netFrameRate = 25;
+const netFrameRate = 50;
 var playerPositionMap = {};
 //END CODE ADDED BY MARK
 
@@ -192,7 +192,7 @@ Game =
 	      				//set the Crafty id as a field
 	      				otherPlayer.craftyId = otherPlayer.getId();
 	      				//add this to player position map
-	      				playerPositionMap[otherPlayer.friendId] = otherPlayer;
+	      				playerPositionMap[otherPlayer.friendId] = otherPlayer.craftyId;
 	      				console.log("OTHER PLAYER");
 	      				console.log(otherPlayer);
 	      				console.log("MAP ON NEW LOGIN.");
@@ -237,7 +237,7 @@ Game =
 	      					//set the Crafty id as a field
 	      					oldPlayer.craftyId = oldPlayer.getId();
 	      					//add this to player position map
-	      					playerPositionMap[oldPlayer.friendId] = oldPlayer;			
+	      					playerPositionMap[oldPlayer.friendId] = oldPlayer.craftyId;			
 	      				}
 	      				//if player is pre-existing player that does not have an avatar, make one
 	      				else {
@@ -245,7 +245,7 @@ Game =
 	      					console.log("SHOULD BE HERE NOW");
 	      					console.log(playerPositionMap[key]);
 	      					//look up crafty entity for this player
-	      					var targetPlayer = Crafty(playerPositionMap[key]['craftyId']);
+	      					var targetPlayer = Crafty(playerPositionMap[key]);
 	      					targetPlayer.x = eventData[key]['x'];
 	      					targetPlayer.y = eventData[key]['y'];
 	      					console.log(playerPositionMap);	
@@ -303,8 +303,6 @@ Game =
 	       	});
 	       	//this will trigger when server responds with updated positions
 	       	socket.on('position response',function(data){
-	       		console.log("positions");
-	       		console.log(data);
 	       		//actual event trigger
 	       		player.trigger('UpdateMap',data);
 	       	});
