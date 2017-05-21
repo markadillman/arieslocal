@@ -206,6 +206,8 @@ Game =
 	      			console.log(eventData);
 	      			//for each player, update position if entity exists
 	      			for (key in eventData){
+	      				console.log("player position map");
+	      				console.log(playerPositionMap);
 	      				//if the ID is in the current map and in the data for the update, update the coords
 	      				if (!(playerPositionMap[key] === null)){
 	      					console.log(playerPositionMap[key]);
