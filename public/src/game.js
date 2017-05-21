@@ -123,8 +123,6 @@ Game =
 		// Main game world scene
 		Crafty.defineScene('World', function()
 		{
-
-
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
@@ -153,11 +151,11 @@ Game =
 	      				this.gravity('Platform');
 	      			}})
 	      		//this event will be triggered once the player is in the world.
-	      		.bind('SceneLoaded',function(){
+	      		.bind('SceneLoaded',function(eventData){
 					//function to handle the initial admission to the player pool
 					if (!(this === null)){
 						console.log(this.toString());
-						socket.emit('init position',{x : this.x , y : this.y});
+						socket.emit('init position',{x : eventData.x , y : eventData.y});
 					}
 	      		})
 	      		//update with new coordinates every second (50 fps)
@@ -197,7 +195,7 @@ Game =
 	       	Crafty.viewport.follow(player, 0, 50);
 
 	       	//trigger the player creation event
-	       	player.trigger('SceneLoaded');
+	       	player.trigger('SceneLoaded',player);
       	});
 
 		// Start game on home screen
