@@ -25,11 +25,16 @@ server.listen(socketioPort);
 var socket = io.listen(server);
 //data structure for Namespace (room) of players to poll for position.
 //declaring here allows for prototyping at server initialization.
-var Player = {
-	x : null,
-	y : null,
-	id : null
+function Player(x,y,id) = {
+	this.x : x,
+	this.y : y,
+	this.id : id
 };
+function Player() = {
+	this.x : null,
+	this.y : null,
+	this.id : null
+}
 //player position map keyed by player id
 var playerPositionMap = {};
 
@@ -66,7 +71,7 @@ socket.on('connection',function(socket){
 	socket.emit('assign id',{id : socket.id});
 	socket.on('init position',function(data){
 		//add player to list of active players
-		activePlayer = new Player({x:data.x,y:data.y,id:socket.id});
+		activePlayer = new Player(data.x,data.y,socket.id);
 		playerPositionMap[socket.id.toString()] = activePlayer;
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
