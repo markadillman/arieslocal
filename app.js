@@ -55,7 +55,7 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 socket.on('connection',function(socket){
 	console.log('socketio connection made');
 	socket.emit('news',{hello:'world'});
-	console.log(this.id);
+	console.log(socket.id);
 	socket.on('my other event',function(data){
 		console.log(data);
 	});
