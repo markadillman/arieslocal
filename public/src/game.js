@@ -127,7 +127,7 @@ Game =
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
-	      		.attr({x: 0, y: 0, w: 10, h: 50, id: socketId})
+	      		.attr({x: 0, y: 0, w: 10, h: 50})
 	      		// Color of sprite (to be replaced)
 	      		.color('#F00')
 	      		// Enable 2D movement
@@ -156,9 +156,9 @@ Game =
 	      			if (eventData.frame % netFrameRate === 0){
 	      				//DEBUG
 	      				console.clear();
-	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() + " id: " + this.id);
+	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() + " id: " + socketId);
 	      				//END DEBUG
-	      				socket.emit('changeCoords',{x : this.x , y : this.y, id : this.id});
+	      				socket.emit('changeCoords',{x : this.x , y : this.y, id : socketId});
 	      			}
 	      		});
 
