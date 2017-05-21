@@ -150,7 +150,8 @@ Game =
 	      			}})
 	      		//update with new coordinates every frame
 	      		.bind("EnterFrame",function(){
-	      			coordinates.innerHTML = "<p> x: " + this.x.toString() + " y : " + this.y.toString();
+	      			console.API.clear();
+	      			console.log("<p> x: " + this.x.toString() + " y : " + this.y.toString());
 	      		});
 
 	      	// Platforms
