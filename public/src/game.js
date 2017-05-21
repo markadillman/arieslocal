@@ -159,7 +159,7 @@ Game =
 	      				console.clear();
 	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString() + " id: " + socketId);
 	      				//END DEBUG
-	      				socket.emit('changeCoords', {x : this.x , y : this.y, id : socketId});
+	      				socket.emit('changeCoords', {x : this.x , y : this.y , id : socketId});
 	      			}
 	      		});
 
@@ -197,7 +197,7 @@ Game =
 	}
 
 	//function to handle the initial admission to the player pool
-	var reportInitPosition(player){
+	var reportInitPosition = function(player){
 		socket.emit('init position',{x : player.x , y : player.y});
 	}
 }
