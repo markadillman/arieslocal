@@ -153,8 +153,8 @@ Game =
 	      		//this event will be triggered once the player is in the world.
 	      		.bind('SceneLoaded',function(eventData){
 					//function to handle the initial admission to the player pool
-					if (!(this === null)){
-						console.log(eventData.toString());
+					if (!(eventData === null)){
+						console.log(eventData);
 						socket.emit('init position',{x : eventData.x , y : eventData.y});
 					}
 	      		})
