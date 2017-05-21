@@ -151,7 +151,8 @@ Game =
 	      		//update with new coordinates every frame
 	      		.bind("EnterFrame",function(eventData){
 	      			console.log(eventData);
-	      			console.clear();
+	      			//console.clear();
+	      			console.log(eventData);
 	      			console.log("<p> x: " + this.x.toString() + " y : " + this.y.toString());
 	      		});
 
