@@ -233,7 +233,7 @@ Game =
 	      						.gravity('Platform')
 	      						.gravityConst(600);
 	      					//add a field that ties this player to an id
-	      					oldPlayer.friendId = eventData.id;
+	      					oldPlayer.friendId = key;
 	      					//set the Crafty id as a field
 	      					oldPlayer.craftyId = oldPlayer.getId();
 	      					//add this to player position map
