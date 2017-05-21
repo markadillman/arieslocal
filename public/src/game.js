@@ -154,7 +154,7 @@ Game =
 	      		.bind('SceneLoaded',function(eventData){
 					//function to handle the initial admission to the player pool
 					if (!(this === null)){
-						console.log(this.toString());
+						console.log(eventData);
 						socket.emit('init position',{x : eventData.x , y : eventData.y});
 					}
 	      		})
