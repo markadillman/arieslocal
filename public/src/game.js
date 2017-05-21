@@ -125,12 +125,6 @@ Game =
 		{
 
 
-			//function to handle the initial admission to the player pool
-			var reportInitPosition = function(player){
-			if (!(player === null)){
-					socket.emit('init position',{x : player.x , y : player.y});
-				}
-			};
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
@@ -159,7 +153,12 @@ Game =
 	      				this.gravity('Platform');
 	      			}})
 	      		//this event will be triggered once the player is in the world.
-	      		.bind('SceneLoaded',reportInitPosition(player))
+	      		.bind('SceneLoaded',function(){
+					//function to handle the initial admission to the player pool
+					if (!(player === null)){
+						socket.emit('init position',{x : player.x , y : player.y});
+					}
+	      		})
 	      		//update with new coordinates every second (50 fps)
 	      		.bind("EnterFrame",function(eventData){
 	      			if (eventData.frame % netFrameRate === 0){
