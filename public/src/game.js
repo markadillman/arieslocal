@@ -8,9 +8,12 @@ var currentCenterY = 0;
 var spriteWidth = 10;
 var spriteHeight = 50;
 var defaultTextColor = '#373854'
-//global value holder for socket.io socket
+//global value holder for socket.io socket and socketId
 var socket;
-var coordinates = document.getElementById('coords');
+var socketId;
+//global constant to determine number of logical frames per net frame
+const netFrameRate = 50;
+
 
 function loadScript(url, callback)
 {
@@ -124,7 +127,7 @@ Game =
 			// Player sprite
 	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
-	      		.attr({x: 0, y: 0, w: 10, h: 50, id:-1})
+	      		.attr({x: 0, y: 0, w: 10, h: 50, id:socketId});
 	      		// Color of sprite (to be replaced)
 	      		.color('#F00')
 	      		// Enable 2D movement
@@ -148,11 +151,14 @@ Game =
 	      			{
 	      				this.gravity('Platform');
 	      			}})
-	      		//update with new coordinates every frame
+	      		//update with new coordinates every second (50 fps)
 	      		.bind("EnterFrame",function(eventData){
-	      			if (eventData.frame % 50 === 0){
+	      			if (eventData.frame % netFrameRate === 0){
+	      				//DEBUG
+	      				console.clear();
 	      				console.log("x: " + this.x.toString() + " y : " + this.y.toString());
-	      				socket.emit('changeCoords',{x : this.x , y : this.y});
+	      				//END DEBUG
+	      				socket.emit('changeCoords',{x : this.x , y : this.y, id : this.id});
 	      			}
 	      		});
 
