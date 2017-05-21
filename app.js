@@ -67,7 +67,7 @@ socket.on('connection',function(socket){
 	socket.on('init position',function(data){
 		//add player to list of active players
 		console.log(util.inspect(data));
-		playerPositionMap[socket.id.toString()] = {x:data.x,y:data.y,}};
+		playerPositionMap[socket.id.toString()] = {x:data.x,y:data.y,};
 		console.log("Player added to position map.");
 		console.log(util.inspect(playerPositionMap));
 	});
