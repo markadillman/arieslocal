@@ -216,6 +216,8 @@ Game =
 	      			for (key in eventData){
 	      				console.log("player position map");
 	      				console.log(playerPositionMap);
+	      				console.log("socket id");
+	      				console.log(socketId);
 	      				//if the ID is in the current map and in the data for the update, update the coords
 	      				if (!(playerPositionMap[key] === undefined || key === socketId)){
 	      					console.log(playerPositionMap[key]);
