@@ -125,9 +125,9 @@ Game =
 		Crafty.defineScene('World', function()
 		{
 			// Player sprite
-	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity',playerId = socketId)
+	        var player = Crafty.e('2D, DOM, Color, Twoway, Gravity')
 	        	// Initial position and size
-	      		.attr({x: 0, y: 0, w: 10, h: 50, id: playerId});
+	      		.attr({x: 0, y: 0, w: 10, h: 50, id: socketId})
 	      		// Color of sprite (to be replaced)
 	      		.color('#F00')
 	      		// Enable 2D movement
