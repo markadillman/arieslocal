@@ -150,6 +150,8 @@ Game =
 	      			{
 	      				this.gravity('Platform');
 	      			}})
+	      		//this event will be triggered once the player is in the world.
+	      		.bind('SceneLoaded',reportInitPosition(player))
 	      		//update with new coordinates every second (50 fps)
 	      		.bind("EnterFrame",function(eventData){
 	      			if (eventData.frame % netFrameRate === 0){
@@ -186,12 +188,16 @@ Game =
 	       	// Have camera follow player sprite
 	       	Crafty.viewport.follow(player, 0, 50);
 
-	       	//update the position of the player every frame
-
-
+	       	//trigger the player creation event
+	       	player.trigger('SceneLoaded');
       	});
 
 		// Start game on home screen
       	Crafty.enterScene('HomeScreen');
+	}
+
+	//function to handle the initial admission to the player pool
+	var reportInitPosition(player){
+		socket.emit('init position',{x : player.x , y : player.y});
 	}
 }

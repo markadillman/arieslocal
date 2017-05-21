@@ -23,6 +23,11 @@ var server = http.createServer(app);
 var io = require('socket.io');
 server.listen(socketioPort);
 var socket = io.listen(server);
+//data structure for Namespace (room) of players to poll for position.
+//declaring here allows for prototyping at server initialization.
+var Player = {x,y,id};
+//player position map keyed by player id
+var playerPositionMap = {};
 
 //make process trackable
 process.title = "ariesApp";
@@ -54,14 +59,19 @@ const coordinatePairs = {"ul": {"x":-1,"y":-1,"canvasId":"aboveLeftDivCanvas"},/
 //socket.io on connect event code
 socket.on('connection',function(socket){
 	console.log('socketio connection made');
-	socket.emit('news',{hello:'world'});
-	console.log(socket.id);
 	socket.emit('assign id',{id : socket.id});
-	socket.on('my other event',function(data){
-		console.log(data);
+	socket.on('init position',function(data){
+		//add player to list of active players
+		activePlayer = new Player({x:data.x,y:data.y.id:socket.id});
+		playerPositionMap[socket.id.toString()] = activePlayer;
+		console.log("Player added to position map.");
+		console.log(util.inspect(playerPositionMap));
 	});
+
+	
 	socket.on('changeCoords',function(data){
-		console.log(data);	
+		console.log(data);
+
 	})
 });
 
