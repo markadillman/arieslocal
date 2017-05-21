@@ -83,7 +83,7 @@ socket.on('connection',function(socket){
 	})
 	socket.on('position request',function(){
 		socket.emit('position response',playerPositionMap);
-	}
+	});
 });
 
 //HELPER FUNCTION FOR SVG VALIDITY
